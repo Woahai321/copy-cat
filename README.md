@@ -1,188 +1,171 @@
 <div align="center">
 
-![CopyCat Logo](https://s.2ya.me/api/shares/1YRY4QVX/files/134a66f3-642e-46f2-bcf7-63665fd2cd0c)
+![CopyCat Logo](https://s.2ya.me/api/shares/lVlUQ6CB/files/8776d8e1-9a61-42b8-80ea-eb80d03977b8)
 ![Docker](https://img.shields.io/badge/Docker-Ready-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=docker&logoColor=white)
-![Nuxt](https://img.shields.io/badge/Nuxt-3.0-00DC82?style=for-the-badge&labelColor=00DC82&logo=nuxtdotjs&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-009688?style=for-the-badge&labelColor=009688&logo=fastapi&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11%2B-FFD43B?style=for-the-badge&labelColor=FFD43B&logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge&labelColor=gray)
+![Nuxt](https://img.shields.io/badge/Nuxt-3.0-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=nuxtdotjs&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11%2B-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge&labelColor=6b21a8)
 
 </div>
 
 ---
 
-## 🐱 What is CopyCat? 
+## 😸 What is CopyCat? 
 
-**CopyCat** is a powerful file management system designed to bridge the gap between your cloud storage (Zurg/Real-Debrid) and local storage. It provides a premium, glass-morphism interface for managing large-scale file transfers with queue management, real-time progress tracking, and history logging.
+**CopyCat** is the ultimate self-hosted manager for your digital library. It is built to bridge the gap between your **Cloud Storage** (using tools like Zurg, Rclone, or Real-Debrid mounts) and your **Local Storage** (HDD/NAS).
+
+Instead of dealing with command-line tools or generic file managers, CopyCat provides a **premium, Netflix-like interface** to scan, organize, and copy media files.
+
+### Key Features
+- **Smart Parsing**: Automatically detects Movies vs TV Shows, Seasons, and Episodes from raw filenames.
+- **Metadata Enrichment**: Integrates with **Trakt** to pull posters, ratings, and plot summaries for your files.
+- **Supercharged Copying**: Custom-built queue manager handles massive file transfers reliably in the background.
+- **Glass UI**: A stunning, responsive "Aurora Glass" interface that feels like a native desktop app.
 
 <div align="center">
 
-[![Documentation](https://img.shields.io/badge/🐱_Documentation-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#-getting-started)
-[![Web Interface](https://img.shields.io/badge/🐱_Web_Interface-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#-modern-web-dashboard)
-[![Docker Setup](https://img.shields.io/badge/🐱_Docker_Setup-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#-quick-start)
+[![Documentation](https://img.shields.io/badge/🐱_Deployment_Guide-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/deployment.md)
+[![Configuration](https://img.shields.io/badge/🐱_Configuration-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/configuration.md)
+[![Developer Guide](https://img.shields.io/badge/🐱_Developer_Guide-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/development.md)
 
 </div>
 
 ---
 
-## 🐱 Modern Web Dashboard
-
-CopyCat features a stunning **"Aurora Glass" UI** built with Nuxt 3, offering a desktop-class file management experience right in your browser.
+## 😻 The Experience
 
 <div align="center">
-  <!-- Placeholder for a main dashboard screenshot -->
-  <img src="https://placehold.co/1200x675/1e1e1e/60cdff?text=CopyCat+Dashboard+Preview" alt="CopyCat Dashboard" width="100%" style="border-radius: 10px; border: 1px solid #60cdff;">
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/f9a74261-ffc9-486a-bcd7-baa4f71a1b60" alt="CopyCat Dashboard" width="100%" style="border-radius: 10px; border: 1px solid #60cdff;">
 </div>
+
+<br>
 
 <details>
-<summary><strong>📸 View More Features</strong></summary>
+<summary><strong>📸 View More Screenshots</strong></summary>
 
-### Smart File Explorer
-Dual-pane file browser with rich icons, grid view, and drag-and-drop support. Browse your Zurg mounts and local drives seamlessly.
+### Media Library
+Browse your content in a rich, Overseerr-inspired interface. Filter by movies or TV shows, view metadata, and select items to transfer with a single click.
 
 <div align="center">
-  <img src="https://placehold.co/1200x675/1e1e1e/60cdff?text=Smart+File+Explorer" alt="File Explorer" width="100%" style="border-radius: 10px; border: 1px solid #60cdff;">
-  <p><em>Navigate huge libraries with ease using grid or list views.</em></p>
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/08a45da9-716d-4c76-83d4-38361f797a3b" alt="Media Library" width="100%" style="border-radius: 10px; border: 1px solid #8b5cf6;">
+  <p><em>Rich Media Library</em></p>
 </div>
 
-### Queue Management
-Robust task queue system that handles long-running copy operations intelligently, ensuring efficient transfers without browser dependencies.
+### Copy Wizard
+Prefer a traditional view? The Copy Wizard offers a familiar file explorer interface, allowing you to manually navigate directory structures and define precise destinations for your transfers.
 
 <div align="center">
-  <img src="https://placehold.co/1200x675/1e1e1e/60cdff?text=Queue+Management" alt="Queue System" width="100%" style="border-radius: 10px; border: 1px solid #60cdff;">
-  <p><em>Track progress, speed, and ETA for every file.</em></p>
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/8c1b8ba2-c695-4e46-87b0-2e3b1044271d" alt="Copy Wizard" width="100%" style="border-radius: 10px; border: 1px solid #8b5cf6;">
+  <p><em>File Explorer & Copy Wizard</em></p>
+</div>
+
+### Transfer Queue
+Monitor active transfers in real-time. View detailed progress, transfer speeds, and manage your queue with priority controls to ensure your most important media is ready when you are.
+
+<div align="center">
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/47720500-3a77-4e7c-8bc0-4674c50c8b3a" alt="Transfer Queue" width="100%" style="border-radius: 10px; border: 1px solid #8b5cf6;">
+  <p><em>Live Transfer Queue</em></p>
 </div>
 
 </details>
 
+### 😺 Smart Browsing
+Navigate your messy cloud mounts as a clean, organized library. CopyCat filters out "junk" files (samples, txt, nfo) and presents only the media you care about.
+
+### 😼 Intelligent Queue
+Don't worry about network interruptions. The queue manager handles retries, progress tracking, and ensures your downloads finishes, even if you close the browser.
+
 ---
 
-## 🐱 Quick Start
-
-**Get up and running in seconds.**
+## 😺 Quick Start (One-Command)
+Try CopyCat instantly with this single Docker command:
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/copycat.git
-cd copycat
-
-# Start with Docker Compose
-docker-compose -f docker-compose.windows.yml up -d --build
+docker run -d --name copycat \
+  -p 4223:4223 \
+  -v copycat-data:/app/data \
+  -e SOURCE_PATH=/mnt/zurg \
+  -e DESTINATION_PATH=/mnt/local/media \
+  -e JWT_SECRET_KEY=super_strong_secret_here \
+  ghcr.io/woahai321/copy-cat:main
 ```
 
-> **That's it!** Access the dashboard at [http://localhost:4222](http://localhost:4222).
+Open `http://localhost:4223` and login with **admin** / **changeme**.
 
----
+## 😽 Deployment
 
-## 🐱 Getting Started
+CopyCat is designed to be deployed in minutes using Docker.
 
-### Prerequisites
-- Docker & Docker Compose
-- Rclone mount (Zurg) or similar source directory
-- Destination drive/directory
+### 1. Requirements
+- A machine running Docker & Docker Compose.
+- A **Source Path** (e.g., `/mnt/zurg` or any folder with media).
+- A **Destination Path** (e.g., `/mnt/media` where you want files to go).
 
-### Docker Configuration
-Update `docker-compose.windows.yml` to match your paths:
+### 2. Setup
+Clone the repo and configure your environment:
 
-```yaml
-volumes:
-  - "C:\\mnt\\zurg:/mnt/zurg:ro"   # Source (Read-Only)
-  - "C:\\mnt\\16tb:/mnt/16tb"     # Destination
-```
-
----
-
-## 🐱 System Architecture
-
-<details>
-<summary><strong>View System Architecture Diagram</strong></summary>
-
-```mermaid
-%%{init: {'flowchart': {'diagramPadding': 20, 'nodeSpacing': 25, 'rankSpacing': 35, 'curve': 'linear'}}}%%
-graph LR
-    %% UI
-    subgraph ui["User Interaction"]
-        U["🐱 User\n(Browser)"] --> D["🖥️ Nuxt Frontend\n(Port 4222)"]
-    end
-
-    %% Core
-    subgraph core["Core System"]
-        D --> A["🔌 FastAPI Backend\n(Port 4223)"]
-        A --> Q["Queue Manager\n(Async Worker)"]
-        A --> DB[("💾 SQLite DB\n(History, Users)")]
-    end
-
-    %% Storage
-    subgraph storage["File Systems"]
-        Q --> Z["☁️ Source Mock (Zurg)\n(Read-Only)"]
-        Q --> H["💾 Destination (HDD)\n(Read-Write)"]
-        D -.-> Z
-        D -.-> H
-    end
-
-    %% Flow
-    style U fill:#1e1e1e,stroke:#60cdff,stroke-width:2px,color:#fff
-    style D fill:#1e1e1e,stroke:#00dc82,stroke-width:2px,color:#fff
-    style A fill:#1e1e1e,stroke:#009688,stroke-width:2px,color:#fff
-    style Q fill:#1e1e1e,stroke:#ffd43b,stroke-width:2px,color:#fff
-    style DB fill:#1e1e1e,stroke:#a855f7,stroke-width:2px,color:#fff
-```
-
-</details>
-
----
-
-## 🐱 Features at a Glance
-
-| Feature | Description |
-| :--- | :--- |
-| **🔐 Secure Auth** | JWT-based authentication with role management. |
-| **📁 Smart Browse** | Rich file explorer with specific icons for media types (MKV, MP4, etc.). |
-| **⚡ Real-Time** | WebSocket integration for instant progress updates and speed graphs. |
-| **🔄 Auto-Retry** | Intelligent error handling and job retries. |
-| **📱 Mobile Ready** | Fully responsive design for managing transfers on the go. |
-
----
-
-## 🐱 Development
-
-<details>
-<summary><strong>Developer Setup</strong></summary>
-
-### Backend (Python/FastAPI)
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --reload --port 4223
+git clone https://github.com/woahai321/copy-cat.git
+cd copy-cat
+cp .env.example .env
 ```
 
-### Frontend (Nuxt 3)
+### 3. Configure
+Edit `.env` to match your paths:
+
+```ini
+# Where your media is getting READ from (ReadOnly recommended)
+SOURCE_PATH=/mnt/zurg
+
+# Where you want your media COPIED to
+DESTINATION_PATH=/mnt/local/media
+
+# Security: Set a strong random password!
+JWT_SECRET_KEY=change_me_to_something_secure
+```
+
+### 4. Launch
 ```bash
-cd frontend
-npm install
-npm run dev
-# Running on http://localhost:3000
+docker-compose up -d
 ```
 
-</details>
+### 5. Login
+Go to `http://localhost:4223`.
+- **User**: `admin`
+- **Password**: `changeme`
 
+> **Need more help?** Check out the [Deployment Guide](docs/deployment.md) or [Configuration Reference](docs/configuration.md).
 ---
+## 🙀 How It Works
 
-## 🐱 Support
-
-If you encounter any issues, please check the logs or open an issue.
-
-- **Backend Logs**: `docker logs copypaste-backend`
-- **Frontend Logs**: `docker logs copypaste-frontend`
-
+1.  **Scanner**: The scanner reads your `SOURCE_PATH` and identifies media files. It uses regex to strip "garbage" (release groups, quality tags) and extracts a clean Title and Year.
+2.  **Enricher**: If you configure a **Trakt Client ID**, CopyCat matches your files to Trakt to download high-quality posters and metadata. *Note: We cache images locally to respect API limits.*
+3.  **Queue**: When you select files to copy, they are added to the background queue. The system performs a verifiable copy operation to your `DESTINATION_PATH`.
 ---
+## 😺 Documentation
+- [Deployment Guide](docs/deployment.md)
+- [Configuration Reference](docs/configuration.md)
+- [Developer Guide](docs/development.md)
+---
+## 😺 Support CopyCat's Development
+If CopyCat saves you time, consider sponsoring:
 
+➡️ [GitHub Sponsors](https://github.com/sponsors/woahai321)
+
+Thank you! 🐱
+---
+## 🐱 Contributing
+Welcome! See [Developer Guide](docs/development.md) for Nuxt + FastAPI setup.
+---
 ## 🐱 License
-
-This project is licensed under the [MIT License](LICENSE).
-
-<p align="center">
-  Made with ❤️ by the CopyCat Team
-</p>
+[MIT License](LICENSE)
+---
+## Star History
+<a href="https://star-history.com/#woahai321/copy-cat&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=woahai321/copy-cat&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=woahai321/copy-cat&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=woahai321/copy-cat&type=Date" />
+  </picture>
+</a>

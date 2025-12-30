@@ -1,0 +1,12 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy==2.0.23
+python-jose[cryptography]==3.3.0
+bcrypt==4.0.1
+python-multipart==0.0.6
+websockets==12.0
+aiofiles==23.2.1
+cryptography==41.0.7
+aiohttp==3.9.1
+requests==2.31.0
+

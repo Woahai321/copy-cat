@@ -1,0 +1,43 @@
+services:
+  backend:
+    build: ./backend
+    container_name: copypaste-backend
+    ports:
+      - "4223:8000"
+    volumes:
+      # User Specific Windows Mounts
+      # Maps your actual Source (e.g. Zurg) to the container's source
+      - "${SOURCE_PATH:-C:\\mnt\\zurg}:/mnt/source:ro"
+      # Maps your actual Destination (e.g. 16TB Drive) to the container's destination
+      - "${DESTINATION_PATH:-C:\\mnt\\16tb}:/mnt/destination"
+      # Data persistence
+      - ./data:/app/data
+      # Source Code (Development)
+      - ./backend:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_DIR=/app/data
+      - SOURCE_MOUNT=/mnt/source
+      - DESTINATION_MOUNT=/mnt/destination
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-unsafe_default_change_me}
+    restart: unless-stopped
+    networks:
+      - copypaste-network
+
+  frontend:
+    build: ./frontend
+    container_name: copypaste-frontend
+    ports:
+      - "4222:3000"
+    environment:
+      - API_BASE_URL=http://backend:8000
+      - NUXT_PUBLIC_API_BASE=http://localhost:4223
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - copypaste-network
+
+networks:
+  copypaste-network:
+    driver: bridge

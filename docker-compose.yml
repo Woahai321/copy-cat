@@ -1,0 +1,38 @@
+services:
+  backend:
+    build: ./backend
+    container_name: copypaste-backend
+    ports:
+      - "4223:8000"
+    volumes:
+      - ${SOURCE_PATH:-/mnt/zurg}:/mnt/source:ro
+      - ${DESTINATION_PATH:-/mnt/16tb}:/mnt/destination
+      - ./data:/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_DIR=/data
+      - SOURCE_MOUNT=/mnt/source
+      - DESTINATION_MOUNT=/mnt/destination
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-unsafe_default_change_me}
+    restart: unless-stopped
+    networks:
+      - copypaste-network
+
+  frontend:
+    build: ./frontend
+    container_name: copypaste-frontend
+    ports:
+      - "4222:3000"
+    environment:
+      - API_BASE_URL=http://backend:8000
+      - NUXT_PUBLIC_API_BASE=
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - copypaste-network
+
+networks:
+  copypaste-network:
+    driver: bridge
+

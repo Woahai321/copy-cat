@@ -1,0 +1,27 @@
+{
+  "name": "CopyCat",
+  "short_name": "CopyCat",
+  "description": "File Transfer Management System",
+  "theme_color": "#60cdff",
+  "background_color": "#0f0f0f",
+  "display": "standalone",
+  "orientation": "any",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/copycat.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "prefer_related_applications": false
+}

@@ -1,0 +1,616 @@
+@import "tailwindcss";
+
+/* Windows 11 Aurora Glass System - Premium Edition */
+:root {
+  /* Core Basics */
+  --win-bg-base: #0f0f0f;
+
+  /* Depth System (Levels) */
+  /* Level 0: Background (handled by body::before) */
+
+  /* Level 1: Sidebar / Heavy Acrylic */
+  --glass-level-1-bg: rgba(20, 20, 20, 0.6);
+  --glass-level-1-blur: 40px;
+  --glass-level-1-border: rgba(255, 255, 255, 0.05);
+
+  /* Level 2: Cards / Content Glass */
+  --glass-level-2-bg: rgba(30, 30, 30, 0.65);
+  --glass-level-2-blur: 25px;
+  --glass-level-2-border: rgba(255, 255, 255, 0.08);
+
+  /* Level 3: Overlays / Modals */
+  --glass-level-3-bg: rgba(40, 40, 40, 0.75);
+  --glass-level-3-blur: 50px;
+  --glass-level-3-border: rgba(255, 255, 255, 0.12);
+
+  /* Highlight & Accents */
+  --win-accent: var(--brand-1);
+  --win-accent-glow: rgba(96, 205, 255, 0.4);
+  --win-highlight-border: rgba(255, 255, 255, 0.2);
+  /* For spotlight */
+
+  /* Text */
+  --win-text-primary: #ffffff;
+  --win-text-secondary: rgba(255, 255, 255, 0.7);
+  --win-text-muted: rgba(255, 255, 255, 0.45);
+
+  /* Brand Gradient (Cyan to Purple) */
+  --brand-1: #60cdff;
+  --brand-2: #5dbef7;
+  --brand-3: #5db0ed;
+  --brand-4: #5fa1e3;
+  --brand-5: #6292d7;
+  --brand-6: #6584ca;
+  --brand-7: #6975bc;
+  --brand-8: #6c66ac;
+  --brand-9: #6e579c;
+  --brand-10: #6e488b;
+
+  /* Animation Timings */
+  --ease-spring: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Typography */
+* {
+  font-family: 'Inter', 'Segoe UI', 'Segoe UI Variable', -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+  border-color: var(--glass-level-2-border);
+  /* Default border color for TW */
+}
+
+body {
+  background-color: var(--win-bg-base);
+  color: var(--win-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 15px;
+  /* Slightly larger for premium readability */
+  line-height: 1.6;
+}
+
+/* --- Animated Background Lines ("The Matrix" / Cyberpunk feel) --- */
+.app-background-lines {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: space-evenly;
+  pointer-events: none;
+  z-index: -10;
+  opacity: 0.2;
+  /* Subtle background presence */
+  padding: 0 40px;
+  /* Keep away from absolute edges */
+}
+
+.app-background-line {
+  position: relative;
+  width: 1px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  /* Faint static line */
+  overflow: hidden;
+}
+
+.app-background-line::after {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 15vh;
+  width: 100%;
+  top: -50%;
+  left: 0;
+  background: linear-gradient(to bottom,
+      rgba(96, 205, 255, 0) 0%,
+      rgba(96, 205, 255, 0.8) 75%,
+      #60cdff 100%);
+  animation: setup-drop 7s infinite cubic-bezier(0.4, 0.26, 0, 0.97);
+  animation-fill-mode: forwards;
+}
+
+@keyframes setup-drop {
+  0% {
+    top: -50%;
+  }
+
+  100% {
+    top: 110%;
+  }
+}
+
+/* Staggered Delays & Variations */
+.app-background-line:nth-child(1)::after {
+  animation-delay: 2s;
+  animation-duration: 9s;
+}
+
+.app-background-line:nth-child(2)::after {
+  animation-delay: 4.5s;
+  animation-duration: 7s;
+}
+
+.app-background-line:nth-child(3)::after {
+  animation-delay: 1s;
+  animation-duration: 8s;
+}
+
+.app-background-line:nth-child(4)::after {
+  animation-delay: 6s;
+  animation-duration: 10s;
+}
+
+.app-background-line:nth-child(5)::after {
+  animation-delay: 3s;
+  animation-duration: 6s;
+}
+
+.app-background-line:nth-child(6)::after {
+  animation-delay: 0.5s;
+  animation-duration: 8.5s;
+}
+
+.app-background-line:nth-child(7)::after {
+  animation-delay: 5s;
+  animation-duration: 9.5s;
+}
+
+.app-background-line:nth-child(8)::after {
+  animation-delay: 2.5s;
+  animation-duration: 7.5s;
+}
+
+.app-background-line:nth-child(9)::after {
+  animation-delay: 7s;
+  animation-duration: 11s;
+}
+
+.app-background-line:nth-child(10)::after {
+  animation-delay: 1.5s;
+  animation-duration: 6.5s;
+}
+
+/* --- Glass System Classes --- */
+
+/* Base Glass (Level 2 - Default for Cards) */
+/* Base Glass (Level 2 - Default for Cards) */
+.glass-panel,
+.glass-panel-interactive {
+  background: var(--glass-level-2-bg);
+  backdrop-filter: blur(var(--glass-level-2-blur)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--glass-level-2-blur)) saturate(120%);
+  border: 1px solid var(--glass-level-2-border);
+  border-radius: 16px;
+  /* Windows 11 rounded corners */
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+  /* For inner glows */
+}
+
+/* Interactive Glass Panel (Cards) */
+.glass-panel-interactive {
+  @apply cursor-pointer;
+}
+
+.glass-panel-interactive:hover {
+  background: rgba(45, 45, 45, 0.7);
+  border-color: var(--glass-level-3-border);
+  transform: translateY(-3px) scale(1.005);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+/* Acrylic (Level 1 - Sidebar/Nav) */
+.glass-acrylic {
+  background: var(--glass-level-1-bg);
+  backdrop-filter: blur(var(--glass-level-1-blur));
+  -webkit-backdrop-filter: blur(var(--glass-level-1-blur));
+  border-right: 1px solid var(--glass-level-1-border);
+}
+
+/* Spotlight Effect (Requires JS/Vue directive or mouse-aware CSS) 
+   We will start with a simple hover "bloom" for now that works without complex JS */
+.glass-spotlight:hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 40%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- Components --- */
+
+/* Premium Buttons */
+.btn-primary {
+  @apply relative overflow-hidden rounded-xl px-6 py-2.5 font-semibold text-white transition-all duration-300;
+  background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-10) 100%);
+  box-shadow: 0 0 20px rgba(96,205,255,0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(96, 205, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-20deg);
+  transition: 0.5s;
+}
+
+.btn-primary:hover::after {
+  left: 150%;
+  transition: 0.7s;
+}
+
+.btn-secondary {
+  @apply rounded-xl px-5 py-2.5 font-medium transition-all duration-200;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--win-text-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Typography Gradient */
+.text-gradient-premium {
+  background: linear-gradient(135deg, #fff 30%, #a5f3fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 20px rgba(165, 243, 252, 0.2));
+}
+
+/* Scanning Line (Refined) */
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: linear-gradient(to bottom, transparent 50%, rgba(96, 205, 255, 0.02) 51%, transparent 51%);
+  background-size: 100% 4px;
+  animation: scanlineScroll 10s linear infinite;
+  opacity: 0.4;
+}
+
+@keyframes scanlineScroll {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Loading Shimmer */
+.shimmer-bg {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.shimmer-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: shimmerMove 1.5s infinite;
+}
+
+@keyframes shimmerMove {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Custom Scrollbar - Slim & Floating */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  /* padding around thumb */
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* ================================================
+   STANDARDIZED PAGE COMPONENTS
+   ================================================ */
+
+/* Page Header - Consistent styling for all page headers */
+.page-header {
+  @apply flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10;
+}
+
+.page-header-title {
+  @apply text-2xl md:text-3xl font-bold text-white tracking-tight;
+}
+
+.page-header-subtitle {
+  @apply text-sm text-gray-400 mt-1;
+}
+
+.page-header-icon {
+  @apply w-6 h-6 md:w-8 md:h-8 text-[var(--win-accent)];
+}
+
+/* Section Header - For content sections within pages */
+.section-header {
+  @apply text-xl font-bold text-white flex items-center gap-3;
+}
+
+.section-header-icon {
+  @apply p-1.5 rounded-lg bg-white/5 border border-white/10;
+}
+
+/* Filter Bar - Consistent filter/action bar styling */
+.filter-bar {
+  @apply flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10;
+}
+
+.filter-bar-label {
+  @apply flex items-center gap-2 text-gray-400 text-xs font-semibold uppercase tracking-wide;
+}
+
+/* Filter Pill Buttons */
+.filter-pill {
+  @apply px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border;
+}
+
+.filter-pill-active {
+  @apply bg-[var(--win-accent)] text-black border-[var(--win-accent)] shadow-[0_0_15px_rgba(96,205,255,0.3)];
+}
+
+.filter-pill-inactive {
+  @apply bg-transparent text-gray-400 border-transparent hover:bg-white/10 hover:text-white;
+}
+
+/* Action Buttons */
+.btn-danger {
+  @apply rounded-xl px-4 py-2.5 font-medium text-sm transition-all duration-200 flex items-center gap-2;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.btn-ghost {
+  @apply rounded-xl px-4 py-2.5 font-medium text-sm transition-all duration-200 flex items-center gap-2;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--win-text-secondary);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--win-text-primary);
+}
+
+/* Empty State - Consistent empty/no-data styling */
+.empty-state {
+  @apply p-12 flex flex-col items-center justify-center text-center;
+  /* Glass panel styles inlined for Tailwind 4 compatibility */
+  background: var(--glass-level-2-bg);
+  backdrop-filter: blur(var(--glass-level-2-blur)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--glass-level-2-blur)) saturate(120%);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-state-icon {
+  @apply w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4;
+}
+
+.empty-state-title {
+  @apply text-lg font-semibold text-gray-300 mb-2;
+}
+
+.empty-state-description {
+  @apply text-gray-500 mb-6 max-w-sm;
+}
+
+/* Mobile Tab Bar - Consistent mobile navigation tabs */
+.mobile-tab-bar {
+  @apply md:hidden flex p-2 gap-2 border-b border-white/10 bg-black/40;
+}
+
+.mobile-tab {
+  @apply flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 border text-center;
+}
+
+.mobile-tab-active {
+  @apply bg-[var(--win-accent)] text-black border-[var(--win-accent)];
+}
+
+.mobile-tab-inactive {
+  @apply bg-white/5 text-gray-400 border-white/10 hover:bg-white/10;
+}
+
+/* Glass Action Bar - Consistent bottom action bars */
+.glass-action-bar {
+  @apply fixed bottom-0 right-0 z-50 h-20 flex items-center justify-between px-8;
+  background: rgba(17, 17, 17, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md;
+}
+
+/* Modal Container */
+.modal-container {
+  @apply w-full max-w-2xl mx-4 overflow-hidden flex flex-col max-h-[90vh];
+  /* Glass panel styles inlined for Tailwind 4 compatibility */
+  background: var(--glass-level-2-bg);
+  backdrop-filter: blur(var(--glass-level-2-blur)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--glass-level-2-blur)) saturate(120%);
+  border: 1px solid var(--glass-level-2-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-header {
+  @apply p-6 border-b border-white/10 bg-white/[0.02];
+}
+
+.modal-header-title {
+  @apply text-xl font-bold text-white flex items-center gap-3;
+}
+
+.modal-content {
+  @apply p-6 overflow-y-auto space-y-6;
+}
+
+.modal-footer {
+  @apply p-6 border-t border-white/10 bg-white/[0.02] flex justify-end gap-3;
+}
+
+/* Step Indicator - Consistent wizard step styling */
+.step-indicator-container {
+  @apply w-full max-w-xl flex items-center justify-between relative px-4;
+}
+
+.step-indicator-line {
+  @apply absolute left-4 right-4 top-[20px] h-[1px] bg-white/5 -z-10;
+}
+
+.step-indicator-item {
+  @apply flex flex-col items-center gap-3 z-10;
+}
+
+.step-indicator-circle {
+  @apply w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-500 shadow-2xl relative;
+}
+
+.step-indicator-circle-active {
+  @apply border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)];
+  box-shadow: 0 0 20px rgba(96, 205, 255, 0.2);
+}
+
+.step-indicator-circle-inactive {
+  @apply border-white/5 bg-white/5 text-gray-500;
+}
+
+.step-indicator-label {
+  @apply text-[9px] uppercase font-bold tracking-[0.2em];
+}
+
+.step-indicator-label-active {
+  @apply text-[var(--win-accent)];
+}
+
+.step-indicator-label-inactive {
+  @apply text-gray-500;
+}
+
+/* Premium Input Field */
+.input-premium {
+  @apply w-full bg-white/[0.03] border border-white/10 rounded-xl py-3.5 px-4 text-white outline-none transition-all text-sm;
+}
+
+.input-premium:focus {
+  @apply border-[var(--win-accent)]/50 bg-white/[0.05];
+  box-shadow: 0 0 20px rgba(96, 205, 255, 0.15);
+}
+
+.input-premium::placeholder {
+  @apply text-gray-500;
+}
+
+/* Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out;
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.5s ease-out;
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.3s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
