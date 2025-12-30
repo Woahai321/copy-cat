@@ -45,7 +45,7 @@ Instead of dealing with command-line tools or generic file managers, CopyCat pro
 <summary><strong>📸 View More Screenshots</strong></summary>
 
 ### Media Library
-Browse your content in a rich, Overseerr-inspired interface. Filter by movies or TV shows, view metadata, and select items to transfer with a single click.
+Browse your content in a rich, Overseerr-inspired interface. Filter by movies or TV shows, view metadata, and select items to transfer with a single click. Be "wowed" by the seamless integration of your local and cloud libraries.
 
 <div align="center">
   <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/08a45da9-716d-4c76-83d4-38361f797a3b" alt="Media Library" width="100%" style="border-radius: 10px; border: 1px solid #8b5cf6;">
@@ -95,6 +95,9 @@ Open `http://localhost:4223` and login with **admin** / **changeme**.
 
 ## 😽 Deployment
 
+<details>
+<summary><strong>Full instructions</strong></summary>
+
 CopyCat is designed to be deployed in minutes using Docker.
 
 ### 1. Requirements
@@ -136,17 +139,22 @@ Go to `http://localhost:4223`.
 - **Password**: `changeme`
 
 > **Need more help?** Check out the [Deployment Guide](docs/deployment.md) or [Configuration Reference](docs/configuration.md).
----
+
+</details>
+
+
 ## 🙀 How It Works
 
 1.  **Scanner**: The scanner reads your `SOURCE_PATH` and identifies media files. It uses regex to strip "garbage" (release groups, quality tags) and extracts a clean Title and Year.
 2.  **Enricher**: If you configure a **Trakt Client ID**, CopyCat matches your files to Trakt to download high-quality posters and metadata. *Note: We cache images locally to respect API limits.*
 3.  **Queue**: When you select files to copy, they are added to the background queue. The system performs a verifiable copy operation to your `DESTINATION_PATH`.
+
 ---
 ## 😺 Documentation
 - [Deployment Guide](docs/deployment.md)
 - [Configuration Reference](docs/configuration.md)
 - [Developer Guide](docs/development.md)
+
 ---
 ## 😺 Support CopyCat's Development
 If CopyCat saves you time, consider sponsoring:
@@ -154,12 +162,15 @@ If CopyCat saves you time, consider sponsoring:
 ➡️ [GitHub Sponsors](https://github.com/sponsors/woahai321)
 
 Thank you! 🐱
+
 ---
 ## 🐱 Contributing
 Welcome! See [Developer Guide](docs/development.md) for Nuxt + FastAPI setup.
+
 ---
 ## 🐱 License
 [MIT License](LICENSE)
+
 ---
 ## Star History
 <a href="https://star-history.com/#woahai321/copy-cat&Date">
