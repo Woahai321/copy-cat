@@ -33,6 +33,8 @@ import requests
 import aiohttp
 from fastapi.responses import FileResponse, Response
 
+from fastapi.middleware.gzip import GZipMiddleware
+
 # Configure Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,6 +47,9 @@ from migrate_db import migrate
 migrate()
 
 app = FastAPI(title="CopyCat API")
+
+# Gzip Middleware (Enable compression for static files/responses)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # CORS middleware
 app.add_middleware(
@@ -84,7 +89,14 @@ async def startup_event():
     2. Start enrichment worker if Trakt configured
     3. Run background library scan
     """
+    """
     logger.info("🚀 Application startup...")
+
+    # Security Check
+    jwt_secret = os.getenv("JWT_SECRET_KEY", "unsafe_default_change_me")
+    if jwt_secret == "unsafe_default_change_me" or jwt_secret == "change_this_to_a_secure_random_string":
+        logger.warning("⚠️  SECURITY WARNING: You are using the default JWT_SECRET_KEY!")
+        logger.warning("   Please set a strong JWT_SECRET_KEY in your environment variables.")
     
     # 1. Initialize copy worker
     websocket_manager.set_event_loop(asyncio.get_event_loop())

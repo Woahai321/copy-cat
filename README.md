@@ -1,11 +1,23 @@
 <div align="center">
 
 ![CopyCat Logo](https://s.2ya.me/api/shares/lVlUQ6CB/files/8776d8e1-9a61-42b8-80ea-eb80d03977b8)
-![Docker](https://img.shields.io/badge/Docker-Ready-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=docker&logoColor=white)
-![Nuxt](https://img.shields.io/badge/Nuxt-3.0-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=nuxtdotjs&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=fastapi&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11%2B-8b5cf6?style=for-the-badge&labelColor=6b21a8&logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge&labelColor=6b21a8)
+| Frontend | Backend | DevOps |
+| :--- | :--- | :--- |
+| ![Nuxt](https://img.shields.io/badge/Nuxt-3.0-8b5cf6?style=flat-square&logo=nuxtdotjs&logoColor=white) | ![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-8b5cf6?style=flat-square&logo=fastapi&logoColor=white) | ![Docker](https://img.shields.io/badge/Docker-Ready-8b5cf6?style=flat-square&logo=docker&logoColor=white) |
+| ![Vue](https://img.shields.io/badge/Vue-3.0-8b5cf6?style=flat-square&logo=vuedotjs&logoColor=white) | ![Python](https://img.shields.io/badge/Python-3.11%2B-8b5cf6?style=flat-square&logo=python&logoColor=white) | ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-8b5cf6?style=flat-square&logo=githubactions&logoColor=white) |
+
+</div>
+
+<div align="center">
+
+[![What is it?](https://img.shields.io/badge/🐱_About-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#what-is-copycat)
+[![Interface](https://img.shields.io/badge/😻_Interface-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#interface-overview)
+[![Quick Start](https://img.shields.io/badge/⚡_Quick_Start-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#quick-start-docker-command)
+[![Deployment](https://img.shields.io/badge/🚀_Deployment-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/deployment.md)
+[![Configuration](https://img.shields.io/badge/⚙️_Settings-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/configuration.md)
+[![Technical](https://img.shields.io/badge/🙀_Technical-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#technical-overview)
+[![Roadmap](https://img.shields.io/badge/😼_Roadmap-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#roadmap)
+[![Support](https://img.shields.io/badge/☕_Support-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#support-copycats-development)
 
 </div>
 
@@ -13,31 +25,23 @@
 
 ## 😸 What is CopyCat? 
 
-**CopyCat** is the ultimate self-hosted manager for your digital library. It is built to bridge the gap between your **Cloud Storage** (using tools like Zurg, Rclone, or Real-Debrid mounts) and your **Local Storage** (HDD/NAS).
+**CopyCat** is a self-hosted media management tool for digital libraries. It bridges the gap between **Cloud Storage** (such as Zurg or Rclone mounts) and **Local Storage** (HDD/NAS).
 
-Instead of dealing with command-line tools or generic file managers, CopyCat provides a **premium, Netflix-like interface** to scan, organize, and copy media files.
+CopyCat provides a web interface to scan, organize, and copy media files across different storage locations.
 
-### Key Features
-- **Smart Parsing**: Automatically detects Movies vs TV Shows, Seasons, and Episodes from raw filenames.
-- **Metadata Enrichment**: Integrates with **Trakt** to pull posters, ratings, and plot summaries for your files.
-- **Supercharged Copying**: Custom-built queue manager handles massive file transfers reliably in the background.
-- **Glass UI**: A stunning, responsive "Aurora Glass" interface that feels like a native desktop app.
+| Feature | Description |
+| :--- | :--- |
+| 📁 **Smart Scanning** | Automatic Title/Year extraction from raw filenames |
+| 🎬 **Metadata** | Trakt integration for posters, ratings, and plot summaries |
+| ⚡ **Fast Transfer** | Persistent background queue for massive multi-file moves |
+| 📱 **Responsive** | Optimized for desktop and mobile browsing |
 
-<div align="center">
 
-[![Documentation](https://img.shields.io/badge/🐱_Deployment_Guide-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/deployment.md)
-[![Configuration](https://img.shields.io/badge/🐱_Configuration-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/configuration.md)
-[![Developer Guide](https://img.shields.io/badge/🐱_Developer_Guide-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/development.md)
+## 😻 Interface Overview
 
-</div>
-
----
-
-## 😻 The Experience
-
-<div align="center">
-  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/f9a74261-ffc9-486a-bcd7-baa4f71a1b60" alt="CopyCat Dashboard" width="100%" style="border-radius: 10px; border: 1px solid #60cdff;">
-</div>
+<p align="center">
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/f9a74261-ffc9-486a-bcd7-baa4f71a1b60" alt="CopyCat Dashboard" width="100%">
+</p>
 
 <br>
 
@@ -45,18 +49,18 @@ Instead of dealing with command-line tools or generic file managers, CopyCat pro
 <summary><strong>📸 View More Screenshots</strong></summary>
 
 ### Media Library
-Browse your content in a rich, Overseerr-inspired interface. Filter by movies or TV shows, view metadata, and select items to transfer with a single click. Be "wowed" by the seamless integration of your local and cloud libraries.
+Browse content through a categorized interface. Filter by movies or TV shows, view metadata, and select items for transfer. 
 
 <div align="center">
-  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/08a45da9-716d-4c76-83d4-38361f797a3b" alt="Media Library" width="100%" style="border-radius: 10px; border: 1px solid #8b5cf6;">
-  <p><em>Rich Media Library</em></p>
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/08a45da9-716d-4c76-83d4-38361f797a3b" alt="Media Library" width="100%">
+  <p><em>Media Library View</em></p>
 </div>
 
 ### Copy Wizard
 Prefer a traditional view? The Copy Wizard offers a familiar file explorer interface, allowing you to manually navigate directory structures and define precise destinations for your transfers.
 
 <div align="center">
-  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/8c1b8ba2-c695-4e46-87b0-2e3b1044271d" alt="Copy Wizard" width="100%" style="border-radius: 10px; border: 1px solid #8b5cf6;">
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/8c1b8ba2-c695-4e46-87b0-2e3b1044271d" alt="Copy Wizard" width="100%">
   <p><em>File Explorer & Copy Wizard</em></p>
 </div>
 
@@ -64,41 +68,46 @@ Prefer a traditional view? The Copy Wizard offers a familiar file explorer inter
 Monitor active transfers in real-time. View detailed progress, transfer speeds, and manage your queue with priority controls to ensure your most important media is ready when you are.
 
 <div align="center">
-  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/47720500-3a77-4e7c-8bc0-4674c50c8b3a" alt="Transfer Queue" width="100%" style="border-radius: 10px; border: 1px solid #8b5cf6;">
+  <img src="https://s.2ya.me/api/shares/9PH2j0tk/files/47720500-3a77-4e7c-8bc0-4674c50c8b3a" alt="Transfer Queue" width="100%">
   <p><em>Live Transfer Queue</em></p>
 </div>
 
 </details>
 
-### 😺 Smart Browsing
-Navigate your messy cloud mounts as a clean, organized library. CopyCat filters out "junk" files (samples, txt, nfo) and presents only the media you care about.
+### 😺 File Scanning
+Navigate mounts as an organized library. CopyCat identifies media files and filters out secondary files like samples and metadata documents.
 
-### 😼 Intelligent Queue
-Don't worry about network interruptions. The queue manager handles retries, progress tracking, and ensures your downloads finishes, even if you close the browser.
+### 😼 Transfer Queue
+Monitor and manage file transfers. The queue manager handles process tracking and ensures operations continue even after the browser is closed.
+
+### 😼 Roadmap
+- [x] Nuxt 3 + FastAPI Core
+- [x] Multi-stage Docker Builds & Healthchecks
+- [x] Metadata Enrichment (Trakt)
+- [ ] Multi-user login / Permissions
+- [ ] Task Scheduling (Auto-sync)
+- [ ] S3 & WebDAV source support
 
 ---
 
-## 😺 Quick Start (One-Command)
-Try CopyCat instantly with this single Docker command:
+## 😸 Quick Start (Docker Command)
+Run CopyCat with this single Docker command:
 
 ```bash
-docker run -d --name copycat \
-  -p 4223:4223 \
-  -v copycat-data:/app/data \
-  -e SOURCE_PATH=/mnt/zurg \
-  -e DESTINATION_PATH=/mnt/local/media \
-  -e JWT_SECRET_KEY=super_strong_secret_here \
-  ghcr.io/woahai321/copy-cat:main
+docker run -d --name copycat -p 4223:8000 -v "$(pwd)/data":/data -v /path/to/source:/mnt/source:ro -v /path/to/destination:/mnt/destination -e JWT_SECRET_KEY=change_this_to_secure_random_string ghcr.io/woahai321/copy-cat:main
 ```
 
-Open `http://localhost:4223` and login with **admin** / **changeme**.
+> [!TIP]
+> **Access the App**: Open `http://localhost:4223` and login with user <kbd>admin</kbd> and password <kbd>changeme</kbd>.
+
+---
 
 ## 😽 Deployment
 
 <details>
-<summary><strong>Full instructions</strong></summary>
+<summary><strong>Deployment Instructions</strong></summary>
 
-CopyCat is designed to be deployed in minutes using Docker.
+CopyCat is deployed using Docker.
 
 ### 1. Requirements
 - A machine running Docker & Docker Compose.
@@ -128,6 +137,10 @@ DESTINATION_PATH=/mnt/local/media
 JWT_SECRET_KEY=change_me_to_something_secure
 ```
 
+> [!CAUTION]
+> **Production Security**: Ensure the `JWT_SECRET_KEY` is a unique, randomly generated string. Do not use the default value in public deployments.
+
+
 ### 4. Launch
 ```bash
 docker-compose up -d
@@ -143,35 +156,49 @@ Go to `http://localhost:4223`.
 </details>
 
 
-## 🙀 How It Works
+## 🙀 Technical Overview
 
-1.  **Scanner**: The scanner reads your `SOURCE_PATH` and identifies media files. It uses regex to strip "garbage" (release groups, quality tags) and extracts a clean Title and Year.
-2.  **Enricher**: If you configure a **Trakt Client ID**, CopyCat matches your files to Trakt to download high-quality posters and metadata. *Note: We cache images locally to respect API limits.*
-3.  **Queue**: When you select files to copy, they are added to the background queue. The system performs a verifiable copy operation to your `DESTINATION_PATH`.
+```mermaid
+graph LR
+    A[Source Mount] --> B(Scanner)
+    B --> C{Enricher}
+    C -->|Match| D[Trakt API]
+    C -->|Cache| E[Local DB]
+    E --> F(Queue Manager)
+    F --> G[Destination Storage]
+    
+    style B fill:#8b5cf6,stroke:#fff,color:#fff
+    style C fill:#8b5cf6,stroke:#fff,color:#fff
+    style F fill:#8b5cf6,stroke:#fff,color:#fff
+```
 
----
+1.  **Scanner**: Reads the `SOURCE_PATH` and identifies media files. It uses regex to remove unnecessary tags and extracts titles and dates.
+2.  **Enricher**: If a **Trakt Client ID** is configured, CopyCat retrieves posters and metadata from Trakt. Images are cached locally to minimize API requests.
+3.  **Queue**: Selected files are added to a background queue for transfer to the `DESTINATION_PATH`.
+
+
 ## 😺 Documentation
 - [Deployment Guide](docs/deployment.md)
 - [Configuration Reference](docs/configuration.md)
 - [Developer Guide](docs/development.md)
 
----
+
 ## 😺 Support CopyCat's Development
 If CopyCat saves you time, consider sponsoring:
 
 ➡️ [GitHub Sponsors](https://github.com/sponsors/woahai321)
 
-Thank you! 🐱
+Thank you.
 
----
+
 ## 🐱 Contributing
 Welcome! See [Developer Guide](docs/development.md) for Nuxt + FastAPI setup.
 
----
+
 ## 🐱 License
 [MIT License](LICENSE)
 
----
+
 ## Star History
 <a href="https://star-history.com/#woahai321/copy-cat&Date">
   <picture>
