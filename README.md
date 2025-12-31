@@ -1,13 +1,10 @@
 <div align="center">
 
 ![CopyCat Logo](https://s.2ya.me/api/shares/lVlUQ6CB/files/8776d8e1-9a61-42b8-80ea-eb80d03977b8)
-| Frontend | Backend | DevOps |
-| :--- | :--- | :--- |
-| ![Nuxt](https://img.shields.io/badge/Nuxt-3.0-8b5cf6?style=flat-square&logo=nuxtdotjs&logoColor=white) | ![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-8b5cf6?style=flat-square&logo=fastapi&logoColor=white) | ![Docker](https://img.shields.io/badge/Docker-Ready-8b5cf6?style=flat-square&logo=docker&logoColor=white) |
-| ![Vue](https://img.shields.io/badge/Vue-3.0-8b5cf6?style=flat-square&logo=vuedotjs&logoColor=white) | ![Python](https://img.shields.io/badge/Python-3.11%2B-8b5cf6?style=flat-square&logo=python&logoColor=white) | ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-8b5cf6?style=flat-square&logo=githubactions&logoColor=white) |
+![Nuxt](https://img.shields.io/badge/Nuxt-3.0-8b5cf6?style=flat-square&logo=nuxtdotjs&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-8b5cf6?style=flat-square&logo=fastapi&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-Ready-8b5cf6?style=flat-square&logo=docker&logoColor=white)
+![Vue](https://img.shields.io/badge/Vue-3.0-8b5cf6?style=flat-square&logo=vuedotjs&logoColor=white) ![Python](https://img.shields.io/badge/Python-3.11%2B-8b5cf6?style=flat-square&logo=python&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-8b5cf6?style=flat-square&logo=githubactions&logoColor=white)
 
 </div>
-
 <div align="center">
 
 [![What is it?](https://img.shields.io/badge/🐱_About-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#what-is-copycat)
@@ -28,14 +25,6 @@
 **CopyCat** is a self-hosted media management tool for digital libraries. It bridges the gap between **Cloud Storage** (such as Zurg or Rclone mounts) and **Local Storage** (HDD/NAS).
 
 CopyCat provides a web interface to scan, organize, and copy media files across different storage locations.
-
-| Feature | Description |
-| :--- | :--- |
-| 📁 **Smart Scanning** | Automatic Title/Year extraction from raw filenames |
-| 🎬 **Metadata** | Trakt integration for posters, ratings, and plot summaries |
-| ⚡ **Fast Transfer** | Persistent background queue for massive multi-file moves |
-| 📱 **Responsive** | Optimized for desktop and mobile browsing |
-
 
 ## 😻 Interface Overview
 
@@ -84,9 +73,9 @@ Monitor and manage file transfers. The queue manager handles process tracking an
 - [x] Nuxt 3 + FastAPI Core
 - [x] Multi-stage Docker Builds & Healthchecks
 - [x] Metadata Enrichment (Trakt)
-- [ ] Multi-user login / Permissions
-- [ ] Task Scheduling (Auto-sync)
-- [ ] S3 & WebDAV source support
+- [x] Multi-user login / Permissions
+- [ ] tbd
+- [ ] tbd
 
 ---
 

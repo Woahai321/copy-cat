@@ -89,7 +89,6 @@ async def startup_event():
     2. Start enrichment worker if Trakt configured
     3. Run background library scan
     """
-    """
     logger.info("🚀 Application startup...")
 
     # Security Check
@@ -103,8 +102,6 @@ async def startup_event():
     copy_worker.set_websocket_manager(websocket_manager)
     copy_worker.start()
 
-    # Initialize periodic scanner
-    global periodic_scanner
     # Initialize periodic scanner
     global periodic_scanner
     periodic_scanner = init_periodic_scanner(SOURCE_BASE)
