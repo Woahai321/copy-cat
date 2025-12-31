@@ -83,11 +83,11 @@ Monitor and manage file transfers. The queue manager handles process tracking an
 Run CopyCat with this single Docker command:
 
 ```bash
-docker run -d --name copycat -p 4223:8000 -v "$(pwd)/data":/data -v /path/to/source:/mnt/source:ro -v /path/to/destination:/mnt/destination -e JWT_SECRET_KEY=change_this_to_secure_random_string ghcr.io/woahai321/copy-cat:main
+docker run -d --name copycat -p 4222:3000 -p 4223:8000 -v "$(pwd)/data":/data -v /path/to/source:/mnt/source:ro -v /path/to/destination:/mnt/destination -e JWT_SECRET_KEY=change_this_to_secure_random_string ghcr.io/woahai321/copy-cat:main
 ```
 
 > [!TIP]
-> **Access the App**: Open `http://localhost:4223` and login with user <kbd>admin</kbd> and password <kbd>changeme</kbd>.
+> **Access the App**: The Web Interface is at `http://localhost:4222` and the API at `http://localhost:4223`. Login with <kbd>admin</kbd> / <kbd>changeme</kbd>.
 
 ---
 
@@ -136,7 +136,8 @@ docker-compose up -d
 ```
 
 ### 5. Login
-Go to `http://localhost:4223`.
+- **Web Interface**: `http://localhost:4222`
+- **Backend API**: `http://localhost:4223/api/docs`
 - **User**: `admin`
 - **Password**: `changeme`
 

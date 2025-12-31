@@ -1,10 +1,10 @@
 services:
   app:
-    # Use the unified Dockerfile from root
     build: .
     container_name: copycat
     ports:
-      - "4223:8000"
+      - "4223:8000" # API
+      - "4222:3000" # Frontend
     volumes:
       - ${SOURCE_PATH:-/mnt/zurg}:/mnt/source:ro
       - ${DESTINATION_PATH:-/mnt/16tb}:/mnt/destination
@@ -12,7 +12,7 @@ services:
     environment:
       - SOURCE_MOUNT=/mnt/source
       - DESTINATION_MOUNT=/mnt/destination
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-unsafe_default_change_me}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change_this_to_something_secure}
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -20,8 +20,8 @@ services:
         max-size: "10m"
         max-file: "3"
     networks:
-      - copypaste-network
+      - copycat-network
 
 networks:
-  copypaste-network:
+  copycat-network:
     driver: bridge
