@@ -39,17 +39,11 @@
          </div>
          
          <!-- Breadcrumb View -->
-         <div v-if="!isManualInputActive" class="flex-1 flex items-center gap-0.5 overflow-x-auto scrollbar-hide">
-            <template v-for="(segment, index) in breadcrumbSegments" :key="index">
-                <UIcon name="i-heroicons-chevron-right" class="w-3 h-3 text-gray-600 flex-shrink-0" v-if="index > 0" />
-                <div 
-                  @click.stop="navigateToBreadcrumb(index)"
-                  class="px-1.5 py-0.5 rounded hover:bg-white/10 text-xs text-gray-300 hover:text-white transition-colors cursor-pointer whitespace-nowrap"
-                >
-                    {{ segment }}
-                </div>
-            </template>
-            <div v-if="breadcrumbSegments.length === 0" @click.stop="navigateToRoot" class="px-1.5 py-0.5 rounded hover:bg-white/10 text-xs text-gray-300 hover:text-white transition-colors cursor-pointer whitespace-nowrap">Home</div>
+         <div v-if="!isManualInputActive" class="flex-1 flex items-center overflow-hidden">
+            <FileBreadcrumbs 
+                :current-path="currentPath" 
+                @navigate="navigateToManualPathArg" 
+            />
          </div>
          
          <!-- Standard Input for Path -->
@@ -94,13 +88,15 @@
           </button>
        </div>
 
-       <!-- New: Selection Toggle (Mobile) -->
+       <!-- New: Selection Toggle (Mobile & Desktop if selectable) -->
        <button 
+         v-if="selectable || isMobile"
          @click="isSelectionMode = !isSelectionMode"
-         class="md:hidden flex items-center justify-center p-1.5 rounded-lg border transition-all"
+         class="flex items-center justify-center p-1.5 rounded-lg border transition-all"
          :class="isSelectionMode ? 'bg-[var(--win-accent)] text-black border-[var(--win-accent)] shadow-[0_0_10px_rgba(96,205,255,0.4)]' : 'border-transparent text-gray-500 hover:text-white'"
+         :title="isSelectionMode ? 'Exit Selection Mode' : 'Enable Selection Mode'"
        >
-          <UIcon name="i-heroicons-check-circle" class="w-5 h-5" />
+          <UIcon :name="isSelectionMode ? 'i-heroicons-check-circle' : 'i-heroicons-cursor-arrow-rays'" class="w-5 h-5" />
        </button>
 
        <!-- New Folder -->
@@ -424,7 +420,10 @@ const props = defineProps<{
   initialPath?: string
   layout?: 'list' | 'grid'
   isDestination?: boolean // New: Identifying role
+  layout?: 'list' | 'grid'
+  isDestination?: boolean // New: Identifying role
   source?: string
+  selectable?: boolean // New: Enable selection mode toggle on desktop
 }>()
 
 const emit = defineEmits<{
@@ -616,6 +615,11 @@ const enableManualInput = () => {
 const navigateToManualPath = () => {
     page.value = 1 // Reset page
     loadFiles(manualPath.value)
+}
+
+const navigateToManualPathArg = (path: string) => {
+    page.value = 1
+    loadFiles(path)
 }
 
 const refresh = () => loadFiles(currentPath.value)
@@ -1020,6 +1024,8 @@ watch(() => props.initialPath, (newP) => {
 onMounted(() => {
   loadFiles(currentPath.value)
 })
+
+import FileBreadcrumbs from '~/components/FileBreadcrumbs.vue'
 
 defineExpose({
     refresh,

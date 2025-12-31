@@ -119,7 +119,14 @@
         </div>
 
         <!-- Grid -->
-        <div v-if="filteredItems.length > 0" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6 pb-20 animate-fade-in-up min-h-[500px]">
+        <!-- Loading Skeleton Grid -->
+        <div v-if="isLoading" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+           <div v-for="n in 12" :key="n" class="h-48">
+              <SkeletonCard />
+           </div>
+        </div>
+
+        <div v-else-if="filteredItems.length > 0" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6 pb-20 animate-fade-in-up min-h-[500px]">
            <div 
              v-for="item in filteredItems" 
              :key="item.id"
@@ -259,7 +266,7 @@
                 <img 
                    v-if="selectedItem.poster_url" 
                    :src="selectedItem.poster_url.startsWith('http') ? selectedItem.poster_url : `${apiBase}${selectedItem.poster_url}`" 
-                   class="w-full h-full object-cover object-top"
+                   class="w-full h-full object-contain bg-black/50 object-top"
                 />
                 <div v-else class="w-full h-full bg-white/5 flex items-center justify-center">
                     <UIcon name="i-heroicons-photo" class="w-16 h-16 text-gray-700" />
@@ -320,14 +327,26 @@
                     </div>
 
                     <!-- File Info (Technical) -->
-                    <div class="bg-black/30 p-4 rounded-lg border border-white/5 mb-2">
-                        <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase">
-                            <UIcon name="i-heroicons-folder" class="w-4 h-4" />
-                            Source File
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5 mb-2 grid grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                             <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase">
+                                 <UIcon name="i-heroicons-folder" class="w-4 h-4" />
+                                 Source File
+                             </div>
+                             <code class="text-xs text-[var(--win-accent)] break-all font-mono select-all block">
+                                 {{ selectedItem.full_path }}
+                             </code>
                         </div>
-                        <code class="text-xs text-[var(--win-accent)] break-all font-mono select-all">
-                            {{ selectedItem.full_path }}
-                        </code>
+                        
+                        <div>
+                             <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase">
+                                 <UIcon name="i-heroicons-server" class="w-4 h-4" />
+                                 File Size
+                             </div>
+                             <div class="text-xs text-white font-mono font-bold">
+                                 {{ selectedItem.size_formatted || 'Unknown' }}
+                             </div>
+                        </div>
                     </div>
                 </div>
 
@@ -344,14 +363,14 @@
                     </button>
                     <button 
                         @click="handleCopy(selectedItem)"
-                        class="flex-[2] py-3 md:py-3 bg-[var(--win-accent)] hover:bg-[#4db8e8] text-black font-bold rounded-xl md:rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 md:active:scale-100"
+                        class="flex-1 py-3 md:py-3 bg-[var(--win-accent)] hover:bg-[#4db8e8] text-black font-bold rounded-xl md:rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 md:active:scale-100"
                     >
                         <UIcon name="i-heroicons-document-duplicate" class="w-5 h-5" />
                         Copy to Library
                     </button>
                     <button 
                         @click="selectedItem = null"
-                        class="hidden md:flex btn-ghost"
+                        class="hidden md:flex flex-1 py-3 btn-ghost justify-center rounded-xl md:rounded-lg"
                     >
                         Close
                     </button>
@@ -403,6 +422,8 @@
 </template>
 
 <script setup lang="ts">
+import SkeletonCard from '~/components/SkeletonCard.vue'
+
 const toast = useToast()
 const { getSettings } = useApi()
 const { setSource, setDestination, goToStep, reset: resetWizard } = useCopyWizard()
@@ -416,7 +437,8 @@ const filterType = ref<string>('movie')
 
 // Pagination State
 const page = ref(1)
-const TOTAL_limit = 48 // Use multiples of grid columns (e.g. 6)
+const INITIAL_LIMIT = 24
+const SUBSEQUENT_LIMIT = 48
 const totalItems = ref(0)
 const hasMore = ref(true)
 const isLoadingMore = ref(false)
@@ -432,6 +454,9 @@ const selectedItem = ref<any>(null)
 // Selection Mode State
 const selectionMode = ref(false)
 const selectedItems = ref<Set<number>>(new Set())
+
+// Loading state for skeleton
+const isLoading = ref(true)
 
 
 // Selection Methods
@@ -509,7 +534,10 @@ const filteredItems = computed(() => {
     return items.value
 })
 
-const totalPages = computed(() => Math.ceil(totalItems.value / TOTAL_limit))
+const totalPages = computed(() => {
+    if (totalItems.value <= INITIAL_LIMIT) return 1
+    return 1 + Math.ceil((totalItems.value - INITIAL_LIMIT) / SUBSEQUENT_LIMIT)
+})
 
 // Methods
 const { token } = useAuth()
@@ -565,7 +593,18 @@ const loadPage = async (append: boolean = false) => {
     try {
         if (!token.value) return
 
-        const offset = (page.value - 1) * TOTAL_limit
+        let limit = SUBSEQUENT_LIMIT
+        let offset = 0
+        
+        if (page.value === 1) {
+            limit = INITIAL_LIMIT
+            offset = 0
+        } else {
+            limit = SUBSEQUENT_LIMIT
+            // Offset = Initial items + (previous subsequent pages * subsequent limit)
+            offset = INITIAL_LIMIT + (page.value - 2) * SUBSEQUENT_LIMIT
+        }
+
         const typeParam = filterType.value ? `&type=${filterType.value}` : ''
         const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
         
@@ -573,7 +612,7 @@ const loadPage = async (append: boolean = false) => {
         const [field, order] = sortOption.value.split(':')
         const sortParam = `&sort_by=${field}&order=${order}`
         
-        const url = `${apiBase}/api/library/items?limit=${TOTAL_limit}&offset=${offset}${typeParam}${searchParam}${sortParam}`
+        const url = `${apiBase}/api/library/items?limit=${limit}&offset=${offset}${typeParam}${searchParam}${sortParam}`
         
         const response = await $fetch<any>(url, {
             headers: { 'Authorization': `Bearer ${token.value}` }
@@ -585,7 +624,8 @@ const loadPage = async (append: boolean = false) => {
              totalItems.value = response.total
              hasMore.value = response.has_more
         } else {
-             hasMore.value = newItems.length >= TOTAL_limit
+             // If we got fewer items than requested limit, we are done
+             hasMore.value = newItems.length >= limit
         }
 
         if (append) {
@@ -793,7 +833,7 @@ onMounted(() => {
 useInfiniteScroll(scrollEl, () => {
     // Only trigger if we aren't loading, have more, and have ALREADY loaded the first page
     // This prevents the "2nd page first" issue on initial load.
-    if (hasMore.value && !isLoadingMore.value && items.value.length >= TOTAL_limit) {
+    if (hasMore.value && !isLoadingMore.value && items.value.length >= INITIAL_LIMIT) {
         loadMore()
     }
 }, { distance: 400 })

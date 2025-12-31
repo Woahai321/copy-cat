@@ -202,7 +202,7 @@ const canSwipe = computed(() => isMobile.value && props.showActions && ['queued'
 
 const { lengthX, isSwiping: isSwipingVueUse } = useSwipe(cardEl, {
   passive: true,
-  onSwipeEnd(e: TouchEvent, direction) {
+  onSwipeEnd(e: TouchEvent, direction: string) {
       if (lengthX.value < -80) {
           // Swiped left enough, keep open or trigger?
           // Let's toggle 'revealed' state
@@ -256,10 +256,11 @@ const getTypeClass = (path: string) => {
 
 const getStatusBadgeClass = (status: string) => {
   switch (status) {
-    case 'completed': return 'bg-[#1b2e1b] text-[#6cc173] border border-[#234d23]'
-    case 'failed': return 'bg-[#2e1b1b] text-[#ff4d4f] border border-[#4d2323]'
-    case 'processing': return 'bg-[#1b2836] text-[#60cdff] border border-[#23354d]'
-    default: return 'bg-[#333] text-[#aaa] border border-[#444]'
+    case 'completed': return 'bg-[var(--status-success)]/10 text-[var(--status-success)] border border-[var(--status-success)]/20'
+    case 'failed': return 'bg-[var(--status-error)]/10 text-[var(--status-error)] border border-[var(--status-error)]/20'
+    case 'processing': return 'bg-[var(--status-info)]/10 text-[var(--status-info)] border border-[var(--status-info)]/20'
+    case 'queued': return 'bg-[var(--status-warning)]/10 text-[var(--status-warning)] border border-[var(--status-warning)]/20'
+    default: return 'bg-white/5 text-gray-400 border border-white/10'
   }
 }
 

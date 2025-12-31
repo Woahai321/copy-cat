@@ -1054,6 +1054,14 @@ class SettingsUpdate(BaseModel):
     default_series_path: Optional[str] = None
     scan_interval_seconds: Optional[int] = None
     discord_webhook_url: Optional[str] = None
+
+
+class StatsFullResponse(BaseModel):
+    library_stats: dict
+    job_stats: dict
+    storage_stats: dict
+    charts: dict
+    top_lists: dict
     discord_notify_success: Optional[bool] = None
     discord_notify_failure: Optional[bool] = None
 
@@ -1590,6 +1598,118 @@ async def scan_library(
 ):
     """Trigger a Library Scan using the periodic scanner."""
     logger.info("Received Library Scan Request - triggering immediate scan")
+
+@app.get("/api/stats/full", response_model=StatsFullResponse)
+def get_full_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Aggregate all statistics for the dashboard.
+    """
+    # 1. Library Stats
+    total_items = db.query(MediaItem).count()
+    movies_count = db.query(MediaItem).filter(MediaItem.media_type == 'movie').count()
+    tv_count = db.query(MediaItem).filter(MediaItem.media_type == 'tv').count()
+    total_size = db.query(func.sum(MediaItem.size_bytes)).scalar() or 0
+    
+    # Genres Breakdown
+    # This is rough as genres are CSV strings, ideally we'd normalize but for now we fetch all and parse in py
+    # For performance on large DBs, this should be cached or normalized. 
+    # For <10k items, python processing is fine.
+    all_genres = db.query(MediaItem.genres).filter(MediaItem.genres != None).all()
+    genre_counts = {}
+    for g_row in all_genres:
+        if not g_row[0]: continue
+        genres = [x.strip() for x in g_row[0].split(',')]
+        for g in genres:
+            genre_counts[g] = genre_counts.get(g, 0) + 1
+            
+    top_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)[:8]
+
+    # Resolution Breakdown (from source_metadata)
+    # Again, parsing JSON text in SQL is hard in SQLite/Generic, so we do Python scan
+    # Limit to last 1000 items for performance if needed, but doing all for accuracy
+    resolutions = {}
+    items_with_meta = db.query(MediaItem.source_metadata).filter(MediaItem.source_metadata != None).all()
+    for m_row in items_with_meta:
+        try:
+            meta = json.loads(m_row[0]) if isinstance(m_row[0], str) else m_row[0]
+            if meta.get('resolution'):
+                res = meta['resolution'][0]
+                resolutions[res] = resolutions.get(res, 0) + 1
+        except:
+            pass
+            
+    # 2. Job Stats
+    completed_jobs = db.query(CopyJob).filter(CopyJob.status == 'completed')
+    failed_jobs = db.query(CopyJob).filter(CopyJob.status == 'failed')
+    
+    total_transferred = db.query(func.sum(CopyJob.copied_size_bytes)).filter(CopyJob.status == 'completed').scalar() or 0
+    success_rate = 0
+    total_finished = completed_jobs.count() + failed_jobs.count()
+    if total_finished > 0:
+        success_rate = (completed_jobs.count() / total_finished) * 100
+
+    # Activity (Last 14 days)
+    import datetime
+    today = datetime.datetime.utcnow().date()
+    activity_data = {}
+    for i in range(14):
+        d = today - datetime.timedelta(days=i)
+        d_str = d.strftime("%Y-%m-%d")
+        activity_data[d_str] = 0
+        
+    recent_jobs = db.query(CopyJob).filter(
+        CopyJob.created_at >= (datetime.datetime.utcnow() - datetime.timedelta(days=14)),
+        CopyJob.status == 'completed'
+    ).all()
+    
+    for job in recent_jobs:
+        d_str = job.created_at.date().strftime("%Y-%m-%d")
+        if d_str in activity_data:
+            activity_data[d_str] += (job.copied_size_bytes or 0)
+
+    # 3. Top Lists
+    largest_files = db.query(MediaItem).order_by(MediaItem.size_bytes.desc()).limit(5).all()
+    highest_rated = db.query(MediaItem).order_by(MediaItem.rating.desc().nulls_last()).limit(5).all()
+
+    # 4. Storage
+    storage = {
+        s.source: {"percent": s.percent, "free": s.free_size, "total": s.total_size} 
+        for s in db.query(StorageStats).all()
+    }
+
+    return {
+        "library_stats": {
+            "total_items": total_items,
+            "movies_count": movies_count,
+            "tv_count": tv_count,
+            "total_size_bytes": total_size
+        },
+        "job_stats": {
+            "total_transferred_bytes": total_transferred,
+            "success_rate": round(success_rate, 1),
+            "completed_count": completed_jobs.count(),
+            "failed_count": failed_jobs.count()
+        },
+        "storage_stats": storage,
+        "charts": {
+            "genres": dict(top_genres),
+            "resolutions": resolutions,
+            "activity": activity_data # Date -> Bytes
+        },
+        "top_lists": {
+            "largest_files": [
+                {"title": i.title, "size": format_size(i.size_bytes), "path": i.full_path} 
+                for i in largest_files
+            ],
+            "highest_rated": [
+                {"title": i.title, "rating": i.rating, "year": i.year} 
+                for i in highest_rated
+            ]
+        }
+    }
 
     # Use the periodic scanner for consistency
     if periodic_scanner:

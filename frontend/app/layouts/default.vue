@@ -116,6 +116,15 @@
             <UIcon name="i-heroicons-cog-6-tooth" class="w-5 h-5 flex-shrink-0" />
             <span class="truncate">Settings</span>
           </NuxtLink>
+          <NuxtLink
+            to="/stats"
+            class="sidebar-nav-item"
+            active-class="active"
+            @click="closeSidebarOnMobile"
+          >
+            <UIcon name="i-heroicons-chart-pie" class="w-5 h-5 flex-shrink-0" />
+            <span class="truncate">Statistics</span>
+          </NuxtLink>
         </nav>
 
         <!-- User section -->

@@ -228,6 +228,32 @@ class MediaScanner:
                 # Process files in current root
                 for filename in files:
                     if filename.startswith('.'): continue
+
+                     # 0. DUPLICATE CHECK: If the PARENT FOLDER is already a Media Item, skip the files inside it
+                    # This prevents "Double Dips" where we show both "Movie Title" (folder) and "Movie.Title.mkv" (file)
+                    if root in self.existing_items:
+                        # Double check we are not skipping the item if ITSELF is the one matched (unlikely for file inside folder, but good hygiene)
+                        full_path = os.path.join(root, filename)
+                        
+                        # If this file was previously added despite parent being added, it's a legacy duplicate. REMOVE IT.
+                        if full_path in self.existing_items:
+                            logger.info(f"Removing duplicate file item (Parent folder is the media item): {filename}")
+                            try:
+                                # Remove from DB
+                                self.db.query(MediaItem).filter(MediaItem.full_path == full_path).delete()
+                                # Remove from local cache so we don't try to reuse it
+                                del self.existing_items[full_path]
+                                # Commit later in batch or immediate? Safe commit is batch based.
+                                # To be safe with the delete, we will count it towards processed and let batch commit handle it, 
+                                # or do a quick commit if we want to be sure. 
+                                # Let's just rely on the batch commit at the end of loop or count it.
+                                # We can't really batch delete easily with the current structure without risking transaction issues if we mix adds/deletes?
+                                # Actually, SQLAlchemy session handles mixed operations fine usually.
+                            except Exception as e:
+                                logger.error(f"Failed to remove duplicate: {e}")
+                        
+                        # Skip processing this file effectively
+                        continue
                     
                     # Skip files with non-ASCII characters (Russian, Chinese, Japanese, Korean, Indian)
                     if self._contains_non_ascii(filename):
@@ -481,4 +507,7 @@ class MediaScanner:
             size_bytes=size_bytes
         )
         self.db.add(new_item)
+        
+        # update memory cache immediately so subsequent files in same folder or subfolders know about it
+        self.existing_items[full_path] = meta["media_type"]
 

@@ -13,8 +13,7 @@
 [![Deployment](https://img.shields.io/badge/🚀_Deployment-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/deployment.md)
 [![Configuration](https://img.shields.io/badge/⚙️_Settings-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/configuration.md)
 [![Technical](https://img.shields.io/badge/🙀_Technical-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#technical-overview)
-[![Roadmap](https://img.shields.io/badge/😼_Roadmap-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#roadmap)
-[![Support](https://img.shields.io/badge/☕_Support-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#support-copycats-development)
+[![Support](https://img.shields.io/badge/☕_Support-8b5cf6?style=for-the-badge&labelColor=6b21a8)](https://discord.gg/Dy5xNzEHKw)
 
 </div>
 
@@ -63,24 +62,13 @@ Monitor active transfers in real-time. View detailed progress, transfer speeds, 
 
 </details>
 
-### 😺 File Scanning
-Navigate mounts as an organized library. CopyCat identifies media files and filters out secondary files like samples and metadata documents.
-
-### 😼 Transfer Queue
-Monitor and manage file transfers. The queue manager handles process tracking and ensures operations continue even after the browser is closed.
-
-### 😼 Roadmap
-- [x] Nuxt 3 + FastAPI Core
-- [x] Multi-stage Docker Builds & Healthchecks
-- [x] Metadata Enrichment (Trakt)
-- [x] Multi-user login / Permissions
-- [ ] tbd
-- [ ] tbd
-
 ---
 
 ## 😸 Quick Start (Docker Command)
 Run CopyCat with this single Docker command:
+
+> [!WARNING]
+> **Configuration Required**: You MUST replace `/path/to/source`, `/path/to/destination`, and `JWT_SECRET_KEY` with your actual paths and a secure secret.
 
 ```bash
 docker run -d --name copycat -p 4222:3000 -p 4223:8000 -v "$(pwd)/data":/data -v /path/to/source:/mnt/source:ro -v /path/to/destination:/mnt/destination -e JWT_SECRET_KEY=change_this_to_secure_random_string ghcr.io/woahai321/copy-cat:main

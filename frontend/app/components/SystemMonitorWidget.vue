@@ -1,6 +1,9 @@
 <template>
   <div class="glass-panel p-6 bg-black/20 h-full flex flex-col">
-    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center justify-between">
+    <h3 
+      class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center justify-between cursor-pointer hover:text-white transition-colors"
+      @click="navigateTo('/browse')"
+    >
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full bg-[var(--win-accent)] shadow-[0_0_8px_rgba(96,205,255,0.6)] animate-pulse"></div>
         System Monitor
@@ -27,7 +30,7 @@
           </div>
         </div>
 
-        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/files?path=zurg')">
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/browse?tab=source')">
           <div 
             v-if="diskUsage?.zurg?.available && systemStatus?.zurg?.exists"
             class="h-full transition-all duration-1000"
@@ -62,7 +65,7 @@
           </div>
         </div>
 
-        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/files?path=harddrive')">
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/browse?tab=destination')">
           <div 
             v-if="diskUsage?.harddrive?.available && systemStatus?.harddrive?.exists"
             class="h-full transition-all duration-1000"

@@ -54,6 +54,15 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const currentTab = ref<'source' | 'destination'>('source')
+const route = useRoute()
+const currentTab = ref<'source' | 'destination'>((route.query.tab as 'source' | 'destination') || 'source')
+
+// Watch query for external navigation changes
+watch(() => route.query.tab, (newTab) => {
+  if (newTab && (newTab === 'source' || newTab === 'destination')) {
+    currentTab.value = newTab
+  }
+})
+
 const explorer = ref<InstanceType<typeof FileExplorer> | null>(null)
 </script>

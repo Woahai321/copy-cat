@@ -16,7 +16,7 @@
               <img 
                  v-if="job.media_poster || job.poster_url" 
                  :src="(job.media_poster || job.poster_url || '').startsWith('http') ? (job.media_poster || job.poster_url) : `${apiBase}${(job.media_poster || job.poster_url)}`" 
-                 class="w-full h-full object-cover object-top"
+                 class="w-full h-full object-contain bg-black/50 object-top"
               />
               <div v-else class="w-full h-full bg-white/5 flex items-center justify-center flex-col gap-4">
                   <UIcon :name="job.media_type === 'movie' ? 'i-heroicons-film' : (job.media_type === 'tv' ? 'i-heroicons-tv' : 'i-heroicons-document')" class="w-20 h-20 text-gray-700" />
@@ -101,15 +101,27 @@
 
                   <!-- Paths -->
                   <div class="space-y-3 mb-8">
-                      <div class="bg-black/30 p-4 rounded-lg border border-white/5">
-                          <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase">
-                              <span class="w-8 text-right">SRC</span>
-                              <UIcon name="i-heroicons-folder" class="w-4 h-4" />
-                              Source
+                      <div class="bg-black/30 p-4 rounded-lg border border-white/5 grid grid-cols-2 gap-4">
+                          <div class="col-span-2">
+                              <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase">
+                                  <span class="w-8 text-right">SRC</span>
+                                  <UIcon name="i-heroicons-folder" class="w-4 h-4" />
+                                  Source
+                              </div>
+                              <code class="text-xs text-[var(--brand-1)] break-all font-mono select-all block pl-10">
+                                  {{ job.source_path || job.full_path }}
+                              </code>
                           </div>
-                          <code class="text-xs text-[var(--brand-1)] break-all font-mono select-all block pl-10">
-                              {{ job.source_path || job.full_path }}
-                          </code>
+
+                          <div>
+                               <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase pl-10">
+                                   <UIcon name="i-heroicons-server" class="w-4 h-4" />
+                                   File Size
+                               </div>
+                               <div class="text-xs text-white font-mono font-bold pl-10">
+                                   {{ formatSize(job.total_size_bytes || job.size_bytes) }}
+                               </div>
+                          </div>
                       </div>
                       
                       <div v-if="!isLibraryItem" class="bg-black/30 p-4 rounded-lg border border-white/5">

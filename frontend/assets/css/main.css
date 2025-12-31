@@ -46,6 +46,12 @@
   --brand-9: #6e579c;
   --brand-10: #6e488b;
 
+  /* Semantic Status Colors */
+  --status-success: #10b981;
+  --status-warning: #f59e0b;
+  --status-error: #ef4444;
+  --status-info: #3b82f6;
+
   /* Animation Timings */
   --ease-spring: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -183,11 +189,19 @@ body {
   border: 1px solid var(--glass-level-2-border);
   border-radius: 16px;
   /* Windows 11 rounded corners */
+  padding: 1rem; /* p-4 mobile default */
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   transition: all 0.3s var(--ease-spring);
   position: relative;
   overflow: hidden;
   /* For inner glows */
+}
+
+@media (min-width: 768px) {
+  .glass-panel,
+  .glass-panel-interactive {
+    padding: 1.5rem; /* p-6 desktop default */
+  }
 }
 
 /* Interactive Glass Panel (Cards) */
@@ -210,15 +224,31 @@ body {
   border-right: 1px solid var(--glass-level-1-border);
 }
 
-/* Spotlight Effect (Requires JS/Vue directive or mouse-aware CSS) 
-   We will start with a simple hover "bloom" for now that works without complex JS */
-.glass-spotlight:hover::before {
+/* Spotlight Effect - JS Driven via body vars */
+.glass-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-spotlight::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 40%);
+  background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 40%);
   z-index: 1;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.glass-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Typography Utilities */
+.text-2xs {
+  font-size: 10px;
+  line-height: 14px;
 }
 
 /* --- Components --- */
@@ -554,7 +584,7 @@ body {
 }
 
 .input-premium:focus {
-  @apply border-[var(--win-accent)]/50 bg-white/[0.05];
+  @apply border-[var(--win-accent)]/50 bg-white/[0.05] ring-1 ring-[var(--win-accent)]/30;
   box-shadow: 0 0 20px rgba(96, 205, 255, 0.15);
 }
 
