@@ -120,8 +120,8 @@
 
         <!-- Grid -->
         <!-- Loading Skeleton Grid -->
-        <div v-if="isLoading" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-           <div v-for="n in 12" :key="n" class="h-48">
+        <div v-if="isLoading" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6">
+           <div v-for="n in 12" :key="n" class="aspect-[2/3]">
               <SkeletonCard />
            </div>
         </div>
@@ -644,6 +644,7 @@ const loadPage = async (append: boolean = false) => {
         console.error("Load Error", e)
     } finally {
         isLoadingMore.value = false
+        isLoading.value = false
     }
 }
 

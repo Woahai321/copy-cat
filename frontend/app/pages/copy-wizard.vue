@@ -288,7 +288,7 @@ const handleSourceSelect = async (path: string | string[]) => {
     const paths = Array.isArray(path) ? path : [path]
     
     // Get info for all selected items
-    const infoPromises = paths.map(p => getFolderInfo('zurg', p, false))
+    const infoPromises = paths.map(p => getFolderInfo('zurg', p, true))
     const infos = await Promise.all(infoPromises)
     
     const wizardInfos = infos.map((info, index) => ({

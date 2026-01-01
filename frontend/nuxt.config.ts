@@ -14,6 +14,10 @@ export default defineNuxtConfig({
     }
   },
 
+  routeRules: {
+    '/api/**': { proxy: 'http://localhost:8000/api/**' }
+  },
+
   ssr: false,
 
   // When using app directory, srcDir defaults to 'app', but assets should be at root
