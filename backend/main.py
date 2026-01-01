@@ -1711,26 +1711,7 @@ def get_full_stats(
         }
     }
 
-    # Use the periodic scanner for consistency
-    if periodic_scanner:
-        count = await periodic_scanner.trigger_scan_now()
-        return {"message": f"Scanned {count} items. Enrichment completed."}
-    else:
-        # Fallback to direct scan if periodic scanner not initialized
-        logger.warning("Periodic scanner not initialized, using direct scan")
-        scanner = MediaScanner(db, ZURG_BASE)
-        count = scanner.scan_directory()
-        logger.info(f"Scan finished. Found {count} new/updated items.")
 
-        # Trigger enrichment if Trakt is configured
-        setting = db.query(SystemSettings).filter(SystemSettings.key == "trakt_client_id").first()
-        if setting:
-            logger.info("Trakt Client ID found. Triggering background enrichment.")
-            background_tasks.add_task(background_enrichment_wrapper)
-        else:
-            logger.warning("No Trakt Client ID configured. Enrichment skipped.")
-
-        return {"message": f"Scanned {count} items. Metadata enrichment started in background."}
 
 async def background_enrichment_wrapper():
     """
