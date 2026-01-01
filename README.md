@@ -19,12 +19,14 @@
 
 ---
 
+<a name="what-is-copycat"></a>
 ## 😸 What is CopyCat? 
 
 **CopyCat** is a self-hosted media management tool for digital libraries. It bridges the gap between **Cloud Storage** (such as Zurg or Rclone mounts) and **Local Storage** (HDD/NAS).
 
 CopyCat provides a web interface to scan, organize, and copy media files across different storage locations.
 
+<a name="interface-overview"></a>
 ## 😻 Interface Overview
 
 <p align="center">
@@ -64,6 +66,7 @@ Monitor active transfers in real-time. View detailed progress, transfer speeds, 
 
 ---
 
+<a name="quick-start-docker-command"></a>
 ## 😸 Quick Start (Docker Command)
 Run CopyCat with this single Docker command:
 
@@ -134,25 +137,93 @@ docker-compose up -d
 </details>
 
 
+<a name="technical-overview"></a>
 ## 🙀 Technical Overview
 
 ```mermaid
-graph LR
-    A[Source Mount] --> B(Scanner)
-    B --> C{Enricher}
-    C -->|Match| D[Trakt API]
-    C -->|Cache| E[Local DB]
-    E --> F(Queue Manager)
-    F --> G[Destination Storage]
+graph TD
+    %% Theme - Cyberpunk Purple
+    classDef purple fill:#2e1065,stroke:#7c3aed,color:#fff,rx:5,ry:5,stroke-width:2px;
+    classDef light fill:#5b21b6,stroke:#8b5cf6,color:#fff,rx:5,ry:5,stroke-width:2px;
+    classDef accent fill:#7c3aed,stroke:#a78bfa,color:#fff,rx:5,ry:5,stroke-width:2px;
+    classDef external fill:#0f172a,stroke:#334155,color:#94a3b8,rx:5,ry:5,stroke-dasharray: 5 5;
+
+    subgraph "External Ecosystem"
+        Cloud[(Zurg/Rclone)]:::external
+        Trakt[Trakt.tv API]:::external
+        TMDB[TMDB/Fanart]:::external
+    end
+
+    subgraph "Host Infrastructure"
+        Mount[Filesystem Mount]:::purple
+        LocalDest[(Local/NAS Storage)]:::purple
+    end
+
+    subgraph "CopyCat Core"
+        direction TB
+        
+        subgraph Pipeline ["1. Ingestion Engine"]
+            Watcher[File Watcher]:::light
+            Scanner[Recursive Scanner]:::light
+            Regex{Regex Parsing}:::accent
+            Matcher[Media Matcher]:::light
+        end
+
+        subgraph Data ["2. Persistence Layer"]
+            DB[(SQLite Database)]:::purple
+            ImgCache[Image/Asset Cache]:::purple
+        end
+
+        subgraph Backend ["3. Application Server"]
+            API[FastAPI REST Layer]:::light
+            Auth{JWT Auth}:::accent
+            WS[WebSocket Manager]:::accent
+            Scheduler[Task Scheduler]:::light
+        end
+        
+        subgraph Execution ["4. Transfer Engine"]
+            Queue[Job Queue]:::light
+            WorkerPool[Worker Thread Pool]:::accent
+            IO[IO Stream Manager]:::light
+        end
+    end
+
+    subgraph "Presentation"
+        UI[Nuxt.js Frontend]:::purple
+        Store[Pinia State]:::light
+    end
+
+    %% Data Flow Relationships
+    Cloud ==> Mount
+    Mount -.-> Scanner
     
-    style B fill:#8b5cf6,stroke:#fff,color:#fff
-    style C fill:#8b5cf6,stroke:#fff,color:#fff
-    style F fill:#8b5cf6,stroke:#fff,color:#fff
+    Scanner --> Regex
+    Regex --> Matcher
+    Matcher <--> Trakt
+    Matcher <--> TMDB
+    Matcher --> DB
+    Matcher --> ImgCache
+
+    UI <--> API
+    API <--> DB
+    API --> WS
+    WS -.->|Real-time Events| UI
+    
+    UI -- "Dispatch Copy" --> API
+    API --> Queue
+    Queue --> WorkerPool
+    WorkerPool --> IO
+    
+    IO -- "Read Stream" --> Mount
+    IO -- "Write Stream" --> LocalDest
+    IO -- "Progress Events" --> WS
 ```
 
-1.  **Scanner**: Reads the `SOURCE_PATH` and identifies media files. It uses regex to remove unnecessary tags and extracts titles and dates.
-2.  **Enricher**: If a **Trakt Client ID** is configured, CopyCat retrieves posters and metadata from Trakt. Images are cached locally to minimize API requests.
-3.  **Queue**: Selected files are added to a background queue for transfer to the `DESTINATION_PATH`.
+1.  **Ingestion Layer**: The system mounts your cloud storage (Zurg/Rclone) to the local filesystem, making it accessible as standard files.
+2.  **Processing Layer**: The `Scanner Engine` recursively reads files, cleaning filenames with Regex and enriching them with metadata/posters via the **Trakt API**.
+3.  **Persistence Layer**: All library data is structured and stored in a **SQLite Database**, while images are cached locally for offline performance.
+4.  **Application Layer**: The **FastAPI Backend** serves data to the **Nuxt Frontend**, ensuring a reactive, real-time user experience via WebSockets.
+5.  **Execution Layer**: When you initiate a copy, the **Queue Manager** spawns optimized workers to stream data from Source to Destination efficiently.
 
 
 ## 😺 Documentation
