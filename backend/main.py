@@ -1054,6 +1054,7 @@ class SettingsUpdate(BaseModel):
     default_series_path: Optional[str] = None
     scan_interval_seconds: Optional[int] = None
     discord_webhook_url: Optional[str] = None
+    discord_notify_success: Optional[bool] = None
 
 
 class StatsFullResponse(BaseModel):
