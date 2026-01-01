@@ -482,6 +482,21 @@ class MediaScanner:
 
                 return parsed
         
+        # GENERIC FALLBACK: If we are in a forced path (e.g. /movies/Title) and no pattern matched, 
+        # assume the folder name IS the title.
+        if force_type:
+            final_title = clean_title(clean_name)
+            # Only accept if it has some length and isn't just numbers or garbage
+            if final_title and len(final_title) > 0:
+                return {
+                    "original": filename,
+                    "title": final_title,
+                    "year": None,
+                    "media_type": force_type,
+                    "season": None,
+                    "episode": None
+                }
+        
         return None
 
     def create_media_item(self, full_path: str, meta: Dict, mtime: datetime, size_bytes: int = 0):
