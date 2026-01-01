@@ -3,7 +3,6 @@
       <!-- Full Size Poster Shimmer -->
       <div class="absolute inset-0 bg-white/5 shimmer-bg"></div>
       
-          <div class="space-y-2">
       <!-- Bottom Metadata Simulation -->
       <div class="absolute bottom-0 left-0 right-0 p-3 space-y-2 bg-gradient-to-t from-black/80 to-transparent">
           <div class="h-4 w-3/4 bg-white/10 rounded-sm shimmer-bg"></div>
