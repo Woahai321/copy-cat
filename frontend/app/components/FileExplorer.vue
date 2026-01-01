@@ -112,10 +112,15 @@
 
     <!-- File List Header -->
     <div class="grid grid-cols-12 gap-2 px-6 py-2 text-[10px] uppercase tracking-wider font-bold text-gray-500 border-b border-white/5 bg-black/5">
+       <!-- Checkbox Placeholder -->
+       <div v-if="isSelectionMode" class="col-span-1 flex justify-center">
+          <!-- Optional: Select All could go here -->
+       </div>
+       
        <div 
-         class="col-span-10 md:col-span-6 pl-2 cursor-pointer flex items-center gap-1 hover:text-gray-300 transition-colors" 
+         class="pl-1 cursor-pointer flex items-center gap-1 hover:text-gray-300 transition-colors" 
+         :class="isSelectionMode ? 'col-span-9 md:col-span-5' : 'col-span-10 md:col-span-6'"
          @click="toggleSort('name')"
-         :class="{ 'text-[var(--brand-1)] hover:text-[var(--brand-2)]': sortByField === 'name' }"
        >
          Name
          <UIcon v-if="sortByField === 'name'" :name="sortOrder === 'asc' ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'" class="w-3 h-3" />
@@ -191,8 +196,21 @@
              @dblclick="handleDoubleClick(file)"
              @contextmenu.stop.prevent="showContextMenu($event, file)"
           >
+             <!-- Checkbox Col -->
+             <div v-if="isSelectionMode" class="col-span-1 flex items-center justify-center pl-2" @click.stop="toggleSelection(file)">
+                <div 
+                   class="w-4 h-4 rounded border flex items-center justify-center transition-all"
+                   :class="isSelected(file.path) ? 'bg-[var(--win-accent)] border-[var(--win-accent)] text-black' : 'border-white/20 bg-black/20 hover:border-white/50'"
+                >
+                   <UIcon v-if="isSelected(file.path)" name="i-heroicons-check" class="w-3 h-3" />
+                </div>
+             </div>
+
              <!-- Name Col -->
-             <div class="col-span-10 md:col-span-6 flex items-center gap-3 overflow-hidden pl-1">
+             <div 
+               class="flex items-center gap-3 overflow-hidden pl-1"
+               :class="isSelectionMode ? 'col-span-9 md:col-span-5' : 'col-span-10 md:col-span-6'"
+             >
                 <UIcon 
                   :name="getFileIcon(file)" 
                   class="w-5 h-5 flex-shrink-0 transition-colors"
@@ -256,6 +274,16 @@
              @dblclick="handleDoubleClick(file)"
              @contextmenu.stop.prevent="showContextMenu($event, file)"
            >
+              <!-- Checkbox (Top Left) -->
+              <button 
+                  v-if="isSelectionMode"
+                  @click.stop="toggleSelection(file)"
+                  class="absolute top-2 left-2 w-5 h-5 rounded-full border flex items-center justify-center transition-all z-20"
+                  :class="isSelected(file.path) ? 'bg-[var(--win-accent)] border-[var(--win-accent)] text-black' : 'border-white/20 bg-black/40 text-transparent hover:border-white/50'"
+              >
+                  <UIcon name="i-heroicons-check" class="w-3.5 h-3.5" />
+              </button>
+
               <!-- Context Menu Trigger for Grid -->
               <button 
                   @click.stop="showContextMenu($event, file)"
@@ -642,12 +670,22 @@ const totalPages = computed(() => Math.ceil(totalItems.value / ITEMS_PER_PAGE))
 
 const isSelected = (path: string) => selectedFiles.value.has(path)
 
+const toggleSelection = (file: any) => {
+    if (selectedFiles.value.has(file.path)) {
+        selectedFiles.value.delete(file.path)
+    } else {
+        selectedFiles.value.add(file.path)
+        lastSelectedFile.value = file.path
+    }
+    emit('selection-change', selectedFiles.value)
+}
+
 const handleClick = (e: MouseEvent, file: any) => {
-  // Mobile Selection Mode Logic
+  // Checkbox/Selection Mode Logic handled by explicit toggles now
+  // If clicking the ROW (not checkbox), standard behavior:
+  
   if (isSelectionMode.value) {
-      if (selectedFiles.value.has(file.path)) selectedFiles.value.delete(file.path)
-      else selectedFiles.value.add(file.path)
-      emit('selection-change', selectedFiles.value)
+      toggleSelection(file)
       return
   }
 
@@ -657,31 +695,34 @@ const handleClick = (e: MouseEvent, file: any) => {
      loadFiles(file.path)
      return
   }
-
+  
+  // Standard modifiers still work
   if (e.ctrlKey || e.metaKey) {
-    // Toggle
-    if (selectedFiles.value.has(file.path)) selectedFiles.value.delete(file.path)
-    else selectedFiles.value.add(file.path)
-    lastSelectedFile.value = file.path
+    toggleSelection(file)
   } else if (e.shiftKey && lastSelectedFile.value) {
-    // Range (Simple logic: find indexes and select all between)
-    // For robust implementation, we need the index in the current filtered list
+    // Range
     const lastIdx = filteredFiles.value.findIndex(f => f.path === lastSelectedFile.value)
     const currIdx = filteredFiles.value.findIndex(f => f.path === file.path)
     if (lastIdx !== -1 && currIdx !== -1) {
       const start = Math.min(lastIdx, currIdx)
       const end = Math.max(lastIdx, currIdx)
+      // Clear if not holding ctrl? Standard Windows behavior is replace unless Ctrl.
+      if (!e.ctrlKey) selectedFiles.value.clear()
+      
       for (let i = start; i <= end; i++) {
         selectedFiles.value.add(filteredFiles.value[i].path)
       }
+      emit('selection-change', selectedFiles.value)
     }
   } else {
-    // Single Select
+    // Single Select (Navigate if double click / click logic?)
+    // Actually, widespread behavior: Click selects, Double Click opens.
     selectedFiles.value.clear()
     selectedFiles.value.add(file.path)
     lastSelectedFile.value = file.path
+    emit('selection-change', selectedFiles.value)
   }
-  emit('selection-change', selectedFiles.value)
+  
   // Hide context menu if open
   closeContextMenu()
 }
@@ -711,7 +752,7 @@ const startSelection = (e: MouseEvent) => {
   selectionCurrent.value = { ...selectionStart.value }
   
   // If not adding to selection, clear existing
-  if (!e.ctrlKey && !e.shiftKey) {
+  if (!e.ctrlKey && !e.shiftKey && !isSelectionMode.value) {
      selectedFiles.value.clear()
      emit('selection-change', selectedFiles.value)
   }
