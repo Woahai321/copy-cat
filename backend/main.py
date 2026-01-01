@@ -1053,6 +1053,7 @@ class SettingsUpdate(BaseModel):
     default_movies_path: Optional[str] = None
     default_series_path: Optional[str] = None
     scan_interval_seconds: Optional[int] = None
+    discord_webhook_url: Optional[str] = None
     discord_notify_success: Optional[bool] = None
     discord_notify_failure: Optional[bool] = None
 
