@@ -25,7 +25,7 @@
         <div class="p-6 pb-2 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 flex items-center justify-center bg-transparent rounded-xl flex-shrink-0">
-                    <img src="/copycat.webp" alt="CopyCat Logo" class="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(96,205,255,0.6)]" />
+                    <img src="/copycat.webp" alt="CopyCat Logo" class="w-full h-full object-contain" style="filter: drop-shadow(0 0 8px color-mix(in srgb, var(--win-accent), transparent 40%))" />
                 </div>
                 <div>
                    <h1 class="text-base font-bold text-[var(--win-text-primary)] leading-tight tracking-wide">Copy<span class="text-[var(--brand-1)]">Cat</span></h1>
@@ -402,21 +402,38 @@ watch(() => route.path, () => {
 }
 
 .sidebar-nav-item.active {
-    background: linear-gradient(90deg, color-mix(in srgb, var(--win-accent), transparent 90%) 0%, transparent 100%);
-    color: white;
-    font-weight: 600;
-    border: 1px solid color-mix(in srgb, var(--win-accent), transparent 90%);
+    background: var(--win-accent);
+    color: var(--win-bg-base); /* Text becomes background color (usually dark text on light accent, or light on dark) -> actually accent text contrast is tricky. Better to use primaryBtn? */
+    /* Wait, user said white on white. 
+       If theme is light, BG is white. Accent is e.g. blue. 
+       If active item is just text? No it has background. 
+       Previous CSS:
+       background: linear-gradient(90deg, color-mix(in srgb, var(--win-accent), transparent 90%) 0%, transparent 100%);
+       color: white; 
+       
+       The background was heavily transparent accent (10% opacity). 
+       On light theme, 10% blue on white bg = very light blue.
+       And color was forced white. White on Light Blue/White = invisible.
+       
+       Fix: Use var(--win-accent) for text color, and keep the subtle background.
+       OR use high contrast.
+    */
+    background: linear-gradient(90deg, color-mix(in srgb, var(--win-accent), transparent 85%) 0%, transparent 100%);
+    color: var(--win-accent); /* Use accent color for text */
+    font-weight: 700;
+    border-left: 3px solid var(--win-accent); /* Move border to left for better visibility? The pseudo element did this. */
+    border: none; /* Remove the full border */
 }
 
-/* Active Pill Indicator */
+/* Update pseudo element */
 .sidebar-nav-item.active::before {
     content: "";
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 3px;
-    height: 16px;
+    width: 4px;
+    height: 60%;
     background: var(--win-accent);
     border-radius: 0 4px 4px 0;
     box-shadow: 0 0 10px var(--win-accent);

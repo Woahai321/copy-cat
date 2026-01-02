@@ -1318,6 +1318,11 @@ async def get_library_items(
             "certification": item.certification,
             "runtime": item.runtime,
             "tagline": item.tagline,
+            "trailer_url": item.trailer_url,
+            "homepage": item.homepage,
+            "status": item.status,
+            "network": item.network,
+            "aired_episodes": item.aired_episodes,
             "source_metadata": item.source_metadata # JSON String
         }
         

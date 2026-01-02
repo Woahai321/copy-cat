@@ -271,7 +271,7 @@
                    v-for="item in filteredItems" 
                    :key="item.id"
                    @click="handleItemClick(item)"
-                   class="group flex items-center gap-4 p-3 bg-[var(--glass-level-1-bg)] hover:bg-[var(--glass-level-2-bg)] rounded-xl border border-white/5 hover:border-[var(--win-accent)]/30 transition-all cursor-pointer relative"
+                   class="group flex items-center gap-2 md:gap-4 p-2 md:p-3 bg-[var(--glass-level-1-bg)] hover:bg-[var(--glass-level-2-bg)] rounded-xl border border-white/5 hover:border-[var(--win-accent)]/30 transition-all cursor-pointer relative"
                    :class="{ 'border-[var(--win-accent)] bg-[var(--glass-level-2-bg)]': isSelected(item.id) }"
                 >
                    <!-- Selection Checkbox (List) -->
@@ -291,7 +291,7 @@
                    </div>
 
                    <!-- Poster Thumbnail (Left) -->
-                   <div class="flex-shrink-0 h-24 w-[4.5rem] md:h-32 md:w-24 rounded-lg overflow-hidden bg-black/50 relative shadow-md">
+                   <div class="flex-shrink-0 h-20 w-[3.5rem] md:h-32 md:w-24 rounded-lg overflow-hidden bg-black/50 relative shadow-md">
                       <img 
                         v-if="item.poster_url" 
                         :src="item.poster_url.startsWith('http') ? item.poster_url : `${apiBase}${item.poster_url}`" 
@@ -406,7 +406,7 @@
             </button>
 
             <!-- Poster Side -->
-            <div class="w-full md:w-1/3 aspect-[2/3] md:aspect-auto md:h-auto relative group shrink-0">
+            <div class="w-full md:w-1/3 h-[35vh] md:h-auto relative group shrink-0">
                 <!-- Mobile Gradient Overlay for Text Readability -->
                 <div class="absolute inset-0 bg-gradient-to-t from-[var(--win-bg-base)] via-transparent to-transparent z-10 md:hidden"></div>
                 
@@ -427,7 +427,14 @@
                 <div class="p-6 md:p-8 pb-32 md:pb-8">
                     <!-- Header -->
                     <div class="mb-4 md:mb-6">
-                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight">{{ selectedItem.title }}</h2>
+                        <div class="flex items-start justify-between gap-4">
+                            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight flex items-center gap-3">
+                                {{ selectedItem.title }}
+                                <a v-if="selectedItem.homepage" :href="selectedItem.homepage" target="_blank" class="text-gray-500 hover:text-[var(--win-accent)] transition-colors" title="Official Website">
+                                    <UIcon name="i-heroicons-link" class="w-5 h-5" />
+                                </a>
+                            </h2>
+                        </div>
                         <p v-if="selectedItem.tagline" class="text-gray-400 italic mb-3 text-sm">{{ selectedItem.tagline }}</p>
                         
                         <!-- Tech Tags -->
@@ -446,15 +453,34 @@
 
                         <div class="flex flex-wrap items-center gap-4 text-sm mt-3">
                             <span v-if="selectedItem.year" class="text-white font-mono bg-white/10 px-2 py-0.5 rounded">{{ selectedItem.year }}</span>
+                            <!-- Status (e.g. Ended, Released) -->
+                            <span v-if="selectedItem.status" class="text-gray-400 border border-gray-700 px-2 py-0.5 rounded text-xs capitalize">{{ selectedItem.status }}</span>
+                            <!-- Network (e.g. AMC) -->
+                            <span v-if="selectedItem.network" class="text-[var(--win-accent)] font-bold text-xs uppercase tracking-wider">{{ selectedItem.network }}</span>
+                            
                             <span v-if="selectedItem.certification" class="text-gray-400 border border-gray-700 px-2 py-0.5 rounded text-xs">{{ selectedItem.certification }}</span>
                             <span v-if="selectedItem.runtime" class="text-gray-400 flex items-center gap-1">
                                 <UIcon name="i-heroicons-clock" class="w-4 h-4" />
                                 {{ selectedItem.runtime }}m
                             </span>
+                            <span v-if="selectedItem.aired_episodes" class="text-gray-400 flex items-center gap-1">
+                                <UIcon name="i-heroicons-rectangle-stack" class="w-4 h-4" />
+                                {{ selectedItem.aired_episodes }} eps
+                            </span>
                             <span v-if="selectedItem.rating" class="text-amber-400 flex items-center gap-1 font-bold">
                                 <UIcon name="i-heroicons-star" class="w-4 h-4" />
                                 {{ parseFloat(selectedItem.rating).toFixed(1) }}
                             </span>
+                            
+                            <!-- Trailer (Moved to Header) -->
+                            <button 
+                                v-if="selectedItem.trailer_url"
+                                @click="openExternal(selectedItem.trailer_url)"
+                                class="flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-[var(--win-accent)]/10 text-[var(--win-accent)] hover:bg-[var(--win-accent)] hover:text-black transition-colors"
+                            >
+                                <UIcon name="i-simple-icons-youtube" class="w-3.5 h-3.5" />
+                                <span>Trailer</span>
+                            </button>
                         </div>
                     </div>
 
@@ -892,6 +918,11 @@ const triggerScan = async () => {
     } finally {
         scanning.value = false
     }
+}
+
+// Helpers
+const openExternal = (url: string) => {
+    if (url) window.open(url, '_blank')
 }
 
 const openInTrakt = (item: any) => {

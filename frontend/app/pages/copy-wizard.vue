@@ -91,95 +91,131 @@
       </div>
     </div>
 
-    <!-- Step 3: Summary & Confirm -->
+    <!-- Step 3: Confirmation (Transfer Manifest Loop) -->
     <div v-if="step === 3" class="step-content">
-      <div class="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-12 animate-fade-in-up">
-        <div class="mb-6 sm:mb-8 text-center">
-          <h1 class="text-2xl sm:text-3xl font-bold gradient-brand-text mb-2">Confirm Copy</h1>
-          <p class="text-sm sm:text-base text-slate-400">Review your selection and start the copy</p>
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-12 animate-fade-in-up">
+        <div class="mb-6 sm:mb-10 text-center">
+          <h1 class="text-2xl sm:text-3xl font-bold gradient-brand-text mb-2">Confirm Logic</h1>
+          <p class="text-sm sm:text-base text-slate-400">Review the transfer manifest before execution</p>
         </div>
 
-        <div class="summary-grid" :class="{ 'bulk-grid': isBulk }">
-          <!-- Source Card -->
-          <div class="summary-card">
-            <div class="card-header">
-              <UIcon name="i-heroicons-folder-open" class="w-5 h-5 sm:w-6 sm:h-6 text-[var(--brand-1)]" />
-              <h3 class="text-base sm:text-lg">Source</h3>
-            </div>
-            <div class="card-content">
-              <div class="path-display">
-                <UIcon name="i-heroicons-server" class="w-4 h-4 sm:w-5 sm:h-5 text-[var(--win-accent)]" />
-                <span class="font-mono text-xs sm:text-sm">Zurg</span>
-              </div>
-              
-              <div v-if="isBulk" class="space-y-3 mt-2 flex flex-col flex-1 min-h-0">
-                <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-                  <span class="font-bold text-white">{{ sourceItems.length }} items selected</span>
-                  <span class="text-[var(--win-accent)] font-mono">{{ totalBulkSize }}</span>
+        <div class="relative grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-12 items-stretch">
+            
+            <!-- Central Flow Arrow (Desktop) -->
+            <div class="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none z-10">
+                <div class="w-12 h-12 rounded-full bg-[var(--win-bg-base)] border border-[var(--win-accent)] flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                    <UIcon name="i-heroicons-arrow-right" class="w-6 h-6 text-[var(--win-accent)] animate-pulse" />
                 </div>
-                <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-0 bg-[var(--glass-level-2-bg)] rounded border border-white/5 p-2">
-                  <div v-for="item in sourceItems" :key="item.path" class="text-[10px] mb-2 last:mb-0 border-b border-white/5 last:border-0 pb-1 last:pb-0">
-                    <div class="font-mono text-gray-300 break-all leading-tight">{{ item.path }}</div>
-                    <div class="text-[9px] text-gray-500 mt-0.5 text-right font-mono">{{ item.size_formatted || formatSize(item.size) }}</div>
-                  </div>
+            </div>
+
+            <!-- Mobile Flow Arrow -->
+            <div class="md:hidden flex justify-center py-2">
+                 <UIcon name="i-heroicons-arrow-down" class="w-8 h-8 text-[var(--win-accent)] animate-bounce" />
+            </div>
+
+            <!-- Panel 1: Source (Manifest) -->
+            <div class="summary-card h-full flex flex-col">
+                <div class="card-header pb-4 border-b border-white/5 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                         <div class="p-2 rounded-lg bg-[var(--brand-1)]/10">
+                            <UIcon name="i-heroicons-squares-2x2" class="w-5 h-5 text-[var(--brand-1)]" />
+                         </div>
+                         <div>
+                             <h3 class="text-base font-bold text-white">Source Items</h3>
+                             <p class="text-xs text-slate-400">{{ sourceItems.length }} item{{ sourceItems.length !== 1 ? 's' : '' }} selected</p>
+                         </div>
+                    </div>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-white/5 text-[var(--brand-1)]">{{ totalBulkSize }}</span>
                 </div>
-              </div>
-              <p v-else class="path-text">{{ sourcePath || 'Not selected' }}</p>
-              
-              <div v-if="sourceInfo && !isBulk" class="mt-2 sm:mt-3 text-xs sm:text-sm text-slate-400">
-                <span>Size: {{ sourceInfo.size_formatted }}</span>
-              </div>
-            </div>
-            <button @click="goToStep(1)" class="card-button touch-target">
-              <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-              <span class="text-sm sm:text-base">Change Source</span>
-            </button>
-          </div>
 
-          <!-- Arrow -->
-          <div class="arrow-container" v-if="!isBulk">
-            <UIcon name="i-heroicons-arrow-right" class="w-8 h-8 sm:w-12 sm:h-12 text-[var(--win-accent)]" />
-          </div>
+                <div class="flex-1 overflow-y-auto custom-scrollbar min-h-[300px] max-h-[50vh] p-1 mt-2 space-y-2">
+                    <div v-for="item in sourceItems" :key="item.path" class="group p-3 rounded-xl bg-white/5 border border-white/5 hover:border-[var(--brand-1)]/30 transition-all">
+                        <div class="flex items-start gap-3">
+                            <UIcon :name="item.path.includes('.') ? 'i-heroicons-document' : 'i-heroicons-folder'" class="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-medium text-white truncate">{{ item.name }}</div>
+                                <div class="text-[10px] text-slate-500 font-mono break-all leading-tight mt-0.5">{{ item.path }}</div>
+                            </div>
+                            <div class="text-[10px] font-mono text-slate-400 whitespace-nowrap pt-1">
+                                {{ item.size_formatted || formatSize(item.size) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-white/5">
+                    <button @click="goToStep(1)" class="w-full py-2 text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-2">
+                        <UIcon name="i-heroicons-pencil" class="w-3 h-3" />
+                        Modify Selection
+                    </button>
+                </div>
+            </div>
 
-          <!-- Destination Card -->
-          <div class="summary-card">
-            <div class="card-header">
-              <UIcon name="i-heroicons-folder" class="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
-              <h3 class="text-base sm:text-lg">Destination</h3>
+            <!-- Panel 2: Destination (Projection) -->
+            <div class="summary-card h-full flex flex-col relative text-left">
+                <!-- Theme Accent Glow on this card to indicate target -->
+                <div class="absolute -inset-[1px] rounded-[0.8rem] bg-gradient-to-b from-[var(--win-accent)]/20 to-transparent opacity-50 pointer-events-none"></div>
+
+                <div class="card-header pb-4 border-b border-white/5 flex items-center justify-between relative z-10">
+                    <div class="flex items-center gap-3">
+                         <div class="p-2 rounded-lg bg-[var(--win-accent)]/10">
+                            <UIcon name="i-heroicons-arrow-down-tray" class="w-5 h-5 text-[var(--win-accent)]" />
+                         </div>
+                         <div>
+                             <h3 class="text-base font-bold text-white">Target Location</h3>
+                             <p class="text-xs text-slate-400">Projected Final Paths</p>
+                         </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto custom-scrollbar min-h-[300px] max-h-[50vh] p-1 mt-2 space-y-2 relative z-10">
+                     <div v-for="item in sourceItems" :key="item.path + '-dest'" class="group p-3 rounded-xl bg-[var(--win-accent)]/5 border border-[var(--win-accent)]/10 hover:border-[var(--win-accent)]/30 transition-all">
+                        <div class="flex items-start gap-3">
+                            <!-- Visual Consistency: Show same icon type in destination -->
+                            <UIcon :name="item.path.includes('.') ? 'i-heroicons-document' : 'i-heroicons-folder'" class="w-5 h-5 text-[var(--win-accent)] mt-0.5 flex-shrink-0" />
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-wrap items-baseline gap-1.5">
+                                    <span class="text-sm font-medium text-[var(--win-accent)] truncate">{{ item.name }}</span>
+                                    <span class="text-[9px] uppercase tracking-wide px-1.5 py-px rounded bg-[var(--win-accent)] text-[var(--win-bg-base)] font-bold">New</span>
+                                </div>
+                                <!-- Projected Path Logic: Destination + / + Name -->
+                                <div class="text-[10px] text-slate-400 font-mono break-all leading-tight mt-1">
+                                    <span class="opacity-50">{{ destPath }}/</span><span class="text-[var(--win-accent)]">{{ item.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-white/5 relative z-10">
+                    <button @click="goToStep(2)" class="w-full py-2 text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-2">
+                         <UIcon name="i-heroicons-map" class="w-3 h-3" />
+                        Change Target
+                    </button>
+                </div>
             </div>
-            <div class="card-content">
-              <div class="path-display">
-                <UIcon name="i-heroicons-server" class="w-4 h-4 sm:w-5 sm:h-5 text-[var(--win-accent)]" />
-                <span class="font-mono text-xs sm:text-sm">16TB</span>
-              </div>
-              <p class="path-text">{{ destPath || 'Not selected' }}</p>
-            </div>
-            <button @click="goToStep(2)" class="card-button touch-target">
-              <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-              <span class="text-sm sm:text-base">Change Destination</span>
-            </button>
-          </div>
         </div>
 
-        <!-- Start Copy Button -->
-        <div class="mt-8 sm:mt-12 flex flex-col items-center gap-3 sm:gap-4">
-          <button
-            @click="handleStartCopy"
-            :disabled="copying"
-            class="btn-primary-large w-full sm:w-auto"
-          >
-            <UIcon v-if="copying" name="i-heroicons-arrow-path" class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 animate-spin" />
-            <UIcon v-else name="i-heroicons-play" class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-            <span class="text-base sm:text-lg">{{ copying ? 'Starting Copy...' : 'Start Copy' }}</span>
-          </button>
-          <UButton
+        <!-- Start Copy Action Bar -->
+        <div class="mt-8 sm:mt-12 flex flex-col-reverse sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto">
+           <UButton
             @click="reset"
             variant="ghost"
             color="gray"
-            class="text-slate-400 hover:text-slate-200 w-full sm:w-auto touch-target"
+            class="w-full sm:w-1/3 h-12 text-slate-400 hover:text-white hover:bg-white/5"
           >
-            Cancel & Reset Wizard
+            Cancel & Reset
           </UButton>
+          
+          <button
+            @click="handleStartCopy"
+            :disabled="copying"
+            class="btn-primary-large w-full sm:w-2/3 h-12 shadow-[0_0_30px_-5px_var(--win-accent)] hover:shadow-[0_0_50px_-10px_var(--win-accent)] transition-all duration-300"
+          >
+            <UIcon v-if="copying" name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin mr-2" />
+            <UIcon v-else name="i-heroicons-bolt" class="w-5 h-5 mr-2" />
+            <span class="text-lg">{{ copying ? 'Initializing Transfer...' : 'Start Copy Operation' }}</span>
+          </button>
         </div>
       </div>
     </div>

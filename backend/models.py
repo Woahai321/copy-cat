@@ -63,9 +63,22 @@ class MediaItem(Base):
     certification = Column(String, nullable=True) # e.g. "PG-13"
     runtime = Column(Integer, nullable=True) # Minutes
     tagline = Column(String, nullable=True)
+    trailer_url = Column(String, nullable=True)
+    homepage = Column(String, nullable=True)
+    status = Column(String, nullable=True)
+    network = Column(String, nullable=True)
+    aired_episodes = Column(Integer, nullable=True)
     
     # Technical Metadata from Source File (JSON)
     source_metadata = Column(Text, nullable=True) 
+
+    # Normalized Metadata (Queries)
+    resolution = Column(String, nullable=True, index=True)
+    codec = Column(String, nullable=True, index=True)
+    source = Column(String, nullable=True, index=True)
+    audio = Column(String, nullable=True, index=True)
+    hdr = Column(String, nullable=True, index=True)
+    is_remux = Column(Boolean, default=False, index=True) 
     
     enrichment_status = Column(String, default='pending', index=True) # pending, success, failed
     enrichment_retry_count = Column(Integer, default=0) 

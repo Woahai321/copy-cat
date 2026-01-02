@@ -235,7 +235,9 @@
              <!-- Size Col & Actions -->
              <div class="col-span-2 flex items-center justify-end gap-2 pr-2">
                 <span class="hidden md:block font-mono text-[10px]" :class="isSelected(file.path) ? 'text-[var(--brand-1)]/70' : 'text-[var(--win-text-muted)] group-hover:text-[var(--win-text-secondary)]'">
-                   {{ file.is_dir ? '' : formatSize(file.size_bytes) }}
+                   <span v-if="file.size_loading" class="animate-pulse">...</span>
+                   <!-- Fix: show formatted size for folders too if computed, otherwise 'Folder' or blank handled by formatted_size -->
+                   <span v-else>{{ file.size_formatted }}</span>
                 </span>
                 
                 <!-- Touch Context Trigger -->
@@ -459,7 +461,7 @@ const emit = defineEmits<{
   'items-dropped': [files: string[]] // New: Drop event
 }>()
 
-const { browseDirectory, createFolder, deleteItem } = useApi()
+const { browseDirectory, createFolder, deleteItem, getFolderInfo } = useApi()
 const toast = useToast()
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
@@ -543,6 +545,54 @@ const breadcrumbSegments = computed(() => {
 
 // --- Methods ---
 
+const fetchFolderSizes = async (items: any[]) => {
+    const folders = items.filter(i => i.is_dir)
+    if (folders.length === 0) return
+
+    const source = props.source || (props.isDestination ? 'destination' : 'source')
+    
+    // Concurrency control: 3 parallel requests
+    const CONCURRENCY = 3
+    const queue = [...folders]
+    
+    const processQueue = async () => {
+        while (queue.length > 0) {
+            const folder = queue.shift()
+            if (!folder) break
+            
+            // Skip if already has size or calculating (simple check)
+            if (folder.size_loading) continue
+            
+            // Mark as loading
+            folder.size_loading = true
+            
+            try {
+                // Determine source arg properly. '16tb' maps to 'destination' in backend usually, 
+                // but useApi might expect 'zurg' or '16tb' or 'source'/'destination'.
+                // backend browse endpoint handles 'zurg'/'16tb'/'source'/'destination'.
+                // backend folder_info endpoint also handles them.
+                // Let's rely on what we have.
+                
+                const info = await getFolderInfo(source as 'zurg' | '16tb', folder.path, true)
+                folder.size_bytes = info.size
+                folder.size_formatted = info.size_formatted
+            } catch (e) {
+                console.error(`Failed to get size for ${folder.path}`, e)
+                folder.size_formatted = "Error"
+            } finally {
+                folder.size_loading = false
+            }
+        }
+    }
+
+    const workers = []
+    for (let i = 0; i < CONCURRENCY; i++) {
+        workers.push(processQueue())
+    }
+    
+    await Promise.all(workers)
+}
+
 const loadFiles = async (path: string) => {
   loading.value = true
   try {
@@ -553,7 +603,7 @@ const loadFiles = async (path: string) => {
     const offset = (page.value - 1) * ITEMS_PER_PAGE
     
     // Pass sort params and pagination to API
-    const result = await browseDirectory(source, path, ITEMS_PER_PAGE, offset, sortByField.value, sortOrder.value)
+    const result = await browseDirectory(source as 'zurg'|'16tb', path, ITEMS_PER_PAGE, offset, sortByField.value, sortOrder.value)
     
     // Update total and hasMore
     totalItems.value = result.total
@@ -564,10 +614,17 @@ const loadFiles = async (path: string) => {
         ...item,
         is_dir: item.is_directory,
         size_bytes: item.size,
-        modified_at: item.modified ? new Date(item.modified * 1000).toISOString() : new Date().toISOString()
+        modified_at: item.modified ? new Date(item.modified * 1000).toISOString() : new Date().toISOString(),
+        // Initialize loading state for folders
+        size_loading: false
     }))
     
     files.value = items
+
+    // Trigger async size calculation for folders
+    // We don't await this to keep UI responsive
+    fetchFolderSizes(items)
+
     currentPath.value = path
     manualPath.value = path
     isManualInputActive.value = false // Reset to breadcrumbs on load
@@ -592,6 +649,7 @@ const loadFiles = async (path: string) => {
     loading.value = false
   }
 }
+
 
 const toggleViewMode = () => {
     viewMode.value = viewMode.value === 'grid' ? 'list' : 'grid'

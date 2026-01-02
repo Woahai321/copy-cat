@@ -54,6 +54,11 @@ async def enrich_single_item(db: Session, item: MediaItem, client: TraktClient) 
             item.certification = existing_match.certification
             item.runtime = existing_match.runtime
             item.tagline = existing_match.tagline
+            item.trailer_url = existing_match.trailer_url
+            item.homepage = existing_match.homepage
+            item.status = existing_match.status
+            item.network = existing_match.network
+            item.aired_episodes = existing_match.aired_episodes
             item.year = existing_match.year # Trust the enriched year
             
             # Reuse Poster URL directly (it's already a proxied path or URL)
@@ -97,15 +102,23 @@ async def enrich_single_item(db: Session, item: MediaItem, client: TraktClient) 
                     item.certification = summary.get('certification')
                     item.tagline = summary.get('tagline')
                     item.runtime = summary.get('runtime')
+                    item.trailer_url = summary.get('trailer') # Trakt JSON key is 'trailer'
+                    item.homepage = summary.get('homepage')
+                    item.status = summary.get('status')
+                    item.network = summary.get('network')
+                    item.aired_episodes = summary.get('aired_episodes')
                     
                     # Persist Year if missing or updated
                     if summary.get('year'):
                         item.year = summary.get('year')
                     
                     # Genres
-                    genres = summary.get('genres', [])
-                    if genres:
-                        item.genres = ",".join([g['name'] for g in genres if isinstance(g, dict)] if isinstance(genres, list) else [])
+                    genres_list = summary.get('genres', [])
+                    if genres_list and isinstance(genres_list, list):
+                        # Format list of strings ["action", "drama"] -> "Action, Drama"
+                        item.genres = ", ".join([g.title() for g in genres_list if isinstance(g, str)])
+                    else:
+                        item.genres = None
                     
                     # Images & Caching
                     images = summary.get('images', {})

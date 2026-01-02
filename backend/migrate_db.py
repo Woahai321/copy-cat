@@ -79,6 +79,46 @@ def migrate():
         else:
             logger.info("'is_admin' column already exists.")
 
+        # Migration 5: Add Trakt extended metadata fields
+        new_columns = {
+            "trailer_url": "TEXT",
+            "homepage": "TEXT",
+            "status": "TEXT",
+            "network": "TEXT",
+            "aired_episodes": "INTEGER"
+        }
+        
+        cursor.execute("PRAGMA table_info(media_items)")
+        existing_columns = [row[1] for row in cursor.fetchall()]
+        
+        for col_name, col_type in new_columns.items():
+            if col_name not in existing_columns:
+                logger.info(f"Adding '{col_name}' column to 'media_items' table...")
+                cursor.execute(f"ALTER TABLE media_items ADD COLUMN {col_name} {col_type}")
+                conn.commit()
+                logger.info(f"Successfully added '{col_name}' column.")
+            else:
+                logger.info(f"'{col_name}' column already exists.")
+
+        # Migration 6: Add Normalized Metadata Columns (Resolution, Codec, etc.)
+        norm_columns = {
+            "resolution": "TEXT",
+            "codec": "TEXT",
+            "source": "TEXT",
+            "audio": "TEXT",
+            "hdr": "TEXT",
+            "is_remux": "BOOLEAN"
+        }
+        
+        for col_name, col_type in norm_columns.items():
+            if col_name not in existing_columns:
+                logger.info(f"Adding '{col_name}' column to 'media_items' table...")
+                cursor.execute(f"ALTER TABLE media_items ADD COLUMN {col_name} {col_type}")
+                conn.commit()
+                logger.info(f"Successfully added '{col_name}' column.")
+            else:
+                logger.info(f"'{col_name}' column already exists.")
+
     except Exception as e:
         logger.error(f"Migration failed: {e}")
         conn.rollback()

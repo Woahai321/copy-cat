@@ -163,7 +163,7 @@ class TraktClient:
                     url = f"{TRAKT_API_URL}/{endpoint}"
                     params = {"extended": "full,images"}
                     
-                    async with session.get(url, headers=self.headers, params=params) as resp:
+                    async with session.get(url, headers=self.headers, params=params, ssl=False) as resp:
                         # Handle rate limits
                         if await self._handle_rate_limit(resp):
                             continue  # Retry after waiting
@@ -330,15 +330,35 @@ class TraktClient:
                                 encoded_url = urllib.parse.quote(raw_url)
                                 poster_url = f"/api/images/proxy?url={encoded_url}"
                         
+                        # Phase 1 & 2 Findings
+                        genres = data.get("genres", [])
+                        genre_string = None
+                        if genres:
+                            # Format as "Action, Adventure, Sci-Fi"
+                            genre_string = ", ".join([g.title() for g in genres])
+                            
+                        # Extract TV Specifics
+                        network = data.get("network")
+                        aired_episodes = data.get("aired_episodes")
+                        
                         return {
                             "title": data.get("title"),
                             "year": data.get("year"),
                             "overview": data.get("overview"),
                             "rating": data.get("rating"),
-                            "genres": data.get("genres", []),
+                            "genres": genre_string, # Now a formatted string!
                             "poster_url": poster_url,
                             "tmdb_id": data.get("ids", {}).get("tmdb"),
-                            "imdb_id": data.get("ids", {}).get("imdb")
+                            "imdb_id": data.get("ids", {}).get("imdb"),
+                            # Validating unused fields
+                            "certification": data.get("certification"),
+                            "runtime": data.get("runtime"),
+                            "tagline": data.get("tagline"),
+                            "trailer_url": data.get("trailer"),
+                            "homepage": data.get("homepage"),
+                            "status": data.get("status"),
+                            "network": network,
+                            "aired_episodes": aired_episodes
                         }
             except Exception as e:
                 logger.error(f"Trakt Metadata Fetch Error: {e}")

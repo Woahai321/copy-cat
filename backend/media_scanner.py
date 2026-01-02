@@ -511,12 +511,28 @@ class MediaScanner:
         
         source_meta_json = json.dumps(meta)
         
+        # Helper to clean list values
+        def clean_val(val):
+            if isinstance(val, list):
+                if not val: return None
+                return ", ".join(str(v) for v in val)
+            return val
+
         new_item = MediaItem(
             full_path=full_path,
             title=meta["title"],
             year=meta["year"],
             media_type=meta["media_type"],  # Path-based type, never changed by enrichment
             source_metadata=source_meta_json,
+            
+            # Normalized Fields
+            resolution=clean_val(meta.get("resolution")),
+            codec=clean_val(meta.get("codec")),
+            source=clean_val(meta.get("source")),
+            audio=clean_val(meta.get("audio")),
+            hdr=clean_val(meta.get("hdr")),
+            is_remux=meta.get("is_remux", False),
+            
             created_at=mtime,
             updated_at=datetime.utcnow(),
             size_bytes=size_bytes
