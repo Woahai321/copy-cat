@@ -5,12 +5,12 @@
     <div 
         v-if="canSwipe"
         class="absolute inset-y-0 right-0 w-[100px] flex items-center justify-center z-0 transition-colors cursor-pointer"
-        :class="job.status === 'queued' ? 'bg-red-500/10 text-red-300 border-red-500/20' : 'bg-[var(--brand-1)]/10 text-[var(--brand-1)] border-[var(--brand-1)]/20'"
+        :class="job.status === 'queued' ? 'bg-[var(--status-error)]/10 text-[var(--status-error)] border-[var(--status-error)]/20' : 'bg-[var(--brand-1)]/10 text-[var(--brand-1)] border-[var(--brand-1)]/20'"
         @click="handleAction"
     >
         <!-- Background Gradient -->
         <div class="absolute inset-0 bg-gradient-to-br opacity-10 transition-opacity group-hover:opacity-20 pointer-events-none"
-             :class="job.status === 'queued' ? 'from-gray-700 to-gray-600' : 'from-[var(--brand-1)] to-[var(--brand-5)]'"></div>
+             :class="job.status === 'queued' ? 'from-[var(--status-error)] to-gray-600' : 'from-[var(--brand-1)] to-[var(--brand-5)]'"></div>
         <div class="flex flex-col items-center gap-1 font-bold text-xs uppercase tracking-wider relative z-10">
             <UIcon :name="job.status === 'queued' ? 'i-heroicons-trash' : 'i-heroicons-arrow-path'" class="w-6 h-6" />
             <span>{{ job.status === 'queued' ? 'Cancel' : 'Retry' }}</span>
@@ -21,25 +21,25 @@
     <div 
         ref="cardEl"
         @click="handleClick"
-        class="relative z-10 card bg-[#1a1a1a] border border-white/5 rounded-xl overflow-hidden hover:border-[var(--win-accent)]/50 transition-all duration-300 cursor-pointer group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
+        class="relative z-10 card bg-[var(--glass-level-2-bg)] border border-white/5 rounded-xl overflow-hidden hover:border-[var(--win-accent)]/50 transition-all duration-300 cursor-pointer group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
         :style="cardStyle"
     >
         <div class="flex gap-4 items-stretch h-full">
           <!-- Poster / Icon Section -->
-          <div class="relative w-20 sm:w-28 flex-shrink-0 bg-black/40 border-r border-white/5 overflow-hidden group/poster">
+          <div class="relative w-20 sm:w-28 flex-shrink-0 bg-[var(--glass-level-3-bg)] border-r border-white/5 overflow-hidden group/poster">
              <img 
                v-if="job.media_poster" 
                :src="job.media_poster.startsWith('http') ? job.media_poster : `${apiBase}${job.media_poster}`" 
                class="w-full h-full object-cover transition-transform duration-700 group-hover/poster:scale-110"
                loading="lazy"
              />
-             <div v-else class="w-full h-full flex flex-col items-center justify-center p-2 bg-gradient-to-br from-white/5 to-black text-center">
+             <div v-else class="w-full h-full flex flex-col items-center justify-center p-2 bg-gradient-to-br from-[var(--glass-level-1-bg)] to-[var(--win-bg-base)] text-center">
                 <UIcon 
                   :name="job.media_type ? (job.media_type === 'movie' ? 'i-heroicons-film' : 'i-heroicons-tv') : getTypeIcon(job.source_path)" 
                   class="w-8 h-8 mb-1 opacity-50" 
-                  :class="job.media_type ? 'text-gray-600' : getTypeClass(job.source_path)"
+                  :class="job.media_type ? 'text-[var(--win-text-muted)]' : getTypeClass(job.source_path)"
                 />
-                <span class="text-[9px] font-bold text-gray-600 line-clamp-2 leading-tight px-1 break-words w-full">
+                <span class="text-[9px] font-bold text-[var(--win-text-muted)] line-clamp-2 leading-tight px-1 break-words w-full">
                     {{ job.media_title || getJobName(job.source_path) }}
                 </span>
              </div>
@@ -55,18 +55,18 @@
             <div>
               <div class="flex items-start justify-between mb-2">
                 <div class="min-w-0 pr-4">
-                  <h4 class="text-base sm:text-lg font-bold text-white truncate leading-tight mb-1" :title="job.media_title || getJobName(job.source_path)">
+                  <h4 class="text-base sm:text-lg font-bold text-[var(--win-text-primary)] truncate leading-tight mb-1" :title="job.media_title || getJobName(job.source_path)">
                       {{ job.media_title || getJobName(job.source_path) }}
                   </h4>
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span v-if="job.media_year" class="text-[10px] font-bold text-gray-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/10">
+                    <span v-if="job.media_year" class="text-[10px] font-bold text-[var(--win-text-muted)] bg-[var(--glass-level-1-bg)] px-1.5 py-0.5 rounded border border-white/10">
                       {{ job.media_year }}
                     </span>
                     <span v-if="job.media_rating" class="flex items-center gap-1 text-[10px] font-bold text-[var(--brand-1)] bg-[var(--brand-1)]/10 px-1.5 py-0.5 rounded border border-[var(--brand-1)]/20">
                       <UIcon name="i-heroicons-star" class="w-3 h-3" />
                       {{ job.media_rating.toFixed(1) }}
                     </span>
-                    <span class="text-[10px] text-gray-500 font-medium">
+                    <span class="text-[10px] text-[var(--win-text-muted)] font-medium">
                       {{ formatRelativeTime(job.created_at) }}
                     </span>
                   </div>
@@ -82,7 +82,7 @@
               </div>
 
               <!-- Paths -->
-              <div class="text-[10px] text-gray-500 font-mono flex flex-col gap-1 mt-3 group-hover:text-gray-400 transition-colors">
+              <div class="text-[10px] text-[var(--win-text-muted)] font-mono flex flex-col gap-1 mt-3 group-hover:text-[var(--win-text-secondary)] transition-colors">
                 <div class="flex items-center gap-2 truncate opacity-60" :title="job.source_path">
                     <span class="w-6 text-right shrink-0">SRC:</span> 
                     <span class="truncate">{{ job.source_path }}</span>
@@ -99,16 +99,16 @@
                <div class="flex-1">
                   <div v-if="['processing', 'queued'].includes(job.status)" class="space-y-1.5">
                       <!-- Progress Bar -->
-                      <div class="h-1.5 bg-black/40 rounded-full overflow-hidden w-full relative">
+                      <div class="h-1.5 bg-[var(--glass-level-4-bg)] rounded-full overflow-hidden w-full relative">
                           <div class="h-full bg-gradient-to-r from-[var(--brand-1)] to-[var(--brand-5)] transition-all duration-300" :style="{ width: `${progressPercent}%` }"></div>
-                          <div class="absolute inset-0 bg-white/20 animate-pulse-slow" v-if="job.status === 'processing'"></div>
+                          <div class="absolute inset-0 bg-[var(--glass-level-3-bg)] animate-pulse-slow" v-if="job.status === 'processing'"></div>
                       </div>
                       <div class="flex justify-between items-center text-[10px]">
-                          <span class="font-bold text-[var(--win-accent)]">{{ progressPercent }}% <span class="text-gray-600 font-medium ml-1">completed</span></span>
-                          <span v-if="eta" class="text-gray-400 font-mono">{{ eta }} remaining</span>
+                          <span class="font-bold text-[var(--win-accent)]">{{ progressPercent }}% <span class="text-[var(--win-text-muted)] font-medium ml-1">completed</span></span>
+                          <span v-if="eta" class="text-[var(--win-text-muted)] font-mono">{{ eta }} remaining</span>
                       </div>
                   </div>
-                  <div v-else class="flex items-center gap-3 text-[10px] font-medium text-gray-500">
+                  <div v-else class="flex items-center gap-3 text-[10px] font-medium text-[var(--win-text-muted)]">
                     <span class="flex items-center gap-1"><UIcon name="i-heroicons-clock" class="w-3 h-3"/> {{ formatDateShort(job.created_at) }}</span>
                     <span class="flex items-center gap-1"><UIcon name="i-heroicons-square-3-stack-3d" class="w-3 h-3"/> {{ formatSize(job.total_size_bytes) }}</span>
                   </div>
@@ -119,7 +119,7 @@
                 <button
                     v-if="job.status === 'queued'"
                     @click.stop="$emit('cancel', job.id)"
-                    class="p-2 hover:bg-red-500/20 rounded-lg text-gray-500 hover:text-red-400 transition-all border border-transparent hover:border-red-500/30"
+                    class="p-2 hover:bg-[var(--status-error)]/20 rounded-lg text-[var(--win-text-muted)] hover:text-[var(--status-error)] transition-all border border-transparent hover:border-[var(--status-error)]/30"
                     title="Cancel"
                 >
                     <UIcon name="i-heroicons-x-mark" class="w-5 h-5" />
@@ -127,7 +127,7 @@
                 <button
                     v-if="job.status === 'failed'"
                     @click.stop="$emit('retry', job.id)"
-                    class="p-2 hover:bg-[var(--win-accent)]/20 rounded-lg text-gray-500 hover:text-[var(--win-accent)] transition-all border border-transparent hover:border-[var(--win-accent)]/30"
+                    class="p-2 hover:bg-[var(--win-accent)]/20 rounded-lg text-[var(--win-text-muted)] hover:text-[var(--win-accent)] transition-all border border-transparent hover:border-[var(--win-accent)]/30"
                     title="Retry"
                 >
                     <UIcon name="i-heroicons-arrow-path" class="w-5 h-5" />
@@ -138,7 +138,7 @@
         </div>
         
         <!-- Error Footer -->
-        <div v-if="job.error_message" class="px-4 py-2 bg-red-500/10 border-t border-red-500/10 text-red-400 text-[10px] font-medium flex items-center gap-2">
+        <div v-if="job.error_message" class="px-4 py-2 bg-[var(--status-error)]/10 border-t border-[var(--status-error)]/10 text-[var(--status-error)] text-[10px] font-medium flex items-center gap-2">
           <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4" />
           {{ job.error_message }}
         </div>
@@ -260,7 +260,7 @@ const getStatusBadgeClass = (status: string) => {
     case 'failed': return 'bg-[var(--status-error)]/10 text-[var(--status-error)] border border-[var(--status-error)]/20'
     case 'processing': return 'bg-[var(--status-info)]/10 text-[var(--status-info)] border border-[var(--status-info)]/20'
     case 'queued': return 'bg-[var(--status-warning)]/10 text-[var(--status-warning)] border border-[var(--status-warning)]/20'
-    default: return 'bg-white/5 text-gray-400 border border-white/10'
+    default: return 'bg-[var(--glass-level-1-bg)] text-[var(--win-text-muted)] border border-white/10'
   }
 }
 

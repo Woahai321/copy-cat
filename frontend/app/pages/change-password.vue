@@ -30,14 +30,14 @@
           <h1 class="text-3xl font-bold bg-gradient-to-r from-white via-[var(--brand-1)] to-[var(--brand-5)] bg-clip-text text-transparent mb-2">
             Change Password
           </h1>
-          <p class="text-sm text-gray-400 text-center max-w-sm">
+          <p class="text-sm text-[var(--win-text-muted)] text-center max-w-sm">
             For your security, you must change your password before proceeding.
           </p>
         </div>
 
         <!-- Error Message -->
-        <div v-if="error" class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl backdrop-blur-sm">
-          <div class="flex items-center gap-3 text-red-300">
+        <div v-if="error" class="mb-6 p-4 bg-[var(--status-error)]/10 border border-[var(--status-error)]/30 rounded-xl backdrop-blur-sm">
+          <div class="flex items-center gap-3 text-[var(--status-error)]">
             <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 flex-shrink-0" />
             <span class="text-sm">{{ error }}</span>
           </div>
@@ -47,45 +47,45 @@
         <form @submit.prevent="handleSubmit" class="space-y-5">
           <!-- Current Password -->
           <div class="relative group">
-            <label class="text-xs text-gray-400 uppercase font-bold mb-2 block">Current Password</label>
+            <label class="text-xs text-[var(--win-text-muted)] uppercase font-bold mb-2 block">Current Password</label>
             <div class="absolute bottom-0 left-0 pl-4 flex items-center pointer-events-none" style="bottom: 14px;">
-              <UIcon name="i-heroicons-lock-closed" class="w-5 h-5 text-gray-500 group-focus-within:text-[var(--win-accent)] transition-colors" />
+              <UIcon name="i-heroicons-lock-closed" class="w-5 h-5 text-[var(--win-text-secondary)] group-focus-within:text-[var(--win-accent)] transition-colors" />
             </div>
             <input
                 v-model="currentPassword"
                 type="password"
                 required
-                class="w-full bg-black/20 border border-white/10 focus:border-[var(--win-accent)]/50 text-white pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-gray-500 focus:bg-black/30 focus:shadow-[0_0_20px_rgba(96,205,255,0.15)]"
+                class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 focus:border-[var(--win-accent)]/50 text-[var(--win-text-primary)] pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-[var(--win-text-muted)] focus:bg-[var(--glass-level-3-bg)] focus:shadow-[0_0_20px_rgba(96,205,255,0.15)]"
                 placeholder="Enter current password"
             />
           </div>
 
           <!-- New Password -->
           <div class="relative group">
-            <label class="text-xs text-gray-400 uppercase font-bold mb-2 block">New Password</label>
+            <label class="text-xs text-[var(--win-text-muted)] uppercase font-bold mb-2 block">New Password</label>
             <div class="absolute bottom-0 left-0 pl-4 flex items-center pointer-events-none" style="bottom: 14px;">
-              <UIcon name="i-heroicons-key" class="w-5 h-5 text-gray-500 group-focus-within:text-[var(--win-accent)] transition-colors" />
+              <UIcon name="i-heroicons-key" class="w-5 h-5 text-[var(--win-text-secondary)] group-focus-within:text-[var(--win-accent)] transition-colors" />
             </div>
             <input
                 v-model="newPassword"
                 type="password"
                 required
-                class="w-full bg-black/20 border border-white/10 focus:border-[var(--win-accent)]/50 text-white pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-gray-500 focus:bg-black/30 focus:shadow-[0_0_20px_rgba(96,205,255,0.15)]"
+                class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 focus:border-[var(--win-accent)]/50 text-[var(--win-text-primary)] pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-[var(--win-text-muted)] focus:bg-[var(--glass-level-3-bg)] focus:shadow-[0_0_20px_rgba(96,205,255,0.15)]"
                 placeholder="Enter new password"
             />
           </div>
 
           <!-- Confirm Password -->
           <div class="relative group">
-            <label class="text-xs text-gray-400 uppercase font-bold mb-2 block">Confirm New Password</label>
+            <label class="text-xs text-[var(--win-text-muted)] uppercase font-bold mb-2 block">Confirm New Password</label>
             <div class="absolute bottom-0 left-0 pl-4 flex items-center pointer-events-none" style="bottom: 14px;">
-              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-gray-500 group-focus-within:text-[var(--win-accent)] transition-colors" />
+              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-[var(--win-text-secondary)] group-focus-within:text-[var(--win-accent)] transition-colors" />
             </div>
             <input
                 v-model="confirmPassword"
                 type="password"
                 required
-                class="w-full bg-black/20 border border-white/10 focus:border-[var(--win-accent)]/50 text-white pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-gray-500 focus:bg-black/30 focus:shadow-[0_0_20px_rgba(96,205,255,0.15)]"
+                class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 focus:border-[var(--win-accent)]/50 text-[var(--win-text-primary)] pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-[var(--win-text-muted)] focus:bg-[var(--glass-level-3-bg)] focus:shadow-[0_0_20px_rgba(96,205,255,0.15)]"
                 placeholder="Confirm new password"
             />
           </div>

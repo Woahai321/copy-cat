@@ -2,7 +2,7 @@
   <div class="flex items-center gap-1 overflow-x-auto no-scrollbar mask-gradient-right">
     <button 
         @click="$emit('navigate', '/')"
-        class="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+        class="p-1.5 rounded-lg hover:bg-[var(--glass-level-2-bg)] text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] transition-colors"
         title="Root"
     >
         <UIcon name="i-heroicons-home" class="w-4 h-4" />
@@ -13,7 +13,7 @@
         <button 
             @click="handleClick(index)"
             class="px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors border border-transparent"
-            :class="index === segments.length - 1 ? 'bg-[var(--win-accent)]/10 text-[var(--win-accent)] border-[var(--win-accent)]/20 font-bold' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            :class="index === segments.length - 1 ? 'bg-[var(--win-accent)]/10 text-[var(--win-accent)] border-[var(--win-accent)]/20 font-bold' : 'text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] hover:bg-[var(--glass-level-1-bg)]'"
         >
             {{ segment }}
         </button>

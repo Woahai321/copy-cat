@@ -32,59 +32,59 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Library Size -->
           <div class="glass-panel p-6 flex flex-col gap-2">
-             <div class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+             <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
                  <UIcon name="i-heroicons-server" class="w-4 h-4" />
                  Total Size
              </div>
-             <div class="text-3xl font-black text-white font-mono uppercase">
+             <div class="text-3xl font-black text-[var(--win-text-primary)] font-mono uppercase">
                  {{ formatBytes(stats.library_stats.total_size_bytes) }}
              </div>
-             <div class="text-xs text-gray-400">
+             <div class="text-xs text-[var(--win-text-muted)]">
                  Across {{ stats.library_stats.total_items }} items
              </div>
           </div>
 
           <!-- Total Transferred -->
           <div class="glass-panel p-6 flex flex-col gap-2">
-             <div class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+             <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
                  <UIcon name="i-heroicons-arrow-down-tray" class="w-4 h-4" />
                  Total Transferred
              </div>
              <div class="text-3xl font-black text-[var(--win-accent)] font-mono uppercase">
                  {{ formatBytes(stats.job_stats.total_transferred_bytes) }}
              </div>
-             <div class="text-xs text-gray-400">
+             <div class="text-xs text-[var(--win-text-muted)]">
                  Lifetime volume
              </div>
           </div>
           
           <!-- Library Split -->
           <div class="glass-panel p-6 flex flex-col gap-2">
-             <div class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+             <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
                  <UIcon name="i-heroicons-film" class="w-4 h-4" />
                  Library Split
              </div>
              <div class="flex items-end gap-2">
-                 <div class="text-3xl font-black text-white font-mono">
+                 <div class="text-3xl font-black text-[var(--win-text-primary)] font-mono">
                      {{ stats.library_stats.movies_count }}
                  </div>
-                 <div class="text-xs text-gray-400 font-bold mb-1.5 uppercase">Movies</div>
+                 <div class="text-xs text-[var(--win-text-muted)] font-bold mb-1.5 uppercase">Movies</div>
              </div>
-             <div class="text-xs text-gray-400 flex items-center gap-1">
-                 <span class="text-white font-bold">{{ stats.library_stats.tv_count }}</span> TV Shows
+             <div class="text-xs text-[var(--win-text-muted)] flex items-center gap-1">
+                 <span class="text-[var(--win-text-primary)] font-bold">{{ stats.library_stats.tv_count }}</span> TV Shows
              </div>
           </div>
 
           <!-- Success Rate -->
           <div class="glass-panel p-6 flex flex-col gap-2 group">
-             <div class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+             <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
                  <UIcon name="i-heroicons-check-circle" class="w-4 h-4" />
                  Success Rate
              </div>
              <div class="text-3xl font-black font-mono relative">
-                 <span :class="stats.job_stats.success_rate > 90 ? 'text-emerald-400' : 'text-yellow-400'">{{ stats.job_stats.success_rate }}%</span>
+                 <span :class="stats.job_stats.success_rate > 90 ? 'text-[var(--status-success)]' : 'text-[var(--status-warning)]'">{{ stats.job_stats.success_rate }}%</span>
              </div>
-             <div class="text-xs text-gray-400">
+             <div class="text-xs text-[var(--win-text-muted)]">
                  {{ stats.job_stats.failed_count }} failed out of {{ stats.job_stats.completed_count + stats.job_stats.failed_count }}
              </div>
           </div>
@@ -95,7 +95,7 @@
           
           <!-- Activity Chart -->
           <div class="lg:col-span-2 glass-panel p-6">
-              <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+              <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-6 flex items-center gap-2">
                   <UIcon name="i-heroicons-chart-bar" class="w-4 h-4" />
                   Transfer Activity (Last 14 Days)
               </h3>
@@ -107,8 +107,8 @@
                     class="flex-1 flex flex-col items-center gap-2 group relative"
                   >
                       <!-- Tooltip -->
-                      <div class="absolute bottom-full mb-2 bg-black/80 backdrop-blur text-xs px-2 py-1 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                          <div class="font-bold text-white">{{ date }}</div>
+                      <div class="absolute bottom-full mb-2 bg-[var(--win-bg-base)]/80 backdrop-blur text-xs px-2 py-1 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                          <div class="font-bold text-[var(--win-text-primary)]">{{ date }}</div>
                           <div class="text-[var(--win-accent)]">{{ formatBytes(bytes) }}</div>
                       </div>
                       
@@ -121,7 +121,7 @@
                       </div>
                       
                       <!-- Label -->
-                      <div class="text-[9px] text-gray-500 font-mono -rotate-45 origin-top-left translate-y-2 truncate w-full text-right opacity-50 group-hover:opacity-100">
+                      <div class="text-[9px] text-[var(--win-text-muted)] font-mono -rotate-45 origin-top-left translate-y-2 truncate w-full text-right opacity-50 group-hover:opacity-100">
                           {{ formatDateShort(date) }}
                       </div>
                   </div>
@@ -130,14 +130,14 @@
 
           <!-- Top Genres (Simple Bar List) -->
           <div class="glass-panel p-6">
-              <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+              <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-6 flex items-center gap-2">
                   <UIcon name="i-heroicons-tag" class="w-4 h-4" />
                   Top Genres
               </h3>
               <div class="space-y-4">
                   <div v-for="(count, genre) in stats.charts.genres" :key="genre" class="group">
                       <div class="flex justify-between text-xs mb-1">
-                          <span class="font-bold text-gray-300 group-hover:text-white">{{ genre }}</span>
+                          <span class="font-bold text-[var(--win-text-secondary)] group-hover:text-[var(--win-text-primary)]">{{ genre }}</span>
                           <span class="font-mono text-[var(--win-accent)]">{{ count }}</span>
                       </div>
                       <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
@@ -155,8 +155,8 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Largest Files -->
           <div class="glass-panel p-0 overflow-hidden">
-              <div class="p-6 border-b border-white/5 bg-black/20">
-                  <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+              <div class="p-6 border-b border-white/5 bg-[var(--glass-level-2-bg)]">
+                  <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
                       <UIcon name="i-heroicons-document" class="w-4 h-4" />
                       Largest Files
                   </h3>
@@ -168,8 +168,8 @@
                     class="p-4 hover:bg-white/5 transition-colors flex items-center justify-between gap-4 group"
                   >
                       <div class="min-w-0">
-                          <div class="text-sm font-bold text-white truncate">{{ file.title }}</div>
-                          <div class="text-xs text-gray-500 truncate font-mono opacity-50">{{ file.path }}</div>
+                          <div class="text-sm font-bold text-[var(--win-text-primary)] truncate">{{ file.title }}</div>
+                          <div class="text-xs text-[var(--win-text-muted)] truncate font-mono opacity-50">{{ file.path }}</div>
                       </div>
                       <div class="text-sm font-bold text-[var(--win-accent)] font-mono whitespace-nowrap">
                           {{ file.size }}
@@ -180,8 +180,8 @@
 
           <!-- Highest Rated -->
           <div class="glass-panel p-0 overflow-hidden">
-              <div class="p-6 border-b border-white/5 bg-black/20">
-                  <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+              <div class="p-6 border-b border-white/5 bg-[var(--glass-level-2-bg)]">
+                  <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
                       <UIcon name="i-heroicons-star" class="w-4 h-4" />
                       Highest Rated
                   </h3>
@@ -197,8 +197,8 @@
                               {{ item.rating?.toFixed(1) || '?' }}
                           </div>
                           <div class="min-w-0">
-                              <div class="text-sm font-bold text-white truncate">{{ item.title }}</div>
-                              <div class="text-xs text-gray-500 font-mono">{{ item.year }}</div>
+                              <div class="text-sm font-bold text-[var(--win-text-primary)] truncate">{{ item.title }}</div>
+                              <div class="text-xs text-[var(--win-text-muted)] font-mono">{{ item.year }}</div>
                           </div>
                       </div>
                   </div>

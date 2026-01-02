@@ -11,11 +11,11 @@
       </div>
 
       <!-- Tab Switcher -->
-      <div class="flex bg-black/20 p-1 rounded-xl border border-white/5 self-start sm:self-auto">
+      <div class="flex bg-[var(--glass-level-2-bg)] p-1 rounded-xl border border-white/5 self-start sm:self-auto">
         <button 
           @click="currentTab = 'source'"
           class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2"
-          :class="currentTab === 'source' ? 'bg-[var(--brand-1)] text-black shadow-lg shadow-[var(--brand-1)]/20' : 'text-gray-500 hover:text-gray-300'"
+          :class="currentTab === 'source' ? 'bg-[var(--brand-1)] text-black shadow-lg shadow-[var(--brand-1)]/20' : 'text-[var(--win-text-muted)] hover:text-[var(--win-text-secondary)]'"
         >
           <UIcon name="i-heroicons-cloud" class="w-4 h-4" />
           Source
@@ -23,7 +23,8 @@
         <button 
           @click="currentTab = 'destination'"
           class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2"
-          :class="currentTab === 'destination' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-gray-500 hover:text-gray-300'"
+          :class="currentTab === 'destination' ? 'bg-[var(--status-success)] text-black shadow-lg shadow-[var(--status-success)]/20' : 'text-[var(--win-text-muted)] hover:text-[var(--win-text-secondary)]'"
+        >
         >
           <UIcon name="i-heroicons-server" class="w-4 h-4" />
           Destination

@@ -1159,11 +1159,11 @@ async def batch_copy_items(
     # Validate destination path
     from file_operations import validate_path
     try:
-        validate_path(HARDDRIVE_BASE, request.destination_path.lstrip('/'))
+        validate_path(DESTINATION_BASE, request.destination_path.lstrip('/'))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-    dest_base = os.path.normpath(os.path.join(HARDDRIVE_BASE, request.destination_path.lstrip('/')))
+    dest_base = os.path.normpath(os.path.join(DESTINATION_BASE, request.destination_path.lstrip('/')))
     
     # Create copy jobs for each item
     created_jobs = []
@@ -1381,6 +1381,44 @@ async def get_library_items(
     }
 
 # Background Task now only focuses on resolving IDs if missing
+
+
+
+@app.post("/api/library/prioritize")
+async def prioritize_item(
+    item_id: int = Body(..., embed=True),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Prioritize a media item for enrichment.
+    Bump priority to 10 (Highest)
+    """
+    item = db.query(MediaItem).filter(MediaItem.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+        
+    # Bump priority
+    item.priority = 10
+    
+    # Reset status if it was failed so it gets picked up again
+    if item.enrichment_status == 'failed':
+         item.enrichment_status = 'pending_retry'
+         item.enrichment_retry_count = 0
+         
+    db.commit()
+    
+    # Optional: trigger immediate worker check?
+    # For now, the worker polls frequently enough (every 1s if busy, 30s if idle)
+    # But if we want instant reaction from an idle worker, we could trigger it.
+    # However, since the worker loop sleeps 30s when idle, we might wait up to 30s.
+    # Ideally we'd have an event or condition variable, but for MVP just let it be picked up.
+    # Optimization: If we really want it fast, we can wake up the worker
+    if enrichment_worker.running:
+         # This is a bit hacky but if we expose a 'wake' method or just rely on the loop
+         pass
+
+    return {"success": True}
 
 
 
@@ -1633,15 +1671,54 @@ def get_full_stats(
     # Again, parsing JSON text in SQL is hard in SQLite/Generic, so we do Python scan
     # Limit to last 1000 items for performance if needed, but doing all for accuracy
     resolutions = {}
-    items_with_meta = db.query(MediaItem.source_metadata).filter(MediaItem.source_metadata != None).all()
-    for m_row in items_with_meta:
-        try:
-            meta = json.loads(m_row[0]) if isinstance(m_row[0], str) else m_row[0]
-            if meta.get('resolution'):
-                res = meta['resolution'][0]
-                resolutions[res] = resolutions.get(res, 0) + 1
-        except:
-            pass
+    audio_codecs = {}
+    total_duration_mins = 0
+    
+    # We fetch relevant columns for python-side processing
+    # Optimization: On very large libraries, this should be done via SQL GroupBy or specialized queries
+    all_metadata = db.query(MediaItem.source_metadata, MediaItem.runtime, MediaItem.year).all()
+    
+    decade_counts = {}
+    
+    for row in all_metadata:
+        m_json, r_runtime, r_year = row
+        
+        # 1. Runtime
+        if r_runtime:
+            total_duration_mins += r_runtime
+            
+        # 2. Decades
+        if r_year:
+            try:
+                decade = (int(r_year) // 10) * 10
+                decade_str = f"{decade}s"
+                decade_counts[decade_str] = decade_counts.get(decade_str, 0) + 1
+            except:
+                pass
+
+        # 3. Tech Metadata (Res/Audio)
+        if m_json:
+            try:
+                meta = json.loads(m_json) if isinstance(m_json, str) else m_json
+                if not isinstance(meta, dict): continue
+                
+                # Resolution
+                if meta.get('resolution'):
+                    res = meta['resolution'][0] if isinstance(meta['resolution'], list) else meta['resolution']
+                    resolutions[res] = resolutions.get(res, 0) + 1
+                
+                # Audio
+                if meta.get('audio_channels'):
+                    # Simplify audio (e.g. "5.1", "7.1", "2.0")
+                    # Sometimes it's a list, sometimes value
+                    aud = meta['audio_channels']
+                    if isinstance(aud, list): aud = aud[0]
+                    audio_codecs[aud] = audio_codecs.get(aud, 0) + 1
+            except:
+                pass
+                
+    # Sort decades
+    decade_counts = dict(sorted(decade_counts.items()))
             
     # 2. Job Stats
     completed_jobs = db.query(CopyJob).filter(CopyJob.status == 'completed')
@@ -1674,7 +1751,7 @@ def get_full_stats(
 
     # 3. Top Lists
     largest_files = db.query(MediaItem).order_by(MediaItem.size_bytes.desc()).limit(5).all()
-    highest_rated = db.query(MediaItem).order_by(MediaItem.rating.desc().nulls_last()).limit(5).all()
+    # Removed highest_rated as requested
 
     # 4. Storage
     storage = {
@@ -1687,7 +1764,9 @@ def get_full_stats(
             "total_items": total_items,
             "movies_count": movies_count,
             "tv_count": tv_count,
-            "total_size_bytes": total_size
+            "total_size_bytes": total_size,
+            "total_runtime_minutes": total_duration_mins,
+            "avg_file_size": (total_size / total_items) if total_items > 0 else 0
         },
         "job_stats": {
             "total_transferred_bytes": total_transferred,
@@ -1699,16 +1778,14 @@ def get_full_stats(
         "charts": {
             "genres": dict(top_genres),
             "resolutions": resolutions,
+            "audio_codecs": audio_codecs,
+            "decades": decade_counts,
             "activity": activity_data # Date -> Bytes
         },
         "top_lists": {
             "largest_files": [
                 {"title": i.title, "size": format_size(i.size_bytes), "path": i.full_path} 
                 for i in largest_files
-            ],
-            "highest_rated": [
-                {"title": i.title, "rating": i.rating, "year": i.year} 
-                for i in highest_rated
             ]
         }
     }

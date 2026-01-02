@@ -7,15 +7,15 @@
         </div>
         
         <div class="flex-1 min-w-0">
-          <h3 class="text-base sm:text-lg font-semibold text-slate-100 mb-1 sm:mb-2">
+          <h3 class="text-base sm:text-lg font-semibold text-[var(--win-text-primary)] mb-1 sm:mb-2">
             {{ title }}
           </h3>
-          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+          <p class="text-xs sm:text-sm text-[var(--win-text-muted)] leading-relaxed">
             {{ description }}
           </p>
         </div>
 
-        <UIcon name="i-heroicons-arrow-right" class="w-5 h-5 text-slate-500 flex-shrink-0 mt-1 hidden sm:block" />
+        <UIcon name="i-heroicons-arrow-right" class="w-5 h-5 text-[var(--win-text-muted)] flex-shrink-0 mt-1 hidden sm:block" />
       </div>
     </div>
   </div>
@@ -43,28 +43,28 @@ const iconBgClass = computed(() => {
     case 'primary':
       return 'bg-gradient-cyan'
     case 'success':
-      return 'bg-emerald-500/20'
+      return 'bg-[var(--status-success)]/20'
     case 'danger':
-      return 'bg-rose-500/20'
+      return 'bg-[var(--status-error)]/20'
     case 'warning':
       return 'bg-[var(--brand-1)]/20'
     default:
-      return 'bg-slate-700/50'
+      return 'bg-[var(--glass-level-2-bg)]'
   }
 })
 
 const iconColorClass = computed(() => {
   switch (props.variant) {
     case 'primary':
-      return 'text-white'
+      return 'text-[var(--win-bg-base)]'
     case 'success':
-      return 'text-emerald-400'
+      return 'text-[var(--status-success)]'
     case 'danger':
-      return 'text-rose-400'
+      return 'text-[var(--status-error)]'
     case 'warning':
       return 'text-[var(--brand-1)]'
     default:
-      return 'text-slate-400'
+      return 'text-[var(--win-text-muted)]'
   }
 })
 

@@ -4,74 +4,74 @@
       <!-- Minimized state -->
       <div v-if="!isExpanded" @click="isExpanded = true" class="flex items-center gap-3 cursor-pointer">
         <div class="relative">
-          <UIcon name="i-heroicons-arrow-path" class="w-5 h-5 text-[#9d34da] animate-spin" />
+          <UIcon name="i-heroicons-arrow-path" class="w-5 h-5 text-[var(--win-accent)] animate-spin" />
         </div>
         <div>
-          <p class="text-sm font-semibold text-slate-200">{{ activeJobsCount }} Active Job{{ activeJobsCount !== 1 ? 's' : '' }}</p>
-          <p v-if="currentJob" class="text-xs text-slate-400">
+          <p class="text-sm font-semibold text-[var(--win-text-primary)]">{{ activeJobsCount }} Active Job{{ activeJobsCount !== 1 ? 's' : '' }}</p>
+          <p v-if="currentJob" class="text-xs text-[var(--win-text-muted)]">
             {{ currentJob.progress_percent }}% · {{ currentJobEta || 'Calculating...' }}
           </p>
         </div>
-        <UIcon name="i-heroicons-chevron-up" class="w-4 h-4 text-slate-400 ml-2" />
+        <UIcon name="i-heroicons-chevron-up" class="w-4 h-4 text-[var(--win-text-muted)] ml-2" />
       </div>
 
       <!-- Expanded state -->
       <div v-else class="flex flex-col h-full">
         <!-- Header -->
-        <div class="flex items-center justify-between p-4 border-b border-slate-700/50">
+        <div class="flex items-center justify-between p-4 border-b border-white/10">
           <div class="flex items-center gap-2">
-            <UIcon name="i-heroicons-queue-list" class="w-5 h-5 text-[#bd73e8]" />
-            <h3 class="font-semibold text-slate-200">Active Jobs</h3>
+            <UIcon name="i-heroicons-queue-list" class="w-5 h-5 text-[var(--brand-4)]" />
+            <h3 class="font-semibold text-[var(--win-text-primary)]">Active Jobs</h3>
           </div>
-          <button @click="isExpanded = false" class="text-slate-400 hover:text-slate-200 transition">
+          <button @click="isExpanded = false" class="text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] transition">
             <UIcon name="i-heroicons-chevron-down" class="w-5 h-5" />
           </button>
         </div>
 
         <!-- Current job -->
-        <div v-if="currentJob" class="p-4 border-b border-slate-700/50">
+        <div v-if="currentJob" class="p-4 border-b border-white/10">
           <div class="mb-3">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-sm font-semibold text-slate-200 truncate flex-1">
+              <p class="text-sm font-semibold text-[var(--win-text-primary)] truncate flex-1">
                 {{ getJobName(currentJob.source_path) }}
               </p>
-              <span class="text-xs font-bold text-[#9d34da] ml-2">{{ currentJob.progress_percent }}%</span>
+              <span class="text-xs font-bold text-[var(--win-accent)] ml-2">{{ currentJob.progress_percent }}%</span>
             </div>
             <div class="progress-bar mb-2">
               <div class="progress-bar-fill" :style="{ width: `${currentJob.progress_percent}%` }"></div>
             </div>
             <div class="flex items-center justify-between text-xs">
-              <span class="text-slate-400">{{ formatSize(currentJob.copied_size_bytes) }}</span>
-              <span v-if="currentJobEta" class="text-[#9d34da] font-medium">{{ currentJobEta }}</span>
-              <span class="text-slate-400">{{ formatSize(currentJob.total_size_bytes) }}</span>
+              <span class="text-[var(--win-text-muted)]">{{ formatSize(currentJob.copied_size_bytes) }}</span>
+              <span v-if="currentJobEta" class="text-[var(--win-accent)] font-medium">{{ currentJobEta }}</span>
+              <span class="text-[var(--win-text-muted)]">{{ formatSize(currentJob.total_size_bytes) }}</span>
             </div>
           </div>
-          <p class="text-xs text-slate-500 truncate">→ {{ currentJob.destination_path }}</p>
+          <p class="text-xs text-[var(--win-text-muted)] truncate">→ {{ currentJob.destination_path }}</p>
         </div>
 
         <!-- Queue list -->
         <div class="flex-1 overflow-y-auto p-4">
           <div v-if="queuedJobs.length > 0" class="space-y-2">
-            <p class="text-xs font-semibold text-slate-400 mb-2">QUEUED ({{ queuedJobs.length }})</p>
+            <p class="text-xs font-semibold text-[var(--win-text-muted)] mb-2">QUEUED ({{ queuedJobs.length }})</p>
             <div
               v-for="job in queuedJobs"
               :key="job.id"
               class="card p-3 flex items-center justify-between"
             >
               <div class="flex-1 min-w-0">
-                <p class="text-sm text-slate-200 truncate">{{ getJobName(job.source_path) }}</p>
-                <p class="text-xs text-slate-500 truncate">{{ job.destination_path }}</p>
+                <p class="text-sm text-[var(--win-text-primary)] truncate">{{ getJobName(job.source_path) }}</p>
+                <p class="text-xs text-[var(--win-text-muted)] truncate">{{ job.destination_path }}</p>
               </div>
               <UBadge color="gray" variant="soft" size="xs">Queued</UBadge>
             </div>
           </div>
           <div v-else-if="!currentJob" class="text-center py-8">
-            <p class="text-sm text-slate-400">No active jobs</p>
+            <p class="text-sm text-[var(--win-text-muted)]">No active jobs</p>
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="p-4 border-t border-slate-700/50">
+        <div class="p-4 border-t border-white/10">
           <UButton
             to="/queue"
             variant="ghost"

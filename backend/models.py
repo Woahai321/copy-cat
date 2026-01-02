@@ -69,6 +69,7 @@ class MediaItem(Base):
     
     enrichment_status = Column(String, default='pending', index=True) # pending, success, failed
     enrichment_retry_count = Column(Integer, default=0) 
+    priority = Column(Integer, default=0, index=True) # 0=normal, 10=high (UI requested) 
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)

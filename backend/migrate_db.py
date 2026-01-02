@@ -44,6 +44,15 @@ def migrate():
         else:
             logger.info("'enrichment_retry_count' column already exists.")
 
+        # Migration 3: Check if priority exists in media_items (New for prioritization)
+        if "priority" not in columns:
+            logger.info("Adding 'priority' column to 'media_items' table...")
+            cursor.execute("ALTER TABLE media_items ADD COLUMN priority INTEGER DEFAULT 0")
+            conn.commit()
+            logger.info("Successfully added 'priority' column to media_items.")
+        else:
+             logger.info("'priority' column already exists in media_items.")
+
         # Migration 3: Check if priority exists in copy_jobs
         cursor.execute("PRAGMA table_info(copy_jobs)")
         copy_jobs_columns = [row[1] for row in cursor.fetchall()]

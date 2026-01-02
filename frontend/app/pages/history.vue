@@ -41,7 +41,7 @@
     <div v-if="loading" class="flex items-center justify-center py-20">
       <div class="flex flex-col items-center gap-3">
         <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 text-[var(--win-accent)] animate-spin" />
-        <p class="text-sm text-gray-400">Loading history...</p>
+        <p class="text-sm text-[var(--win-text-muted)]">Loading history...</p>
       </div>
     </div>
 
@@ -49,7 +49,7 @@
     <div v-else-if="filteredJobs.length === 0">
       <div class="empty-state">
         <div class="empty-state-icon">
-           <UIcon name="i-heroicons-clock" class="w-8 h-8 text-gray-600" />
+           <UIcon name="i-heroicons-clock" class="w-8 h-8 text-[var(--win-text-muted)]" />
         </div>
         <h3 class="empty-state-title">No History Found</h3>
         <p class="empty-state-description">

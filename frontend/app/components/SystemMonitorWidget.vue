@@ -1,7 +1,7 @@
 <template>
-  <div class="glass-panel p-6 bg-black/20 h-full flex flex-col">
+  <div class="glass-panel p-6 bg-[var(--glass-level-2-bg)] h-full flex flex-col">
     <h3 
-      class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center justify-between cursor-pointer hover:text-white transition-colors"
+      class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-6 flex items-center justify-between cursor-pointer hover:text-[var(--win-text-primary)] transition-colors"
       @click="navigateTo('/browse')"
     >
       <div class="flex items-center gap-2">
@@ -19,9 +19,9 @@
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-2">
             <UIcon name="i-heroicons-cloud" class="w-4 h-4 text-[var(--brand-1)]" />
-            <span class="text-gray-300 font-bold text-sm">Zurg (Source)</span>
-            <span v-if="systemStatus?.zurg?.exists" class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">ONLINE</span>
-            <span v-else class="text-[9px] font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">OFFLINE</span>
+            <span class="text-[var(--win-text-secondary)] font-bold text-sm">Zurg (Source)</span>
+            <span v-if="systemStatus?.zurg?.exists" class="text-[9px] font-bold text-[var(--status-success)] bg-[var(--status-success)]/10 px-1.5 py-0.5 rounded border border-[var(--status-success)]/20">ONLINE</span>
+            <span v-else class="text-[9px] font-bold text-[var(--status-error)] bg-[var(--status-error)]/10 px-1.5 py-0.5 rounded border border-[var(--status-error)]/20">OFFLINE</span>
           </div>
           <div class="text-right">
             <div v-if="diskUsage?.zurg?.available" class="text-xs font-mono font-bold" :class="getUsageColor(diskUsage.zurg.percent)">
@@ -30,17 +30,17 @@
           </div>
         </div>
 
-        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/browse?tab=source')">
+        <div class="h-1.5 bg-[var(--glass-level-1-bg)] rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/browse?tab=source')">
           <div 
             v-if="diskUsage?.zurg?.available && systemStatus?.zurg?.exists"
             class="h-full transition-all duration-1000"
             :class="getBarClass(diskUsage.zurg.percent)"
             :style="{ width: `${diskUsage.zurg.percent}%` }"
           ></div>
-          <div v-else-if="!systemStatus?.zurg?.exists" class="h-full w-full bg-red-500 opacity-20"></div>
+          <div v-else-if="!systemStatus?.zurg?.exists" class="h-full w-full bg-[var(--status-error)] opacity-20"></div>
         </div>
 
-        <div class="flex items-center justify-between text-[10px] text-gray-500 font-medium px-0.5">
+        <div class="flex items-center justify-between text-[10px] text-[var(--win-text-muted)] font-medium px-0.5">
           <div class="flex items-center gap-3">
             <span class="flex items-center gap-1"><UIcon name="i-heroicons-document" class="w-3 h-3"/> {{ diskUsage?.zurg?.file_count || 0 }}</span>
             <span class="flex items-center gap-1"><UIcon name="i-heroicons-folder" class="w-3 h-3"/> {{ diskUsage?.zurg?.folder_count || 0 }}</span>
@@ -53,10 +53,10 @@
       <div class="space-y-3">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-2">
-            <UIcon name="i-heroicons-circle-stack" class="w-4 h-4 text-emerald-400" />
-            <span class="text-gray-300 font-bold text-sm">16TB (Dest)</span>
-            <span v-if="systemStatus?.harddrive?.exists" class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">ONLINE</span>
-            <span v-else class="text-[9px] font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">OFFLINE</span>
+            <UIcon name="i-heroicons-circle-stack" class="w-4 h-4 text-[var(--status-success)]" />
+            <span class="text-[var(--win-text-secondary)] font-bold text-sm">16TB (Dest)</span>
+            <span v-if="systemStatus?.harddrive?.exists" class="text-[9px] font-bold text-[var(--status-success)] bg-[var(--status-success)]/10 px-1.5 py-0.5 rounded border border-[var(--status-success)]/20">ONLINE</span>
+            <span v-else class="text-[9px] font-bold text-[var(--status-error)] bg-[var(--status-error)]/10 px-1.5 py-0.5 rounded border border-[var(--status-error)]/20">OFFLINE</span>
           </div>
           <div class="text-right">
             <div v-if="diskUsage?.harddrive?.available" class="text-xs font-mono font-bold" :class="getUsageColor(diskUsage.harddrive.percent)">
@@ -65,17 +65,17 @@
           </div>
         </div>
 
-        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/browse?tab=destination')">
+        <div class="h-1.5 bg-[var(--glass-level-1-bg)] rounded-full overflow-hidden border border-white/5 cursor-pointer hover:opacity-80 transition-opacity" @click="navigateTo('/browse?tab=destination')">
           <div 
             v-if="diskUsage?.harddrive?.available && systemStatus?.harddrive?.exists"
             class="h-full transition-all duration-1000"
             :class="getBarClass(diskUsage.harddrive.percent)"
             :style="{ width: `${diskUsage.harddrive.percent}%` }"
           ></div>
-          <div v-else-if="!systemStatus?.harddrive?.exists" class="h-full w-full bg-red-500 opacity-20"></div>
+          <div v-else-if="!systemStatus?.harddrive?.exists" class="h-full w-full bg-[var(--status-error)] opacity-20"></div>
         </div>
 
-        <div class="flex items-center justify-between text-[10px] text-gray-500 font-medium px-0.5">
+        <div class="flex items-center justify-between text-[10px] text-[var(--win-text-muted)] font-medium px-0.5">
           <div class="flex items-center gap-3">
             <span class="flex items-center gap-1"><UIcon name="i-heroicons-document" class="w-3 h-3"/> {{ diskUsage?.harddrive?.file_count || 0 }}</span>
             <span class="flex items-center gap-1"><UIcon name="i-heroicons-folder" class="w-3 h-3"/> {{ diskUsage?.harddrive?.folder_count || 0 }}</span>
@@ -110,9 +110,9 @@ const formatRelativeInfo = (dateString: string) => {
 }
 
 const getUsageColor = (percent: number) => {
-  if (percent >= 90) return 'text-red-400'
+  if (percent >= 90) return 'text-[var(--status-error)]'
   if (percent >= 70) return 'text-[var(--brand-1)]'
-  return 'text-emerald-400'
+  return 'text-[var(--status-success)]'
 }
 
 const getBarClass = (percent: number) => {

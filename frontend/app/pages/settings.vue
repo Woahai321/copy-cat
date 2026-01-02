@@ -6,12 +6,12 @@
       <div class="absolute top-0 right-0 w-64 h-64 bg-[var(--win-accent)]/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[var(--win-accent)]/10 transition-colors"></div>
       
       <div class="flex items-center gap-5 relative z-10">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 shadow-2xl">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--glass-level-2-bg)] to-[var(--glass-level-1-bg)] flex items-center justify-center border border-white/10 shadow-2xl">
           <UIcon name="i-heroicons-cog-6-tooth" class="w-8 h-8 text-[var(--win-accent)] animate-spin-slow" />
         </div>
         <div>
-          <h1 class="text-3xl font-bold text-white tracking-tight">Settings</h1>
-          <p class="text-sm text-gray-400 font-light">System preferences, security, and user management</p>
+          <h1 class="text-3xl font-bold text-[var(--win-text-primary)] tracking-tight">Settings</h1>
+          <p class="text-sm text-[var(--win-text-muted)] font-light">System preferences, security, and user management</p>
         </div>
       </div>
     </div>
@@ -26,66 +26,79 @@
           @click="currentTab = tab.id"
           class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm transition-all duration-300 group relative flex-shrink-0"
           :class="currentTab === tab.id 
-            ? 'bg-white/10 text-white font-bold shadow-xl border border-white/10 marquee-border' 
-            : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'"
+            ? 'bg-[var(--glass-level-2-bg)] text-[var(--win-text-primary)] font-bold shadow-xl border border-white/10 marquee-border' 
+            : 'text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] hover:bg-[var(--glass-level-1-bg)] border border-transparent'"
         >
           <div v-if="currentTab === tab.id" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[var(--win-accent)] rounded-full hidden lg:block"></div>
-          <UIcon :name="getTabIcon(tab.id)" class="w-5 h-5" :class="currentTab === tab.id ? 'text-[var(--win-accent)]' : 'text-gray-500 group-hover:text-gray-300'" />
+          <UIcon :name="getTabIcon(tab.id)" class="w-5 h-5" :class="currentTab === tab.id ? 'text-[var(--win-accent)]' : 'text-[var(--win-text-muted)] group-hover:text-[var(--win-text-secondary)]'" />
           <span class="tracking-wide">{{ tab.label }}</span>
         </button>
       </div>
 
       <!-- Main Content Area -->
-      <div class="flex-1 min-w-0 bg-white/[0.02] glass-panel !rounded-[2rem] border-white/5 shadow-2xl overflow-hidden flex flex-col backdrop-blur-3xl">
+      <div class="flex-1 min-w-0 bg-[var(--glass-level-1-bg)] glass-panel !rounded-[2rem] border-white/5 shadow-2xl overflow-hidden flex flex-col backdrop-blur-3xl">
         <div class="flex-1 overflow-y-auto p-8 relative">
           
+          <!-- Appearance Tab -->
+          <div v-show="currentTab === 'appearance'" class="animate-fade-in-up space-y-8">
+            <div class="space-y-2">
+              <h2 class="text-xl font-bold text-[var(--win-text-primary)] flex items-center gap-3">
+                <UIcon name="i-heroicons-swatch" class="w-6 h-6 text-[var(--win-accent)]" />
+                Theme & Appearance
+              </h2>
+              <p class="text-sm text-[var(--win-text-muted)] font-light leading-relaxed">Customize the look and feel of your CopyCat interface.</p>
+            </div>
+            
+            <SettingsThemeSelector />
+          </div>
+
           <!-- Security Tab -->
           <div v-if="currentTab === 'security'" class="max-w-xl animate-fade-in-up space-y-8">
             <div class="space-y-2">
-              <h2 class="text-xl font-bold text-white flex items-center gap-3">
+              <h2 class="text-xl font-bold text-[var(--win-text-primary)] flex items-center gap-3">
                 <UIcon name="i-heroicons-lock-closed" class="w-6 h-6 text-[var(--win-accent)]" />
                 Change Password
               </h2>
-              <p class="text-sm text-gray-500 font-light leading-relaxed">Ensure your account remains secure by regularly updating your password. Use at least 8 characters with a mix of symbols.</p>
+              <p class="text-sm text-[var(--win-text-muted)] font-light leading-relaxed">Ensure your account remains secure by regularly updating your password. Use at least 8 characters with a mix of symbols.</p>
             </div>
             
             <form @submit.prevent="handleChangePassword" class="space-y-6">
               <div class="space-y-4">
                 <div class="relative group">
-                  <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Current Password</label>
+                  <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Current Password</label>
                   <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <UIcon name="i-heroicons-key" class="w-4 h-4 text-gray-600 group-focus-within:text-[var(--win-accent)] transition-colors" />
+                      <UIcon name="i-heroicons-key" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--win-accent)] transition-colors" />
                     </div>
-                    <input v-model="pwdForm.current" type="password" required class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all text-sm shadow-inner" placeholder="Enter current password" />
+                    <input v-model="pwdForm.current" type="password" required class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all text-sm shadow-inner" placeholder="Enter current password" />
                   </div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="relative group">
-                    <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">New Password</label>
+                    <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">New Password</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <UIcon name="i-heroicons-shield-check" class="w-4 h-4 text-gray-600 group-focus-within:text-[var(--win-accent)] transition-colors" />
+                        <UIcon name="i-heroicons-shield-check" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--win-accent)] transition-colors" />
                       </div>
-                      <input v-model="pwdForm.new" type="password" required class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all text-sm shadow-inner" placeholder="New password" />
+                      <input v-model="pwdForm.new" type="password" required class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all text-sm shadow-inner" placeholder="New password" />
                     </div>
                   </div>
                   
                   <div class="relative group">
-                    <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Confirm New</label>
+                    <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Confirm New</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-gray-600 group-focus-within:text-[var(--win-accent)] transition-colors" />
+                        <UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--win-accent)] transition-colors" />
                       </div>
-                      <input v-model="pwdForm.confirm" type="password" required class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all text-sm shadow-inner" placeholder="Confirm password" />
+                      <input v-model="pwdForm.confirm" type="password" required class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all text-sm shadow-inner" placeholder="Confirm password" />
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="pt-4 flex justify-end">
-                <button type="submit" class="min-w-[180px] bg-white text-black hover:bg-white/90 disabled:opacity-50 rounded-2xl py-4 px-8 text-xs font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 active:scale-95" :disabled="loading">
+                <button type="submit" class="min-w-[180px] bg-[var(--win-text-primary)] text-[var(--win-bg-base)] hover:bg-[var(--win-text-primary)]/90 disabled:opacity-50 rounded-2xl py-4 px-8 text-xs font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 active:scale-95" :disabled="loading">
                   <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
                   <span>Update Password</span>
                 </button>
@@ -97,11 +110,11 @@
           <div v-show="currentTab === 'users'" class="animate-fade-in-up space-y-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
-                <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                <h2 class="text-xl font-bold text-[var(--win-text-primary)] flex items-center gap-3">
                   <UIcon name="i-heroicons-user-group" class="w-6 h-6 text-[var(--win-accent)]" />
                   User Management
                 </h2>
-                <p class="text-sm text-gray-500 font-light">Add or remove users and manage access privileges.</p>
+                <p class="text-sm text-[var(--win-text-muted)] font-light">Add or remove users and manage access privileges.</p>
               </div>
               <button @click="showAddUserModal = true" class="px-6 py-3.5 bg-[var(--win-accent)]/10 text-[var(--win-accent)] border border-[var(--win-accent)]/30 hover:bg-[var(--win-accent)]/20 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2">
                 <UIcon name="i-heroicons-user-plus" class="w-4 h-4" />
@@ -109,10 +122,10 @@
               </button>
             </div>
 
-            <div class="bg-white/[0.02] border border-white/5 rounded-[2rem] overflow-hidden">
+            <div class="bg-[var(--glass-level-1-bg)] border border-white/5 rounded-[2rem] overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                  <thead class="bg-white/[0.03] text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500 border-b border-white/5">
+                  <thead class="bg-[var(--glass-level-1-bg)] text-[10px] uppercase tracking-[0.2em] font-bold text-[var(--win-text-muted)] border-b border-white/5">
                     <tr>
                       <th class="px-8 py-5 font-bold">Member</th>
                       <th class="px-8 py-5 font-bold">Role</th>
@@ -121,24 +134,24 @@
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-white/[0.03]">
-                    <tr v-for="user in users" :key="user.id" class="hover:bg-white/[0.03] transition-colors group">
+                    <tr v-for="user in users" :key="user.id" class="hover:bg-[var(--glass-level-1-bg)] transition-colors group">
                       <td class="px-8 py-5">
                         <div class="flex items-center gap-3">
-                          <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-[10px] font-bold text-[var(--win-accent)] uppercase">
+                          <div class="w-8 h-8 rounded-lg bg-[var(--glass-level-1-bg)] border border-white/5 flex items-center justify-center text-[10px] font-bold text-[var(--win-accent)] uppercase">
                             {{ user.username.substring(0, 1) }}
                           </div>
-                          <span class="font-medium text-white">{{ user.username }}</span>
+                          <span class="font-medium text-[var(--win-text-primary)]">{{ user.username }}</span>
                         </div>
                       </td>
                       <td class="px-8 py-5">
                         <span 
                           class="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border"
-                          :class="user.is_admin ? 'bg-[var(--brand-1)]/10 text-[var(--brand-1)] border-[var(--brand-1)]/20 shadow-[0_0_10px_rgba(96,205,255,0.1)]' : 'bg-white/5 text-gray-400 border-white/10'"
+                          :class="user.is_admin ? 'bg-[var(--brand-1)]/10 text-[var(--brand-1)] border-[var(--brand-1)]/20 shadow-[0_0_10px_rgba(96,205,255,0.1)]' : 'bg-[var(--glass-level-1-bg)] text-[var(--win-text-muted)] border-white/10'"
                         >
                           {{ user.is_admin ? 'Admin' : 'User' }}
                         </span>
                       </td>
-                      <td class="px-8 py-5 text-gray-500 font-light">{{ formatDate(user.created_at) }}</td>
+                      <td class="px-8 py-5 text-[var(--win-text-muted)] font-light">{{ formatDate(user.created_at) }}</td>
                       <td class="px-8 py-5 text-right font-mono text-[var(--win-accent)]/50 group-hover:text-[var(--win-accent)] transition-colors">#0{{ user.id }}</td>
                     </tr>
                   </tbody>
@@ -150,17 +163,17 @@
           <!-- System Tab (Settings) -->
           <div v-show="currentTab === 'system'" class="animate-fade-in-up max-w-3xl space-y-10">
              <div>
-                <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                <h2 class="text-xl font-bold text-[var(--win-text-primary)] flex items-center gap-3">
                   <UIcon name="i-heroicons-cpu-chip" class="w-6 h-6 text-[var(--win-accent)]" />
                   System Configuration
                 </h2>
-                <p class="text-sm text-gray-500 font-light">Configure application settings and paths.</p>
+                <p class="text-sm text-[var(--win-text-muted)] font-light">Configure application settings and paths.</p>
              </div>
              
              <form @submit.prevent="handleUpdateSystemSettings" class="space-y-10">
                 <!-- Trakt Section -->
                 <div class="space-y-6 relative">
-                   <div class="flex items-center gap-4 text-white font-bold text-xs uppercase tracking-[0.2em]">
+                   <div class="flex items-center gap-4 text-[var(--win-text-primary)] font-bold text-xs uppercase tracking-[0.2em]">
                       <div class="w-8 h-8 rounded-lg bg-[var(--brand-1)]/10 border border-[var(--brand-1)]/20 flex items-center justify-center">
                         <UIcon name="i-heroicons-sparkles" class="w-4 h-4 text-[var(--brand-1)]" />
                       </div>
@@ -168,20 +181,20 @@
                    </div>
                    
                    <div class="relative group">
-                      <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Trakt API Key (Masked)</label>
+                      <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Trakt API Key (Masked)</label>
                       <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <UIcon name="i-heroicons-finger-print" class="w-4 h-4 text-gray-600 group-focus-within:text-[var(--brand-1)] transition-colors" />
+                          <UIcon name="i-heroicons-finger-print" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--brand-1)] transition-colors" />
                         </div>
-                        <input v-model="systemForm.trakt_client_id" type="password" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-[var(--brand-1)]/50 focus:bg-white/[0.05] transition-all font-mono text-sm shadow-inner" placeholder="Leave empty to maintain existing key" />
+                        <input v-model="systemForm.trakt_client_id" type="password" class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--brand-1)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all font-mono text-sm shadow-inner" placeholder="Leave empty to maintain existing key" />
                       </div>
-                      <p class="text-[10px] text-gray-600 mt-2 ml-1 italic font-light">Fetch posters and ratings from your Trakt application dashboard.</p>
+                      <p class="text-[10px] text-[var(--win-text-secondary)] mt-2 ml-1 italic font-light">Fetch posters and ratings from your Trakt application dashboard.</p>
                    </div>
                 </div>
 
                 <!-- Library Paths -->
                 <div class="space-y-6">
-                   <div class="flex items-center gap-4 text-white font-bold text-xs uppercase tracking-[0.2em]">
+                   <div class="flex items-center gap-4 text-[var(--win-text-primary)] font-bold text-xs uppercase tracking-[0.2em]">
                       <div class="w-8 h-8 rounded-lg bg-[var(--brand-10)]/10 border border-[var(--brand-10)]/20 flex items-center justify-center">
                         <UIcon name="i-heroicons-rectangle-stack" class="w-4 h-4 text-[var(--brand-10)]" />
                       </div>
@@ -190,21 +203,21 @@
     
                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div class="relative group">
-                        <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Movies Path</label>
+                        <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Movies Path</label>
                         <div class="relative">
                           <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <UIcon name="i-heroicons-film" class="w-4 h-4 text-gray-600 group-focus-within:text-[var(--brand-10)] transition-colors" />
+                            <UIcon name="i-heroicons-film" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--brand-10)] transition-colors" />
                           </div>
-                          <input v-model="systemForm.default_movies_path" type="text" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-[var(--brand-10)]/50 focus:bg-white/[0.05] transition-all font-mono text-sm shadow-inner" placeholder="/mnt/destination/movies" />
+                          <input v-model="systemForm.default_movies_path" type="text" class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--brand-10)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all font-mono text-sm shadow-inner" placeholder="/mnt/destination/movies" />
                         </div>
                       </div>
                       <div class="relative group">
-                        <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">TV Shows Path</label>
+                        <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">TV Shows Path</label>
                         <div class="relative">
                           <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <UIcon name="i-heroicons-tv" class="w-4 h-4 text-gray-600 group-focus-within:text-[var(--brand-10)] transition-colors" />
+                            <UIcon name="i-heroicons-tv" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--brand-10)] transition-colors" />
                           </div>
-                          <input v-model="systemForm.default_series_path" type="text" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-[var(--brand-10)]/50 focus:bg-white/[0.05] transition-all font-mono text-sm shadow-inner" placeholder="/mnt/destination/shows" />
+                          <input v-model="systemForm.default_series_path" type="text" class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--brand-10)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all font-mono text-sm shadow-inner" placeholder="/mnt/destination/shows" />
                         </div>
                       </div>
                    </div>
@@ -212,68 +225,68 @@
 
                 <!-- Automated Scanning -->
                 <div class="space-y-6">
-                   <div class="flex items-center gap-4 text-white font-bold text-xs uppercase tracking-[0.2em]">
-                      <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                        <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 text-emerald-400" />
+                   <div class="flex items-center gap-4 text-[var(--win-text-primary)] font-bold text-xs uppercase tracking-[0.2em]">
+                      <div class="w-8 h-8 rounded-lg bg-[var(--glass-level-2-bg)] border border-[var(--status-success)]/20 flex items-center justify-center">
+                        <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 text-[var(--status-success)]" />
                       </div>
                       <span>Automated Scanning</span>
                    </div>
 
                    <div class="relative group">
-                      <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Scan Interval (Seconds)</label>
+                      <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Scan Interval (Seconds)</label>
                       <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <UIcon name="i-heroicons-clock" class="w-4 h-4 text-gray-600 group-focus-within:text-emerald-400 transition-colors" />
+                          <UIcon name="i-heroicons-clock" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--status-success)] transition-colors" />
                         </div>
-                        <input v-model.number="systemForm.scan_interval_seconds" type="number" min="30" max="86400" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-emerald-500/50 focus:bg-white/[0.05] transition-all font-mono text-sm shadow-inner" placeholder="300" />
+                        <input v-model.number="systemForm.scan_interval_seconds" type="number" min="30" max="86400" class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--status-success)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all font-mono text-sm shadow-inner" placeholder="300" />
                       </div>
-                      <p class="text-[10px] text-gray-600 mt-2 ml-1 italic font-light">How often to scan for new media files (minimum 30 seconds, maximum 24 hours).</p>
+                      <p class="text-[10px] text-[var(--win-text-secondary)] mt-2 ml-1 italic font-light">How often to scan for new media files (minimum 30 seconds, maximum 24 hours).</p>
                    </div>
                 </div>
 
                 <!-- Discord Notifications -->
                 <div class="space-y-6">
-                   <div class="flex items-center gap-4 text-white font-bold text-xs uppercase tracking-[0.2em]">
+                   <div class="flex items-center gap-4 text-[var(--win-text-primary)] font-bold text-xs uppercase tracking-[0.2em]">
                       <div class="w-8 h-8 rounded-lg bg-[var(--brand-8)]/10 border border-[var(--brand-8)]/20 flex items-center justify-center">
                         <UIcon name="i-heroicons-bell-alert" class="w-4 h-4 text-[var(--brand-8)]" />
                       </div>
                       <span>Discord Notifications</span>
-                      <span v-if="discordConfigured" class="ml-auto text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-lg border border-emerald-500/20">Connected</span>
+                      <span v-if="discordConfigured" class="ml-auto text-[10px] bg-[var(--glass-level-2-bg)] text-[var(--status-success)] px-2 py-1 rounded-lg border border-[var(--status-success)]/20">Connected</span>
                    </div>
 
                    <div class="relative group">
-                      <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Webhook URL</label>
+                      <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Webhook URL</label>
                       <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <UIcon name="i-heroicons-link" class="w-4 h-4 text-gray-600 group-focus-within:text-[var(--brand-8)] transition-colors" />
+                          <UIcon name="i-heroicons-link" class="w-4 h-4 text-[var(--win-text-secondary)] group-focus-within:text-[var(--brand-8)] transition-colors" />
                         </div>
-                        <input v-model="systemForm.discord_webhook_url" type="password" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-[var(--brand-8)]/50 focus:bg-white/[0.05] transition-all font-mono text-sm shadow-inner" placeholder="https://discord.com/api/webhooks/..." />
+                        <input v-model="systemForm.discord_webhook_url" type="password" class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--brand-8)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all font-mono text-sm shadow-inner" placeholder="https://discord.com/api/webhooks/..." />
                       </div>
-                      <p class="text-[10px] text-gray-600 mt-2 ml-1 italic font-light">Paste your Discord channel webhook URL to receive notifications.</p>
+                      <p class="text-[10px] text-[var(--win-text-secondary)] mt-2 ml-1 italic font-light">Paste your Discord channel webhook URL to receive notifications.</p>
                    </div>
 
-                   <div class="flex flex-col gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                   <div class="flex flex-col gap-4 p-4 rounded-2xl bg-[var(--glass-level-1-bg)] border border-white/5">
                       <label class="flex items-center gap-3 cursor-pointer group">
                         <div class="relative flex items-center">
                           <input v-model="systemForm.discord_notify_success" type="checkbox" class="sr-only peer" />
-                          <div class="w-10 h-5 bg-white/10 rounded-full peer-checked:bg-emerald-500 transition-all"></div>
-                          <div class="absolute left-1 top-1 w-3 h-3 bg-white/50 rounded-full transition-all peer-checked:left-6 peer-checked:bg-white"></div>
+                          <div class="w-10 h-5 bg-[var(--glass-level-3-bg)] rounded-full peer-checked:bg-[var(--win-text-primary)] transition-all"></div>
+                          <div class="absolute left-1 top-1 w-3 h-3 bg-[var(--win-text-primary)]/50 rounded-full transition-all peer-checked:left-6 peer-checked:bg-[var(--win-bg-base)]"></div>
                         </div>
                         <div class="flex flex-col">
-                          <span class="text-xs font-bold text-white">Notify on Success</span>
-                          <span class="text-[10px] text-gray-500 font-light">Send notification when copy jobs complete.</span>
+                          <span class="text-xs font-bold text-[var(--win-text-primary)]">Notify on Success</span>
+                          <span class="text-[10px] text-[var(--win-text-muted)] font-light">Send notification when copy jobs complete.</span>
                         </div>
                       </label>
                       
                       <label class="flex items-center gap-3 cursor-pointer group">
                         <div class="relative flex items-center">
                           <input v-model="systemForm.discord_notify_failure" type="checkbox" class="sr-only peer" />
-                          <div class="w-10 h-5 bg-white/10 rounded-full peer-checked:bg-rose-500 transition-all"></div>
-                          <div class="absolute left-1 top-1 w-3 h-3 bg-white/50 rounded-full transition-all peer-checked:left-6 peer-checked:bg-white"></div>
+                          <div class="w-10 h-5 bg-[var(--glass-level-3-bg)] rounded-full peer-checked:bg-[var(--win-text-primary)] transition-all"></div>
+                          <div class="absolute left-1 top-1 w-3 h-3 bg-[var(--win-text-primary)]/50 rounded-full transition-all peer-checked:left-6 peer-checked:bg-[var(--win-bg-base)]"></div>
                         </div>
                         <div class="flex flex-col">
-                          <span class="text-xs font-bold text-white">Notify on Failure</span>
-                          <span class="text-[10px] text-gray-500 font-light">Send notification when copy jobs fail or are cancelled.</span>
+                          <span class="text-xs font-bold text-[var(--win-text-primary)]">Notify on Failure</span>
+                          <span class="text-[10px] text-[var(--win-text-muted)] font-light">Send notification when copy jobs fail or are cancelled.</span>
                         </div>
                       </label>
                    </div>
@@ -291,7 +304,7 @@
                 </div>
 
                 <div class="pt-4 flex justify-end">
-                   <button type="submit" class="min-w-[180px] bg-white text-black hover:bg-white/90 disabled:opacity-50 rounded-2xl py-4 px-8 text-xs font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-3 active:scale-95" :disabled="loading">
+                   <button type="submit" class="min-w-[180px] bg-[var(--win-text-primary)] text-[var(--win-bg-base)] hover:bg-[var(--win-text-primary)]/90 disabled:opacity-50 rounded-2xl py-4 px-8 text-xs font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-3 active:scale-95" :disabled="loading">
                       <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
                       <span>Save Changes</span>
                    </button>
@@ -301,38 +314,38 @@
 
           <!-- About Tab -->
           <div v-show="currentTab === 'about'" class="animate-fade-in-up space-y-10 max-w-2xl">
-              <div class="flex items-center gap-6 p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 shadow-2xl relative overflow-hidden group">
+              <div class="flex items-center gap-6 p-8 rounded-[2.5rem] bg-[var(--glass-level-1-bg)] border border-white/5 shadow-2xl relative overflow-hidden group">
                 <div class="absolute -top-12 -left-12 w-48 h-48 bg-[var(--win-accent)]/10 blur-[60px] rounded-full animate-pulse-slow"></div>
                 
                 <div class="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 shadow-inner flex-shrink-0 relative z-10">
                   <UIcon name="i-heroicons-cube-transparent" class="w-12 h-12 text-[var(--win-accent)]" />
                 </div>
                 <div class="relative z-10">
-                  <h3 class="text-3xl font-bold text-white tracking-tighter mb-1">CopyCat OS</h3>
+                  <h3 class="text-3xl font-bold text-[var(--win-text-primary)] tracking-tighter mb-1">CopyCat OS</h3>
                   <div class="flex items-center gap-3">
                     <span class="px-3 py-1 bg-[var(--win-accent)]/20 text-[var(--win-accent)] rounded-full text-[10px] font-bold tracking-[0.2em] uppercase">v0.0.1 Stable</span>
-                    <span class="text-gray-500 text-xs font-light tracking-wide italic">"Perfect synchronization"</span>
+                    <span class="text-[var(--win-text-secondary)] text-xs font-light tracking-wide italic">"Perfect synchronization"</span>
                   </div>
                 </div>
               </div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Status Cards -->
-                <div v-for="stat in systemStats" :key="stat.label" class="p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors group">
+                <div v-for="stat in systemStats" :key="stat.label" class="p-6 rounded-3xl bg-[var(--glass-level-1-bg)] border border-white/5 hover:bg-[var(--glass-level-2-bg)] transition-colors group">
                   <div class="flex items-center justify-between mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5 text-gray-400 group-hover:text-white transition-colors">
+                    <div class="w-10 h-10 rounded-xl bg-[var(--glass-level-1-bg)] flex items-center justify-center border border-white/5 text-[var(--win-text-muted)] group-hover:text-[var(--win-text-primary)] transition-colors">
                       <UIcon :name="stat.icon" class="w-5 h-5" />
                     </div>
-                    <span :class="stat.colorClass" class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-white/5">
+                    <span :class="stat.colorClass" class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-[var(--glass-level-2-bg)]">
                       {{ stat.status }}
                     </span>
                   </div>
-                  <div class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">{{ stat.label }}</div>
-                  <div class="text-white font-medium mt-1">{{ stat.value }}</div>
+                  <div class="text-[10px] uppercase tracking-[0.2em] text-[var(--win-text-muted)] font-bold">{{ stat.label }}</div>
+                  <div class="text-[var(--win-text-primary)] font-medium mt-1">{{ stat.value }}</div>
                 </div>
               </div>
               
-              <div class="p-5 rounded-2xl bg-black/40 border border-white/5 text-[10px] text-center text-gray-600 font-mono tracking-widest uppercase">
+              <div class="p-5 rounded-2xl bg-[var(--glass-level-3-bg)] border border-white/5 text-[10px] text-center text-[var(--win-text-secondary)] font-mono tracking-widest uppercase">
                 System Online • Authorized Access Only
               </div>
           </div>
@@ -342,7 +355,7 @@
     </div>
 
     <!-- Add User Modal (Enhanced Glass) -->
-    <div v-if="showAddUserModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-md bg-black/40" @click.self="showAddUserModal = false">
+    <div v-if="showAddUserModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-md bg-[var(--glass-level-4-bg)]" @click.self="showAddUserModal = false">
       <div class="glass-panel w-full max-w-md p-10 !rounded-[2.5rem] border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] animate-zoom-in relative overflow-hidden">
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-[var(--win-accent)]/10 blur-3xl rounded-full"></div>
         
@@ -352,42 +365,42 @@
               <UIcon name="i-heroicons-user-plus" class="w-6 h-6 text-[var(--win-accent)]" />
             </div>
             <div>
-              <h3 class="text-2xl font-bold text-white tracking-tight">Add New User</h3>
-              <p class="text-xs text-gray-500 font-light">Create a new user account.</p>
+              <h3 class="text-2xl font-bold text-[var(--win-text-primary)] tracking-tight">Add New User</h3>
+              <p class="text-xs text-[var(--win-text-muted)] font-light">Create a new user account.</p>
             </div>
           </div>
           
           <form @submit.prevent="handleAddUser" class="space-y-6">
             <div class="space-y-4">
               <div class="relative group">
-                <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Username</label>
-                <input v-model="newUserForm.username" type="text" required class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 px-5 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all text-sm" placeholder="Member name" />
+                <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Username</label>
+                <input v-model="newUserForm.username" type="text" required class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 px-5 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all text-sm" placeholder="Member name" />
               </div>
 
               <div class="relative group">
-                <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2 block ml-1">Password</label>
-                <input v-model="newUserForm.password" type="password" required class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 px-5 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all text-sm" placeholder="Secret key" />
+                <label class="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--win-text-muted)] mb-2 block ml-1">Password</label>
+                <input v-model="newUserForm.password" type="password" required class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-4 px-5 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all text-sm" placeholder="Secret key" />
               </div>
 
-              <label class="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+              <label class="flex items-center gap-3 p-4 rounded-2xl bg-[var(--glass-level-1-bg)] border border-white/5 hover:bg-[var(--glass-level-2-bg)] transition-all cursor-pointer group">
                 <div class="relative flex items-center">
                   <input v-model="newUserForm.isAdmin" type="checkbox" class="sr-only peer" />
-                  <div class="w-10 h-5 bg-white/10 rounded-full peer-checked:bg-[var(--win-accent)] transition-all"></div>
-                  <div class="absolute left-1 top-1 w-3 h-3 bg-white/50 rounded-full transition-all peer-checked:left-6 peer-checked:bg-white"></div>
+                  <div class="w-10 h-5 bg-[var(--glass-level-3-bg)] rounded-full peer-checked:bg-[var(--win-accent)] transition-all"></div>
+                  <div class="absolute left-1 top-1 w-3 h-3 bg-[var(--glass-level-2-bg)] rounded-full transition-all peer-checked:left-6 peer-checked:bg-[var(--win-bg-base)]"></div>
                 </div>
                 <div class="flex flex-col">
-                  <span class="text-xs font-bold text-white uppercase tracking-wider">Admin Access</span>
-                  <span class="text-[10px] text-gray-500 font-light">Grant administrative privileges.</span>
+                  <span class="text-xs font-bold text-[var(--win-text-primary)] uppercase tracking-wider">Admin Access</span>
+                  <span class="text-[10px] text-[var(--win-text-muted)] font-light">Grant administrative privileges.</span>
                 </div>
               </label>
             </div>
 
             <div class="flex flex-col gap-3 pt-2">
-              <button type="submit" class="w-full bg-white text-black hover:bg-white/90 disabled:opacity-50 rounded-2xl py-4 text-xs font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-2" :disabled="loading">
+              <button type="submit" class="w-full bg-[var(--win-text-primary)] text-[var(--win-bg-base)] hover:bg-[var(--win-text-primary)]/90 disabled:opacity-50 rounded-2xl py-4 text-xs font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-2" :disabled="loading">
                 <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
                 <span>Create User</span>
               </button>
-              <button type="button" @click="showAddUserModal = false" class="w-full py-4 text-[10px] text-gray-500 hover:text-white uppercase tracking-[0.3em] font-bold transition-colors">Cancel</button>
+              <button type="button" @click="showAddUserModal = false" class="w-full py-4 text-[10px] text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] uppercase tracking-[0.3em] font-bold transition-colors">Cancel</button>
             </div>
           </form>
         </div>
@@ -412,6 +425,7 @@ const discordConfigured = ref(false)
 const testingDiscord = ref(false)
 
 const tabs = reactive([
+  { id: 'appearance', label: 'Appearance' },
   { id: 'security', label: 'Security' },
   { id: 'system', label: 'System' },
   { id: 'users', label: 'Users' },
@@ -420,6 +434,7 @@ const tabs = reactive([
 
 const getTabIcon = (id: string) => {
   switch(id) {
+    case 'appearance': return 'i-heroicons-swatch'
     case 'security': return 'i-heroicons-shield-check'
     case 'system': return 'i-heroicons-cpu-chip'
     case 'users': return 'i-heroicons-user-group'
@@ -429,13 +444,13 @@ const getTabIcon = (id: string) => {
 }
 
 const systemStats = reactive([
-  { label: 'System Status', icon: 'i-heroicons-cpu-chip', value: 'CopyCat Engine v2', status: 'Optimal', colorClass: 'text-green-400' },
+  { label: 'System Status', icon: 'i-heroicons-cpu-chip', value: 'CopyCat Engine v2', status: 'Optimal', colorClass: 'text-[var(--status-success)]' },
   { label: 'Trakt Status', icon: 'i-heroicons-sparkles', value: 'Trakt Protocol', status: 'Linked', colorClass: 'text-[var(--brand-1)]' },
   { label: 'Total Users', icon: 'i-heroicons-user-group', value: 'Loading...', status: 'Active', colorClass: 'text-[var(--brand-10)]' },
-  { label: 'Security', icon: 'i-heroicons-shield-exclamation', value: 'JWT Encrypted', status: 'Secured', colorClass: 'text-emerald-400' }
+  { label: 'Security', icon: 'i-heroicons-shield-exclamation', value: 'JWT Encrypted', status: 'Secured', colorClass: 'text-[var(--status-success)]' }
 ])
 
-const currentTab = ref('security')
+const currentTab = ref('appearance')
 const loading = ref(false)
 const users = ref<any[]>([])
 const currentUser = ref<any>(null)
@@ -480,7 +495,7 @@ const loadSystemSettings = async () => {
         discordConfigured.value = data.discord_webhook_configured || false
         
         systemStats[1].status = data.trakt_configured ? 'Linked' : 'Offline'
-        systemStats[1].colorClass = data.trakt_configured ? 'text-[var(--brand-1)]' : 'text-red-400'
+        systemStats[1].colorClass = data.trakt_configured ? 'text-[var(--brand-1)]' : 'text-[var(--status-error)]'
     } catch (e) {
         console.error("Failed to load settings", e)
     }
@@ -636,7 +651,8 @@ watch(currentTab, (newTab) => {
 }
 
 input::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--win-text-muted);
+  opacity: 0.5;
   font-weight: 300;
 }
 </style>

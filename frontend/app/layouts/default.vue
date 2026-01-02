@@ -28,14 +28,14 @@
                     <img src="/copycat.webp" alt="CopyCat Logo" class="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(96,205,255,0.6)]" />
                 </div>
                 <div>
-                   <h1 class="text-base font-bold text-white leading-tight tracking-wide">Copy<span class="text-[var(--brand-1)]">Cat</span></h1>
-                   <p class="text-[10px] uppercase tracking-wider text-white/50 font-semibold">System v0.0.1</p>
+                   <h1 class="text-base font-bold text-[var(--win-text-primary)] leading-tight tracking-wide">Copy<span class="text-[var(--brand-1)]">Cat</span></h1>
+                   <p class="text-[10px] uppercase tracking-wider text-[var(--win-text-muted)] font-semibold">System v0.0.1</p>
                 </div>
             </div>
             <!-- Close Toggle (Desktop/Mobile) -->
              <button
               @click="sidebarOpen = !sidebarOpen"
-              class="text-white/50 hover:text-white transition-colors p-1"
+              class="text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] transition-colors p-1"
               :aria-label="sidebarOpen ? 'Close menu' : 'Open menu'"
             >
               <UIcon name="i-heroicons-chevron-double-left" class="w-5 h-5" />
@@ -54,36 +54,7 @@
             <span class="truncate">Dashboard</span>
           </NuxtLink>
 
-          <NuxtLink
-            to="/library"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
-            <UIcon name="i-heroicons-film" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">Library</span>
-          </NuxtLink>
-
-          <NuxtLink
-            to="/copy-wizard"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
-            <UIcon name="i-heroicons-sparkles" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">Copy Wizard</span>
-          </NuxtLink>
-          
-          <NuxtLink
-            to="/browse"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
-            <UIcon name="i-heroicons-folder-open" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">File Explorer</span>
-          </NuxtLink>
-          
+          <!-- Queue -->
           <NuxtLink
             to="/queue"
             class="sidebar-nav-item"
@@ -96,17 +67,99 @@
               {{ activeJobsCount }}
             </span>
           </NuxtLink>
+
+          <!-- Library Group -->
+          <div class="space-y-1">
+             <button 
+               @click="libraryMenuOpen = !libraryMenuOpen"
+               class="sidebar-nav-item w-full justify-between group"
+               :class="{ 'text-[var(--win-text-primary)]': libraryMenuOpen }"
+             >
+               <div class="flex items-center gap-3">
+                 <UIcon name="i-heroicons-building-library" class="w-5 h-5 flex-shrink-0" />
+                 <span class="truncate">Library</span>
+               </div>
+               <UIcon 
+                 name="i-heroicons-chevron-right" 
+                 class="w-4 h-4 transition-transform duration-200"
+                 :class="{ 'rotate-90': libraryMenuOpen }"
+               />
+             </button>
+             
+             <!-- Dropdown Items -->
+             <div v-show="libraryMenuOpen" class="space-y-0.5 animate-in slide-in-from-top-2 duration-200">
+               <NuxtLink
+                 to="/library"
+                 class="sidebar-nav-item !pl-11 !py-2 !text-xs"
+                 active-class="active"
+                 @click="closeSidebarOnMobile"
+               >
+                 <UIcon name="i-heroicons-film" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                 <span class="truncate">Media Library</span>
+               </NuxtLink>
+               <NuxtLink
+                 to="/copy-wizard"
+                 class="sidebar-nav-item !pl-11 !py-2 !text-xs"
+                 active-class="active"
+                 @click="closeSidebarOnMobile"
+               >
+                 <UIcon name="i-heroicons-sparkles" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                 <span class="truncate">Copy Wizard</span>
+               </NuxtLink>
+               <NuxtLink
+                 to="/browse"
+                 class="sidebar-nav-item !pl-11 !py-2 !text-xs"
+                 active-class="active"
+                 @click="closeSidebarOnMobile"
+               >
+                 <UIcon name="i-heroicons-folder-open" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                 <span class="truncate">File Explorer</span>
+               </NuxtLink>
+             </div>
+          </div>
+
+          <!-- Analytics Group -->
+          <div class="space-y-1">
+            <button 
+               @click="analyticsMenuOpen = !analyticsMenuOpen"
+               class="sidebar-nav-item w-full justify-between group"
+               :class="{ 'text-[var(--win-text-primary)]': analyticsMenuOpen }"
+             >
+               <div class="flex items-center gap-3">
+                 <UIcon name="i-heroicons-chart-bar" class="w-5 h-5 flex-shrink-0" />
+                 <span class="truncate">Analytics</span>
+               </div>
+               <UIcon 
+                 name="i-heroicons-chevron-right" 
+                 class="w-4 h-4 transition-transform duration-200"
+                 :class="{ 'rotate-90': analyticsMenuOpen }"
+               />
+             </button>
+             
+             <!-- Dropdown Items -->
+             <div v-show="analyticsMenuOpen" class="space-y-0.5 animate-in slide-in-from-top-2 duration-200">
+               <NuxtLink
+                to="/stats"
+                class="sidebar-nav-item !pl-11 !py-2 !text-xs"
+                active-class="active"
+                @click="closeSidebarOnMobile"
+              >
+                <UIcon name="i-heroicons-chart-pie" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                <span class="truncate">Statistics</span>
+              </NuxtLink>
+              <NuxtLink
+                to="/history"
+                class="sidebar-nav-item !pl-11 !py-2 !text-xs"
+                active-class="active"
+                @click="closeSidebarOnMobile"
+              >
+                <UIcon name="i-heroicons-clock" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                <span class="truncate">History</span>
+              </NuxtLink>
+             </div>
+          </div>
           
-          <NuxtLink
-            to="/history"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
-            <UIcon name="i-heroicons-clock" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">History</span>
-          </NuxtLink>
-          
+
           <NuxtLink
             to="/settings"
             class="sidebar-nav-item"
@@ -116,34 +169,25 @@
             <UIcon name="i-heroicons-cog-6-tooth" class="w-5 h-5 flex-shrink-0" />
             <span class="truncate">Settings</span>
           </NuxtLink>
-          <NuxtLink
-            to="/stats"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
-            <UIcon name="i-heroicons-chart-pie" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">Statistics</span>
-          </NuxtLink>
         </nav>
 
         <!-- User section -->
-        <div class="px-4 py-4 border-t border-white/5 bg-black/20 backdrop-blur-sm">
+        <div class="px-4 py-4 border-t border-white/5 bg-[var(--glass-level-2-bg)] backdrop-blur-sm">
           <div class="flex items-center gap-3 mb-3 px-1">
             <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center flex-shrink-0 border border-white/10 shadow-lg">
               <UIcon name="i-heroicons-user" class="w-4 h-4 text-gray-300" />
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold text-white truncate">Admin</p>
+              <p class="text-sm font-semibold text-[var(--win-text-primary)] truncate">{{ currentUser?.username || 'User' }}</p>
               <div class="flex items-center gap-1.5">
-                  <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></div>
-                  <p class="text-xs text-gray-400">Online</p>
+                  <div class="w-1.5 h-1.5 rounded-full bg-[var(--status-success)] shadow-[0_0_5px_rgba(16,185,129,0.5)]"></div>
+                  <p class="text-xs text-[var(--win-text-muted)]">Online</p>
               </div>
             </div>
           </div>
           <button
             @click="handleLogout"
-            class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5 rounded-lg transition-all"
+            class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] hover:bg-white/5 border border-transparent hover:border-white/5 rounded-lg transition-all"
           >
             <UIcon name="i-heroicons-arrow-right-on-rectangle" class="w-4 h-4" />
             <span>Sign out</span>
@@ -168,7 +212,7 @@
       <button
           v-if="!sidebarOpen"
           @click="sidebarOpen = true"
-          class="fixed top-4 left-4 z-50 p-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-lg text-white shadow-lg hover:bg-white/10 transition-colors"
+          class="fixed top-4 left-4 z-50 p-2 bg-[var(--glass-level-3-bg)] backdrop-blur-md border border-white/10 rounded-lg text-white shadow-lg hover:bg-[var(--glass-level-4-bg)] transition-colors"
           aria-label="Open menu"
         >
           <UIcon name="i-heroicons-bars-3" class="w-6 h-6" />
@@ -179,7 +223,7 @@
            <div class="flex items-start gap-3">
            <UIcon name="i-heroicons-exclamation-triangle" class="w-6 h-6 text-[var(--brand-1)] flex-shrink-0" />
            <div>
-             <h3 class="text-sm font-bold text-white">System Configuration Issue</h3>
+             <h3 class="text-sm font-bold text-[var(--win-text-primary)]">System Configuration Issue</h3>
              <p class="text-xs text-[var(--brand-1)]/70">{{ systemWarning }}</p>
            </div>
         </div>
@@ -208,6 +252,8 @@ if (process.client) {
 
 // Persist sidebar state
 const sidebarOpen = useState('sidebarOpen', () => true) 
+const libraryMenuOpen = useState('libraryMenuOpen', () => true)
+const analyticsMenuOpen = useState('analyticsMenuOpen', () => true)
 const activeJobsCount = ref(0)
 const systemWarning = ref<string | null>(null)
 const currentUser = ref<any>(null)
@@ -216,6 +262,7 @@ const handleLogout = () => {
   logout()
   navigateTo('/login')
 }
+
 
 const checkSystemStatus = async () => {
     try {
@@ -355,10 +402,10 @@ watch(() => route.path, () => {
 }
 
 .sidebar-nav-item.active {
-    background: linear-gradient(90deg, rgba(96, 205, 255, 0.1) 0%, transparent 100%);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--win-accent), transparent 90%) 0%, transparent 100%);
     color: white;
     font-weight: 600;
-    border: 1px solid rgba(96, 205, 255, 0.1);
+    border: 1px solid color-mix(in srgb, var(--win-accent), transparent 90%);
 }
 
 /* Active Pill Indicator */
@@ -378,7 +425,7 @@ watch(() => route.path, () => {
 @media (max-width: 767px) {
   .sidebar {
     width: 280px;
-    background: #202020; /* Solid on mobile for perf */
+    background: var(--win-bg-base); /* Solid on mobile for perf */
   }
    .hamburger-toggle {
     display: flex; /* Show on mobile */

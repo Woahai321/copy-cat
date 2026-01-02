@@ -1,6 +1,6 @@
 export default defineAppConfig({
     ui: {
-        primary: 'cyan',
+        primary: 'brand',
         gray: 'neutral',
         card: {
             base: 'glass-panel transition-all duration-300',
@@ -9,7 +9,7 @@ export default defineAppConfig({
             ring: 'ring-1 ring-white/10',
             shadow: 'shadow-none',
             body: {
-                base: 'text-white'
+                base: 'text-[var(--win-text-primary)]'
             },
             header: {
                 base: 'border-b border-white/10'
@@ -24,7 +24,7 @@ export default defineAppConfig({
         },
         input: {
             rounded: 'rounded-lg',
-            base: 'bg-white/5 border-white/10 text-white focus:ring-cyan-500 focus:border-cyan-500 placeholder-white/30'
+            base: 'bg-[var(--glass-level-1-bg)] border-white/10 text-[var(--win-text-primary)] focus:ring-cyan-500 focus:border-cyan-500 placeholder-[var(--win-text-muted)]'
         }
     }
 })

@@ -25,48 +25,48 @@
           <div class="flex flex-col items-center gap-3 z-10">
               <div 
                 class="w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-500 shadow-2xl relative group"
-                :class="step >= 1 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-white/5 text-gray-500'"
+                :class="step >= 1 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-[var(--glass-level-1-bg)] text-[var(--win-text-muted)]'"
               >
                   <div v-if="step === 1" class="absolute -inset-1 bg-[var(--win-accent)]/20 blur-sm rounded-xl animate-pulse"></div>
                   <UIcon name="i-heroicons-sparkles" class="w-5 h-5 relative z-10" />
               </div>
-              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 1 ? 'text-[var(--win-accent)]' : 'text-gray-500'">Metadata</span>
+              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 1 ? 'text-[var(--win-accent)]' : 'text-[var(--win-text-muted)]'">Metadata</span>
           </div>
 
           <!-- Step 2: Movies -->
           <div class="flex flex-col items-center gap-3 z-10">
               <div 
                 class="w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-500 shadow-2xl relative"
-                :class="step >= 2 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-white/5 text-gray-500'"
+                :class="step >= 2 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-[var(--glass-level-1-bg)] text-[var(--win-text-muted)]'"
               >
                   <div v-if="step === 2" class="absolute -inset-1 bg-[var(--win-accent)]/20 blur-sm rounded-xl animate-pulse"></div>
                   <UIcon name="i-heroicons-film" class="w-5 h-5 relative z-10" />
               </div>
-              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 2 ? 'text-[var(--win-accent)]' : 'text-gray-500'">Movies</span>
+              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 2 ? 'text-[var(--win-accent)]' : 'text-[var(--win-text-muted)]'">Movies</span>
           </div>
 
           <!-- Step 3: Series -->
           <div class="flex flex-col items-center gap-3 z-10">
               <div 
                 class="w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-500 shadow-2xl relative"
-                :class="step >= 3 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-white/5 text-gray-500'"
+                :class="step >= 3 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-[var(--glass-level-1-bg)] text-[var(--win-text-muted)]'"
               >
                   <div v-if="step === 3" class="absolute -inset-1 bg-[var(--win-accent)]/20 blur-sm rounded-xl animate-pulse"></div>
                   <UIcon name="i-heroicons-tv" class="w-5 h-5 relative z-10" />
               </div>
-              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 3 ? 'text-[var(--win-accent)]' : 'text-gray-500'">Series</span>
+              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 3 ? 'text-[var(--win-accent)]' : 'text-[var(--win-text-muted)]'">Series</span>
           </div>
 
           <!-- Step 4: Password -->
           <div class="flex flex-col items-center gap-3 z-10">
               <div 
                 class="w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-500 shadow-2xl relative"
-                :class="step >= 4 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-white/5 text-gray-500'"
+                :class="step >= 4 ? 'border-[var(--win-accent)]/50 bg-[var(--win-accent)]/10 text-[var(--win-accent)] shadow-[0_0_20px_rgba(96,205,255,0.2)]' : 'border-white/5 bg-[var(--glass-level-1-bg)] text-[var(--win-text-muted)]'"
               >
                   <div v-if="step === 4" class="absolute -inset-1 bg-[var(--win-accent)]/20 blur-sm rounded-xl animate-pulse"></div>
                   <UIcon name="i-heroicons-shield-check" class="w-5 h-5 relative z-10" />
               </div>
-              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 4 ? 'text-[var(--win-accent)]' : 'text-gray-500'">Security</span>
+              <span class="text-[9px] uppercase font-bold tracking-[0.2em]" :class="step === 4 ? 'text-[var(--win-accent)]' : 'text-[var(--win-text-muted)]'">Security</span>
           </div>
       </div>
 
@@ -74,16 +74,16 @@
       <div class="glass-panel w-full !rounded-[2rem] border-white/5 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col h-[70vh] backdrop-blur-3xl animate-fade-in">
           
           <!-- Header -->
-          <div class="px-8 py-10 border-b border-white/5 bg-white/[0.02] flex-shrink-0 relative overflow-hidden">
+          <div class="px-8 py-10 border-b border-white/5 bg-[var(--glass-level-1-bg)]/20 flex-shrink-0 relative overflow-hidden">
               <div class="absolute top-0 right-0 w-64 h-64 bg-[var(--win-accent)]/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
               
-              <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-3">
+              <h1 class="text-3xl md:text-4xl font-bold text-[var(--win-text-primary)] tracking-tight mb-3">
                   <span v-if="step === 1" class="bg-gradient-to-r from-[var(--brand-1)] to-[var(--brand-5)] bg-clip-text text-transparent">Automatic Metadata</span>
                   <span v-else-if="step === 2" class="bg-gradient-to-r from-[var(--brand-1)] to-[var(--brand-10)] bg-clip-text text-transparent">Movies Library</span>
                   <span v-else-if="step === 3" class="bg-gradient-to-r from-[var(--brand-5)] to-[var(--brand-10)] bg-clip-text text-transparent">TV Shows Library</span>
                   <span v-else class="bg-gradient-to-r from-[var(--brand-1)] to-[var(--brand-8)] bg-clip-text text-transparent">Security Setup</span>
               </h1>
-              <p class="text-gray-400 text-sm max-w-xl font-light leading-relaxed">
+              <p class="text-[var(--win-text-secondary)] text-sm max-w-xl font-light leading-relaxed">
                   <span v-if="step === 1">Linking your Trakt account allows us to automatically fetch posters, ratings, and detailed descriptions for your entire collection.</span>
                   <span v-else-if="step === 2">Tell us which folder on your local storage should be the destination for movie transfers.</span>
                   <span v-else-if="step === 3">Configure the default landing zone for TV series to keep your library organized.</span>
@@ -103,17 +103,17 @@
                 <div class="max-w-md w-full space-y-8">
                    <div class="relative group">
                       <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                        <UIcon name="i-heroicons-key" class="w-5 h-5 text-gray-500 group-focus-within:text-[var(--win-accent)] transition-colors" />
+                        <UIcon name="i-heroicons-key" class="w-5 h-5 text-[var(--win-text-muted)] group-focus-within:text-[var(--win-accent)] transition-colors" />
                       </div>
                       <input 
                         v-model="traktKey"
                         type="password"
                         placeholder="Paste Trakt Client ID"
-                        class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-5 pl-14 pr-4 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all font-mono text-sm shadow-inner"
+                        class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-5 pl-14 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all font-mono text-sm shadow-inner"
                       />
                    </div>
 
-                   <p class="text-[11px] text-gray-500 uppercase tracking-widest font-bold">
+                   <p class="text-[11px] text-[var(--win-text-muted)] uppercase tracking-widest font-bold">
                        Required for Posters & Metadata
                    </p>
                 </div>
@@ -139,32 +139,32 @@
                 <div class="max-w-md w-full space-y-6">
                     <div class="relative group">
                       <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                        <UIcon name="i-heroicons-lock-closed" class="w-5 h-5 text-gray-500 group-focus-within:text-[var(--win-accent)] transition-colors" />
+                        <UIcon name="i-heroicons-lock-closed" class="w-5 h-5 text-[var(--win-text-muted)] group-focus-within:text-[var(--win-accent)] transition-colors" />
                       </div>
                       <input 
                         v-model="pwdForm.new"
                         type="password"
                         placeholder="New Password"
-                        class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-5 pl-14 pr-4 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all text-sm shadow-inner"
+                        class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-5 pl-14 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all text-sm shadow-inner"
                       />
                     </div>
 
                     <div class="relative group">
                       <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                        <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-gray-500 group-focus-within:text-[var(--win-accent)] transition-colors" />
+                        <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-[var(--win-text-muted)] group-focus-within:text-[var(--win-accent)] transition-colors" />
                       </div>
                       <input 
                         v-model="pwdForm.confirm"
                         type="password"
                         placeholder="Confirm New Password"
-                        class="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-5 pl-14 pr-4 text-white outline-none focus:border-[var(--win-accent)]/50 focus:bg-white/[0.05] transition-all text-sm shadow-inner"
+                        class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-2xl py-5 pl-14 pr-4 text-[var(--win-text-primary)] outline-none focus:border-[var(--win-accent)]/50 focus:bg-[var(--glass-level-3-bg)] transition-all text-sm shadow-inner"
                       />
                     </div>
 
-                    <p v-if="pwdForm.new && pwdForm.confirm && (pwdForm.new !== pwdForm.confirm)" class="text-[10px] text-red-500 uppercase tracking-widest font-bold animate-pulse">
+                    <p v-if="pwdForm.new && pwdForm.confirm && (pwdForm.new !== pwdForm.confirm)" class="text-[10px] text-[var(--status-error)] uppercase tracking-widest font-bold animate-pulse">
                        Passwords do not match
                     </p>
-                    <p v-else class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                    <p v-else class="text-[10px] text-[var(--win-text-muted)] uppercase tracking-widest font-bold">
                        Final Security Check
                     </p>
                 </div>
@@ -173,19 +173,19 @@
           </div>
 
           <!-- Footer Actions -->
-          <div class="p-8 border-t border-white/5 bg-white/[0.02] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 flex-shrink-0 relative overflow-hidden">
+          <div class="p-8 border-t border-white/5 bg-[var(--glass-level-1-bg)]/20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 flex-shrink-0 relative overflow-hidden">
               <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--win-accent)]/20 to-transparent"></div>
               
               <!-- Info / Selection -->
               <div class="flex-1 overflow-hidden">
                   <div v-if="step === 2 || step === 3" class="animate-fade-in">
-                      <div class="text-[10px] text-gray-500 uppercase font-bold tracking-[0.2em] mb-1">Target Path</div>
+                      <div class="text-[10px] text-[var(--win-text-muted)] uppercase font-bold tracking-[0.2em] mb-1">Target Path</div>
                       <div class="font-mono text-sm text-[var(--win-accent)] truncate flex items-center gap-2">
                           <UIcon name="i-heroicons-folder-open" class="w-4 h-4" />
                           {{ selectedPath || 'Select a folder below' }}
                       </div>
                   </div>
-                  <div v-else class="text-xs text-gray-400 font-light italic">
+                  <div v-else class="text-xs text-[var(--win-text-secondary)] font-light italic">
                       {{ step === 1 ? 'Tip: You can find your Trakt Client ID in your application settings.' : 'Tip: Use a strong, unique password for your account security.' }}
                   </div>
               </div>
@@ -195,7 +195,7 @@
                   <button 
                     v-if="step < 4"
                     @click="skipStep"
-                    class="px-6 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                    class="px-6 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-widest text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] hover:bg-[var(--glass-level-1-bg)] transition-all"
                     :disabled="loading"
                   >
                     {{ step === 1 ? 'Skip' : 'Skip Step' }}
@@ -203,7 +203,7 @@
                   <button 
                     @click="handleNext"
                     :disabled="loading || ( (step === 2 || step === 3) && !selectedPath ) || (step === 4 && (!pwdForm.new || pwdForm.new !== pwdForm.confirm))"
-                    class="min-w-[160px] bg-white text-black hover:bg-white/90 disabled:bg-white/20 disabled:text-black/50 disabled:cursor-not-allowed rounded-2xl py-4 px-6 text-xs font-bold uppercase tracking-widest transition-all shadow-[0_10px_20px_-5px_rgba(255,255,255,0.1)] flex items-center justify-center gap-3 active:scale-95"
+                    class="min-w-[160px] bg-[var(--win-text-primary)] text-[var(--win-bg-base)] hover:bg-[var(--win-text-primary)]/90 disabled:bg-[var(--win-text-primary)]/20 disabled:text-[var(--win-bg-base)]/50 disabled:cursor-not-allowed rounded-2xl py-4 px-6 text-xs font-bold uppercase tracking-widest transition-all shadow-[0_10px_20px_-5px_rgba(255,255,255,0.1)] flex items-center justify-center gap-3 active:scale-95"
                   >
                     <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
                     <span>{{ step < 4 ? 'Continue' : 'Complete Setup' }}</span>
@@ -216,8 +216,8 @@
 
       <!-- Help Link -->
       <div class="text-center mt-10">
-        <p class="text-[10px] uppercase tracking-[0.2em] text-gray-600">
-            CopyCat &copy; 2025 &bull; <a href="#" class="text-gray-400 hover:text-[var(--win-accent)] transition-colors">Documentation</a>
+        <p class="text-[10px] uppercase tracking-[0.2em] text-[var(--win-text-muted)]">
+            CopyCat &copy; 2025 &bull; <a href="#" class="text-[var(--win-text-secondary)] hover:text-[var(--win-accent)] transition-colors">Documentation</a>
         </p>
       </div>
 

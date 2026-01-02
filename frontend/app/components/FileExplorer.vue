@@ -9,20 +9,20 @@
     :class="{ 'cursor-crosshair': isSelecting }"
   >
     <!-- Toolbar -->
-    <div class="flex items-center gap-2 p-3 border-b border-white/5 bg-black/10 backdrop-blur-md sticky top-0 z-10 rounded-t-xl">
+    <div class="flex items-center gap-2 p-3 border-b border-[var(--glass-level-1-border)] bg-[var(--glass-level-2-bg)] backdrop-blur-md sticky top-0 z-10 rounded-t-xl">
       <!-- Nav Left -->
       <div class="flex items-center gap-1">
           <button 
             @click="navigateUp"
             :disabled="breadcrumbs.length <= 1"
-            class="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all text-gray-300 hover:text-white"
+            class="p-2 rounded-lg hover:bg-[var(--glass-level-1-bg)] disabled:opacity-30 disabled:hover:bg-transparent transition-all text-[var(--win-text-secondary)] hover:text-[var(--win-text-primary)]"
             title="Up to parent folder"
           >
             <UIcon name="i-heroicons-arrow-up" class="w-4 h-4" />
           </button>
           <button 
             @click="refresh"
-            class="p-2 rounded-lg hover:bg-white/10 transition-all text-gray-300 hover:text-white"
+            class="p-2 rounded-lg hover:bg-[var(--glass-level-1-bg)] transition-all text-[var(--win-text-secondary)] hover:text-[var(--win-text-primary)]"
             title="Refresh"
           >
             <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 group-hover:animate-spin" />
@@ -31,10 +31,10 @@
 
       <!-- Address Bar (Breadcrumbs / Input) -->
       <div 
-        class="flex-1 bg-black/20 border border-white/10 rounded-lg flex items-center px-3 h-9 group hover:bg-black/30 transition-all cursor-text overflow-hidden"
+        class="flex-1 bg-[var(--glass-level-2-bg)] border border-white/10 rounded-lg flex items-center px-3 h-9 group hover:bg-[var(--glass-level-3-bg)] transition-all cursor-text overflow-hidden"
         @click="enableManualInput"
       >
-         <div class="flex items-center gap-1.5 text-xs text-gray-400 mr-2 flex-shrink-0">
+         <div class="flex items-center gap-1.5 text-xs text-[var(--win-text-muted)] mr-2 flex-shrink-0">
              <UIcon name="i-heroicons-computer-desktop" class="w-4 h-4" />
          </div>
          
@@ -53,7 +53,7 @@
             ref="manualInputRef"
             @keydown.enter="navigateToManualPath"
             @blur="isManualInputActive = false"
-            class="flex-1 bg-transparent border-none outline-none text-xs text-gray-200 h-full font-mono w-full"
+            class="flex-1 bg-transparent border-none outline-none text-xs text-[var(--win-text-primary)] h-full font-mono w-full"
             autoFocus
          />
       </div>
@@ -63,17 +63,17 @@
           <input 
             v-model="searchQuery"
             placeholder="Search" 
-            class="w-full bg-black/20 border border-white/10 rounded-lg h-9 px-3 pl-8 text-xs text-white focus:border-[var(--brand-1)]/50 outline-none transition-all placeholder-white/20"
+            class="w-full bg-[var(--glass-level-1-bg)] border border-white/10 rounded-lg h-9 px-3 pl-8 text-xs text-[var(--win-text-primary)] focus:border-[var(--brand-1)]/50 outline-none transition-all placeholder-[var(--win-text-muted)]"
           />
-          <UIcon name="i-heroicons-magnifying-glass" class="w-3.5 h-3.5 absolute left-2.5 top-3 text-gray-500" />
+          <UIcon name="i-heroicons-magnifying-glass" class="w-3.5 h-3.5 absolute left-2.5 top-3 text-[var(--win-text-secondary)]" />
        </div>
        
        <!-- View Toggle -->
-       <div class="flex bg-black/20 rounded-lg p-1 border border-white/10">
+       <div class="flex bg-[var(--glass-level-2-bg)] rounded-lg p-1 border border-white/10">
           <button 
              @click="viewMode = 'list'"
              class="p-1 rounded transition-all"
-             :class="viewMode === 'list' ? 'bg-white/10 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'"
+             :class="viewMode === 'list' ? 'bg-[var(--glass-level-1-bg)] text-[var(--win-text-primary)] shadow-sm' : 'text-[var(--win-text-muted)] hover:text-[var(--win-text-secondary)]'"
              title="List View"
           >
              <UIcon name="i-heroicons-list-bullet" class="w-4 h-4" />
@@ -81,7 +81,7 @@
           <button 
              @click="viewMode = 'grid'"
              class="p-1 rounded transition-all"
-             :class="viewMode === 'grid' ? 'bg-white/10 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'"
+             :class="viewMode === 'grid' ? 'bg-[var(--glass-level-1-bg)] text-[var(--win-text-primary)] shadow-sm' : 'text-[var(--win-text-muted)] hover:text-[var(--win-text-secondary)]'"
              title="Grid View"
           >
              <UIcon name="i-heroicons-squares-2x2" class="w-4 h-4" />
@@ -93,7 +93,7 @@
          v-if="selectable || isMobile"
          @click="isSelectionMode = !isSelectionMode"
          class="flex items-center justify-center p-1.5 rounded-lg border transition-all"
-         :class="isSelectionMode ? 'bg-[var(--win-accent)] text-black border-[var(--win-accent)] shadow-[0_0_10px_rgba(96,205,255,0.4)]' : 'border-transparent text-gray-500 hover:text-white'"
+         :class="isSelectionMode ? 'bg-[var(--win-accent)] text-[var(--win-bg-base)] border-[var(--win-accent)] shadow-[0_0_10px_rgba(96,205,255,0.4)]' : 'border-transparent text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)]'"
          :title="isSelectionMode ? 'Exit Selection Mode' : 'Enable Selection Mode'"
        >
           <UIcon :name="isSelectionMode ? 'i-heroicons-check-circle' : 'i-heroicons-cursor-arrow-rays'" class="w-5 h-5" />
@@ -102,23 +102,23 @@
        <!-- New Folder -->
        <button 
          v-if="isDestination"
-         class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-white/10 border border-transparent hover:border-white/10 transition-all group" 
+         class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-[var(--glass-level-2-bg)] border border-transparent hover:border-white/10 transition-all group" 
          @click="isNewFolderModalOpen = true"
        >
           <UIcon name="i-heroicons-folder-plus" class="w-4 h-4 text-[var(--brand-1)] group-hover:scale-110 transition-transform" />
-          <span class="text-xs hidden sm:inline text-gray-300 font-medium group-hover:text-white">New</span>
+          <span class="text-xs hidden sm:inline text-[var(--win-text-secondary)] font-medium group-hover:text-[var(--win-text-primary)]">New</span>
        </button>
     </div>
 
     <!-- File List Header -->
-    <div class="grid grid-cols-12 gap-2 px-6 py-2 text-[10px] uppercase tracking-wider font-bold text-gray-500 border-b border-white/5 bg-black/5">
+    <div class="grid grid-cols-12 gap-2 px-6 py-2 text-[10px] uppercase tracking-wider font-bold text-[var(--win-text-muted)] border-b border-[var(--glass-level-1-border)] bg-[var(--glass-level-1-bg)]">
        <!-- Checkbox Placeholder -->
        <div v-if="isSelectionMode" class="col-span-1 flex justify-center">
           <!-- Optional: Select All could go here -->
        </div>
        
        <div 
-         class="pl-1 cursor-pointer flex items-center gap-1 hover:text-gray-300 transition-colors" 
+         class="pl-1 cursor-pointer flex items-center gap-1 hover:text-[var(--win-text-secondary)] transition-colors" 
          :class="isSelectionMode ? 'col-span-9 md:col-span-5' : 'col-span-10 md:col-span-6'"
          @click="toggleSort('name')"
        >
@@ -126,7 +126,7 @@
          <UIcon v-if="sortByField === 'name'" :name="sortOrder === 'asc' ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'" class="w-3 h-3" />
        </div>
        <div 
-         class="hidden md:flex col-span-4 cursor-pointer items-center gap-1 hover:text-gray-300 transition-colors" 
+         class="hidden md:flex col-span-4 cursor-pointer items-center gap-1 hover:text-[var(--win-text-secondary)] transition-colors" 
          @click="toggleSort('modified')"
          :class="{ 'text-[var(--brand-1)] hover:text-[var(--brand-2)]': sortByField === 'modified' }"
        >
@@ -134,7 +134,7 @@
          <UIcon v-if="sortByField === 'modified'" :name="sortOrder === 'asc' ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'" class="w-3 h-3" />
        </div>
        <div 
-         class="hidden md:flex col-span-2 text-right pr-4 cursor-pointer items-center justify-end gap-1 hover:text-gray-300 transition-colors" 
+         class="hidden md:flex col-span-2 text-right pr-4 cursor-pointer items-center justify-end gap-1 hover:text-[var(--win-text-secondary)] transition-colors" 
          @click="toggleSort('size')"
          :class="{ 'text-[var(--brand-1)] hover:text-[var(--brand-2)]': sortByField === 'size' }"
        >
@@ -154,14 +154,14 @@
        <div v-if="loading" class="flex-1 p-2 space-y-1 overflow-hidden">
          <div v-for="i in 10" :key="i" class="grid grid-cols-12 gap-2 px-4 py-2 items-center">
             <div class="col-span-6 flex items-center gap-3">
-               <div class="w-5 h-5 rounded bg-white/5 shimmer-bg"></div>
-               <div class="h-3 w-32 rounded bg-white/5 shimmer-bg"></div>
+               <div class="w-5 h-5 rounded bg-[var(--glass-level-1-bg)] shimmer-bg"></div>
+               <div class="h-3 w-32 rounded bg-[var(--glass-level-1-bg)] shimmer-bg"></div>
             </div>
             <div class="col-span-4">
-               <div class="h-3 w-20 rounded bg-white/5 shimmer-bg"></div>
+               <div class="h-3 w-20 rounded bg-[var(--glass-level-1-bg)] shimmer-bg"></div>
             </div>
             <div class="col-span-2 flex justify-end">
-               <div class="h-3 w-12 rounded bg-white/5 shimmer-bg"></div>
+               <div class="h-3 w-12 rounded bg-[var(--glass-level-1-bg)] shimmer-bg"></div>
             </div>
          </div>
        </div>
@@ -171,7 +171,7 @@
           <!-- Go Back Item -->
           <div 
              v-if="breadcrumbs.length > 1"
-             class="grid grid-cols-12 gap-2 px-4 py-2 hover:bg-white/5 cursor-pointer items-center group text-xs text-gray-400 rounded-lg transition-colors"
+             class="grid grid-cols-12 gap-2 px-4 py-2 hover:bg-[var(--glass-level-1-bg)] cursor-pointer items-center group text-xs text-[var(--win-text-muted)] rounded-lg transition-colors"
              @click="navigateUp"
           >
              <div class="col-span-12 pl-2 flex items-center gap-2">
@@ -187,7 +187,7 @@
              class="selectable-item grid grid-cols-12 gap-2 px-4 py-2 cursor-pointer items-center text-xs group transition-all duration-150 border border-transparent mx-1 rounded-lg"
              :class="{
                 'bg-[var(--brand-1)]/20 border-[var(--brand-1)]/30': isSelected(file.path),
-                'hover:bg-white/5 hover:border-white/5': !isSelected(file.path)
+                'hover:bg-[var(--glass-level-2-bg)] hover:border-white/10': !isSelected(file.path)
              }"
              :data-path="file.path"
              draggable="true"
@@ -200,7 +200,7 @@
              <div v-if="isSelectionMode" class="col-span-1 flex items-center justify-center pl-2" @click.stop="toggleSelection(file)">
                 <div 
                    class="w-4 h-4 rounded border flex items-center justify-center transition-all"
-                   :class="isSelected(file.path) ? 'bg-[var(--win-accent)] border-[var(--win-accent)] text-black' : 'border-white/20 bg-black/20 hover:border-white/50'"
+                   :class="isSelected(file.path) ? 'bg-[var(--win-accent)] border-[var(--win-accent)] text-[var(--win-bg-base)]' : 'border-white/20 bg-[var(--glass-level-3-bg)] hover:border-white/50'"
                 >
                    <UIcon v-if="isSelected(file.path)" name="i-heroicons-check" class="w-3 h-3" />
                 </div>
@@ -217,31 +217,31 @@
                   :class="getFileIconColor(file, isSelected(file.path))"
                 />
                 <div class="flex flex-col truncate min-w-0">
-                    <span class="truncate font-medium select-none text-sm" :class="isSelected(file.path) ? 'text-white' : 'text-gray-300 group-hover:text-white'">{{ file.name }}</span>
+                    <span class="truncate font-medium select-none text-sm" :class="isSelected(file.path) ? 'text-[var(--win-text-primary)]' : 'text-[var(--win-text-secondary)] group-hover:text-[var(--win-text-primary)]'">{{ file.name }}</span>
                     <!-- Mobile Subtitle -->
-                    <span class="md:hidden text-[10px] text-gray-500 font-mono flex items-center gap-2">
+                    <span class="md:hidden text-[10px] text-[var(--win-text-muted)] font-mono flex items-center gap-2">
                         <span>{{ file.is_dir ? 'Folder' : formatSize(file.size_bytes) }}</span>
-                        <span class="w-1 h-1 rounded-full bg-gray-600"></span>
+                        <span class="w-1 h-1 rounded-full bg-[var(--win-text-secondary)]"></span>
                         <span>{{ formatDate(file.modified_at) }}</span>
                     </span>
                 </div>
              </div>
              
              <!-- Date Col (Desktop) -->
-             <div class="hidden md:block col-span-4 font-mono text-[10px] truncate" :class="isSelected(file.path) ? 'text-[var(--brand-1)]/70' : 'text-gray-500 group-hover:text-gray-400'">
+             <div class="hidden md:block col-span-4 font-mono text-[10px] truncate" :class="isSelected(file.path) ? 'text-[var(--brand-1)]/70' : 'text-[var(--win-text-muted)] group-hover:text-[var(--win-text-secondary)]'">
                 {{ formatDate(file.modified_at) }}
              </div>
              
              <!-- Size Col & Actions -->
              <div class="col-span-2 flex items-center justify-end gap-2 pr-2">
-                <span class="hidden md:block font-mono text-[10px]" :class="isSelected(file.path) ? 'text-[var(--brand-1)]/70' : 'text-gray-500 group-hover:text-gray-400'">
+                <span class="hidden md:block font-mono text-[10px]" :class="isSelected(file.path) ? 'text-[var(--brand-1)]/70' : 'text-[var(--win-text-muted)] group-hover:text-[var(--win-text-secondary)]'">
                    {{ file.is_dir ? '' : formatSize(file.size_bytes) }}
                 </span>
                 
                 <!-- Touch Context Trigger -->
                 <button 
                   @click.stop="showContextActions(file)"
-                  class="p-2 rounded-md hover:bg-white/10 text-gray-500 hover:text-white md:hidden active:bg-white/20 active:text-white transition-colors"
+                  class="p-2 rounded-md hover:bg-[var(--glass-level-1-bg)] text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] md:hidden active:bg-[var(--win-text-primary)]/20 active:text-[var(--win-text-primary)] transition-colors"
                 >
                    <UIcon name="i-heroicons-ellipsis-vertical" class="w-5 h-5" />
                 </button>
@@ -255,10 +255,10 @@
            <div 
              v-if="currentPath !== '/'"
              @click="navigateUp"
-             class="glass-panel p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-white/10 transition-colors group h-32"
+             class="glass-panel p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--glass-level-1-bg)] transition-colors group h-32"
            >
-              <UIcon name="i-heroicons-arrow-turn-up-left" class="w-10 h-10 text-gray-500 group-hover:text-[var(--brand-1)] transition-colors" />
-              <div class="text-xs text-gray-500 font-bold">Back</div>
+              <UIcon name="i-heroicons-arrow-turn-up-left" class="w-10 h-10 text-[var(--win-text-muted)] group-hover:text-[var(--brand-1)] transition-colors" />
+              <div class="text-xs text-[var(--win-text-muted)] font-bold">Back</div>
            </div>
 
            <!-- File Cards -->
@@ -266,7 +266,7 @@
               v-for="file in filteredFiles"
               :key="file.path"
               class="selectable-item glass-panel p-4 flex flex-col items-center gap-3 cursor-pointer transition-all duration-200 h-36 group relative border"
-              :class="isSelected(file.path) ? 'border-[var(--brand-1)]/50 bg-[var(--brand-1)]/10 shadow-[0_0_15px_rgba(96,205,255,0.2)]' : 'border-transparent hover:border-white/10 hover:bg-white/5'"
+              :class="isSelected(file.path) ? 'border-[var(--brand-1)]/50 bg-[var(--brand-1)]/10 shadow-[0_0_15px_rgba(96,205,255,0.2)]' : 'border-transparent hover:border-white/10 hover:bg-[var(--glass-level-1-bg)]'"
               :data-path="file.path"
               draggable="true"
              @dragstart="handleDragStart($event, file)"
@@ -276,10 +276,9 @@
            >
               <!-- Checkbox (Top Left) -->
               <button 
-                  v-if="isSelectionMode"
                   @click.stop="toggleSelection(file)"
                   class="absolute top-2 left-2 w-5 h-5 rounded-full border flex items-center justify-center transition-all z-20"
-                  :class="isSelected(file.path) ? 'bg-[var(--win-accent)] border-[var(--win-accent)] text-black' : 'border-white/20 bg-black/40 text-transparent hover:border-white/50'"
+                  :class="isSelected(file.path) ? 'bg-[var(--win-accent)] border-[var(--win-accent)] text-[var(--win-bg-base)]' : 'border-white/20 bg-[var(--glass-level-4-bg)] text-transparent hover:border-white/50'"
               >
                   <UIcon name="i-heroicons-check" class="w-3.5 h-3.5" />
               </button>
@@ -287,7 +286,7 @@
               <!-- Context Menu Trigger for Grid -->
               <button 
                   @click.stop="showContextMenu($event, file)"
-                  class="absolute top-2 right-2 p-1 rounded-full bg-black/20 text-gray-400 hover:text-white hover:bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                  class="absolute top-2 right-2 p-1 rounded-full bg-[var(--glass-level-4-bg)] text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] hover:bg-[var(--glass-level-3-bg)] opacity-0 group-hover:opacity-100 transition-opacity z-10"
               >
                  <UIcon name="i-heroicons-ellipsis-horizontal" class="w-4 h-4" />
               </button>
@@ -300,12 +299,12 @@
                    :class="getFileIconColor(file, isSelected(file.path))"
                  />
                  <!-- Type Badge (if media) -->
-                 <div v-if="isMovie(file.name)" class="absolute -top-1 -right-1 bg-black/60 backdrop-blur px-1.5 py-0.5 rounded text-[8px] font-bold text-gray-300 border border-white/10 uppercase tracking-wider">MOV</div>
+                 <div v-if="isMovie(file.name)" class="absolute -top-1 -right-1 bg-[var(--win-bg-base)]/80 backdrop-blur px-1.5 py-0.5 rounded text-[8px] font-bold text-[var(--win-text-muted)] border border-white/10 uppercase tracking-wider">MOV</div>
               </div>
               
               <div class="w-full text-center">
-                 <div class="text-xs font-medium truncate w-full select-none" :class="isSelected(file.path) ? 'text-white' : 'text-gray-300 group-hover:text-white'">{{ file.name }}</div>
-                 <div class="text-[10px] text-gray-500 mt-0.5 flex justify-center gap-2">
+                 <div class="text-xs font-medium truncate w-full select-none" :class="isSelected(file.path) ? 'text-[var(--win-text-primary)]' : 'text-[var(--win-text-secondary)] group-hover:text-[var(--win-text-primary)]'">{{ file.name }}</div>
+                 <div class="text-[10px] text-[var(--win-text-muted)] mt-0.5 flex justify-center gap-2">
                     <span v-if="!file.is_dir">{{ formatSize(file.size_bytes) }}</span>
                     <span v-if="file.is_dir">Folder</span>
                  </div>
@@ -327,24 +326,24 @@
     </div>
 
     <!-- Pagination Footer -->
-    <div class="p-3 border-t border-white/5 bg-black/10 backdrop-blur-md sticky bottom-0 z-10 rounded-b-xl flex items-center justify-between">
+    <div class="p-3 border-t border-white/5 bg-[var(--win-bg-base)]/80 backdrop-blur-md sticky bottom-0 z-10 rounded-b-xl flex items-center justify-between">
        <button 
           @click="prevPage"
           :disabled="page <= 1 || loading"
-          class="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all text-gray-300 hover:text-white flex items-center gap-2"
+          class="p-2 rounded-lg hover:bg-[var(--glass-level-1-bg)] disabled:opacity-30 disabled:hover:bg-transparent transition-all text-[var(--win-text-secondary)] hover:text-[var(--win-text-primary)] flex items-center gap-2"
        >
           <UIcon name="i-heroicons-arrow-left" class="w-4 h-4" />
           <span class="text-xs font-medium">Prev</span>
        </button>
        
-       <span class="text-xs text-slate-500 font-mono">
+       <span class="text-xs text-[var(--win-text-muted)] font-mono">
           Page {{ page }} of {{ totalPages || 1 }}
        </span>
        
        <button 
           @click="nextPage"
           :disabled="!hasMore || loading"
-          class="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all text-gray-300 hover:text-white flex items-center gap-2"
+          class="p-2 rounded-lg hover:bg-[var(--glass-level-1-bg)] disabled:opacity-30 disabled:hover:bg-transparent transition-all text-[var(--win-text-secondary)] hover:text-[var(--win-text-primary)] flex items-center gap-2"
        >
           <span class="text-xs font-medium">Next</span>
           <UIcon name="i-heroicons-arrow-right" class="w-4 h-4" />
@@ -354,7 +353,7 @@
     <!-- Context Menu (Responsive: Bottom Sheet on Mobile, Floating on Desktop) -->
     <div 
       v-if="contextMenu.show"
-      class="fixed z-[100] bg-[#1a1a1a] border border-white/10 md:border-white/5 md:bg-black/80 md:backdrop-blur-xl shadow-2xl transition-all duration-200"
+      class="fixed z-[100] bg-[var(--glass-level-4-bg)] border border-white/10 md:border-white/5 md:bg-[var(--win-bg-base)]/80 md:backdrop-blur-xl shadow-2xl transition-all duration-200"
       :class="[
           // Mobile: Bottom Sheet
           'md:rounded-lg md:w-48 md:py-1 inset-x-0 bottom-0 rounded-t-2xl pb-safe md:pb-1 md:inset-auto md:top-auto md:left-auto',
@@ -365,27 +364,27 @@
     >
         <!-- Mobile Handle -->
         <div class="md:hidden w-full flex justify-center pt-3 pb-1">
-            <div class="w-12 h-1 bg-white/20 rounded-full"></div>
+            <div class="w-12 h-1 bg-[var(--win-text-muted)]/20 rounded-full"></div>
         </div>
 
         <!-- Header -->
-        <div class="px-4 py-3 md:px-3 md:py-2 text-sm md:text-xs font-bold text-white md:text-gray-400 border-b border-white/5 md:mb-1 truncate flex items-center gap-2">
+        <div class="px-4 py-3 md:px-3 md:py-2 text-sm md:text-xs font-bold text-[var(--win-text-primary)] md:text-[var(--win-text-muted)] border-b border-white/5 md:mb-1 truncate flex items-center gap-2">
             <UIcon :name="contextMenu.file?.is_dir ? 'i-heroicons-folder' : 'i-heroicons-document'" class="w-4 h-4 md:w-3 md:h-3 text-[var(--win-accent)]" />
             <span class="truncate">{{ contextMenu.file?.name || 'Selection' }}</span>
         </div>
         
         <!-- Actions -->
         <div class="p-2 md:p-0 space-y-1 md:space-y-0">
-            <button class="w-full text-left px-4 py-3 md:px-3 md:py-2 text-base md:text-xs text-white md:text-gray-200 hover:bg-white/10 md:hover:bg-[var(--brand-1)]/20 md:hover:text-[var(--brand-1)] flex items-center gap-3 md:gap-2 rounded-lg md:rounded-none transition-colors" @click="handleContextAction('copy')">
-                <UIcon name="i-heroicons-clipboard" class="w-5 h-5 md:w-4 md:h-4 text-gray-400 md:text-current" /> 
+            <button class="w-full text-left px-4 py-3 md:px-3 md:py-2 text-base md:text-xs text-[var(--win-text-primary)] md:text-[var(--win-text-secondary)] hover:bg-[var(--glass-level-1-bg)] md:hover:bg-[var(--brand-1)]/20 md:hover:text-[var(--brand-1)] flex items-center gap-3 md:gap-2 rounded-lg md:rounded-none transition-colors" @click="handleContextAction('copy')">
+                <UIcon name="i-heroicons-clipboard" class="w-5 h-5 md:w-4 md:h-4 text-[var(--win-text-muted)] md:text-current" /> 
                 Copy Path
             </button>
-            <button class="w-full text-left px-4 py-3 md:px-3 md:py-2 text-base md:text-xs text-white md:text-gray-200 hover:bg-white/10 md:hover:bg-[var(--brand-1)]/20 md:hover:text-[var(--brand-1)] flex items-center gap-3 md:gap-2 rounded-lg md:rounded-none transition-colors" @click="handleContextAction('move')">
-                <UIcon name="i-heroicons-arrows-right-left" class="w-5 h-5 md:w-4 md:h-4 text-gray-400 md:text-current" /> 
-                Move to...
+            <button class="w-full text-left px-4 py-3 md:px-3 md:py-2 text-base md:text-xs text-[var(--win-text-primary)] md:text-[var(--win-text-secondary)] hover:bg-[var(--glass-level-1-bg)] md:hover:bg-[var(--brand-1)]/20 md:hover:text-[var(--brand-1)] flex items-center gap-3 md:gap-2 rounded-lg md:rounded-none transition-colors" @click="handleContextAction('move')">
+                <UIcon name="i-heroicons-arrows-right-left" class="w-5 h-5 md:w-4 md:h-4 text-[var(--win-text-muted)] md:text-current" /> 
+                move to...
             </button>
             <div class="h-px bg-white/5 my-1 mx-2 hidden md:block"></div>
-            <button class="w-full text-left px-4 py-3 md:px-3 md:py-2 text-base md:text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-3 md:gap-2 rounded-lg md:rounded-none transition-colors" @click="handleContextAction('delete')">
+            <button class="w-full text-left px-4 py-3 md:px-3 md:py-2 text-base md:text-xs text-[var(--status-error)] hover:bg-[var(--status-error)]/10 hover:text-[var(--status-error)] flex items-center gap-3 md:gap-2 rounded-lg md:rounded-none transition-colors" @click="handleContextAction('delete')">
                 <UIcon name="i-heroicons-trash" class="w-5 h-5 md:w-4 md:h-4" /> 
                 Delete
             </button>
@@ -393,16 +392,16 @@
         
         <!-- Mobile Cancel -->
         <div class="p-2 border-t border-white/5 md:hidden mt-2">
-            <button @click="closeContextMenu" class="w-full py-3 text-center font-bold text-gray-400 hover:text-white bg-white/5 rounded-xl">
+            <button @click="closeContextMenu" class="w-full py-3 text-center font-bold text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] bg-[var(--glass-level-1-bg)] rounded-xl">
                 Cancel
             </button>
         </div>
     </div>
 
     <!-- Custom New Folder Modal (Glass Overlay) -->
-    <div v-if="isNewFolderModalOpen" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in">
+    <div v-if="isNewFolderModalOpen" class="fixed inset-0 z-[200] flex items-center justify-center bg-[var(--win-bg-base)]/60 backdrop-blur-sm animate-in fade-in">
       <div class="glass-panel p-6 w-full max-w-sm mx-4 transform transition-all scale-100 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2.5">
+        <h3 class="text-lg font-bold text-[var(--win-text-primary)] mb-6 flex items-center gap-2.5">
             <div class="p-2 bg-[var(--brand-1)]/10 rounded-lg">
                 <UIcon name="i-heroicons-folder-plus" class="w-5 h-5 text-[var(--brand-1)]" />
             </div>
@@ -413,21 +412,21 @@
             v-model="newFolderName" 
             @keyup.enter="createFolderRef" 
             ref="newFolderInput" 
-            class="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white mb-6 focus:border-[var(--brand-1)] focus:ring-1 focus:ring-[var(--brand-1)]/50 outline-none text-sm font-mono placeholder-gray-600 transition-all" 
+            class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 rounded-lg p-3 text-[var(--win-text-primary)] mb-6 focus:border-[var(--brand-1)] focus:ring-1 focus:ring-[var(--brand-1)]/50 outline-none text-sm font-mono placeholder-[var(--win-text-muted)] transition-all" 
             placeholder="Folder Name" 
             autoFocus
         />
         
         <div class="flex justify-end gap-3">
-          <button 
+        <button 
             @click="isNewFolderModalOpen = false" 
-            class="px-4 py-2 rounded-lg text-sm text-gray-400 hover:bg-white/5 hover:text-white transition-colors"
+            class="px-4 py-2 rounded-lg text-sm text-[var(--win-text-muted)] hover:bg-[var(--glass-level-1-bg)] hover:text-[var(--win-text-primary)] transition-colors"
           >
             Cancel
           </button>
           <button 
             @click="createFolderRef" 
-            class="px-5 py-2 rounded-lg text-sm bg-gradient-to-r from-[var(--brand-1)] to-[var(--brand-5)] text-white font-semibold hover:shadow-[0_0_20px_rgba(96,205,255,0.4)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
+            class="px-5 py-2 rounded-lg text-sm bg-gradient-to-r from-[var(--brand-1)] to-[var(--brand-5)] text-[var(--win-text-primary)] font-semibold hover:shadow-[0_0_20px_rgba(96,205,255,0.4)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
             :disabled="!newFolderName"
           >
             Create
@@ -437,7 +436,7 @@
     </div>
 
     <!-- Overlay to close context menu -->
-    <div v-if="contextMenu.show" class="fixed inset-0 z-[90] bg-black/20 md:bg-transparent" @click="closeContextMenu" @contextmenu.prevent="closeContextMenu"></div>
+    <div v-if="contextMenu.show" class="fixed inset-0 z-[90] bg-[var(--glass-level-4-bg)] md:bg-transparent" @click="closeContextMenu" @contextmenu.prevent="closeContextMenu"></div>
   </div>
 </template>
 

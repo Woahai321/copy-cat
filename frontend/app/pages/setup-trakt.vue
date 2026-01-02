@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-[#0a0a0a] relative overflow-hidden">
+  <div class="min-h-screen flex items-center justify-center bg-[var(--win-bg-base)] relative overflow-hidden">
     <!-- Animated Background Lines -->
     <div class="app-background-lines">
        <div class="app-background-line"></div>
@@ -16,7 +16,7 @@
 
     <div class="w-full max-w-md z-10 animate-fade-in-up px-6">
       <!-- Glass Card Container -->
-      <div class="bg-black/40 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] p-8 md:p-10">
+      <div class="bg-[var(--glass-level-4-bg)] backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] p-8 md:p-10">
         
         <!-- Icon & Header -->
         <div class="flex flex-col items-center mb-8">
@@ -30,14 +30,14 @@
           <h1 class="text-3xl font-bold bg-gradient-to-r from-white via-[var(--brand-1)] to-[var(--brand-10)] bg-clip-text text-transparent mb-2">
             Connect Trakt
           </h1>
-          <p class="text-sm text-gray-400 text-center max-w-sm">
+          <p class="text-sm text-[var(--win-text-muted)] text-center max-w-sm">
             To enable metadata and images, we need your Trakt Client ID.
           </p>
         </div>
 
         <!-- Error Message -->
-        <div v-if="error" class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl backdrop-blur-sm">
-          <div class="flex items-center gap-3 text-red-300">
+        <div v-if="error" class="mb-6 p-4 bg-[var(--status-error)]/10 border border-[var(--status-error)]/30 rounded-xl backdrop-blur-sm">
+          <div class="flex items-center gap-3 text-[var(--status-error)]">
             <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 flex-shrink-0" />
             <span class="text-sm">{{ error }}</span>
           </div>
@@ -47,18 +47,18 @@
         <form @submit.prevent="handleSubmit" class="space-y-5">
           <!-- Trakt Client ID Input -->
           <div v-if="step === 'input'" class="relative group">
-            <label class="text-xs text-gray-400 uppercase font-bold mb-2 block">Trakt Client ID</label>
+            <label class="text-xs text-[var(--win-text-muted)] uppercase font-bold mb-2 block">Trakt Client ID</label>
             <div class="absolute bottom-0 left-0 pl-4 flex items-center pointer-events-none" style="bottom: 14px;">
-              <UIcon name="i-heroicons-identification" class="w-5 h-5 text-gray-500 group-focus-within:text-[var(--brand-1)] transition-colors" />
+              <UIcon name="i-heroicons-identification" class="w-5 h-5 text-[var(--win-text-muted)] group-focus-within:text-[var(--brand-1)] transition-colors" />
             </div>
             <input
                 v-model="traktClientId"
                 type="password"
                 required
                 placeholder="Enter your Client ID here..."
-                class="w-full bg-white/5 border border-white/10 focus:border-[var(--brand-1)]/50 text-white pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-gray-500 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(96,205,255,0.15)] font-mono text-sm"
+                class="w-full bg-[var(--glass-level-2-bg)] border border-white/10 focus:border-[var(--brand-1)]/50 text-[var(--win-text-primary)] pl-12 pr-4 py-3.5 rounded-xl outline-none transition-all placeholder-[var(--win-text-muted)] focus:bg-[var(--glass-level-3-bg)] focus:shadow-[0_0_20px_rgba(96,205,255,0.15)] font-mono text-sm"
             />
-            <p class="text-xs text-gray-500 mt-2 ml-1">
+            <p class="text-xs text-[var(--win-text-muted)] mt-2 ml-1">
                 Found in your Trakt API App settings
             </p>
           </div>
@@ -68,7 +68,7 @@
               v-if="step === 'input'"
               type="button"
               @click.prevent="handleSubmit"
-              class="w-full bg-[var(--win-accent)] hover:bg-[#4db8e8] text-black font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(96,205,255,0.3)] transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              class="w-full bg-[var(--win-accent)] hover:bg-[var(--win-accent)]/80 text-black font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(96,205,255,0.3)] transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
               :disabled="loading"
           >
             <span v-if="!loading" class="flex items-center justify-center gap-2">
@@ -83,10 +83,10 @@
 
           <!-- Success State -->
           <div v-else class="text-center animate-fade-in-up">
-            <div class="mb-6 p-6 bg-green-500/10 border border-green-500/30 rounded-xl backdrop-blur-sm">
-              <UIcon name="i-heroicons-check-circle" class="w-16 h-16 text-green-400 mx-auto mb-3" />
-              <h3 class="text-green-300 font-bold text-lg mb-2">Trakt Connected!</h3>
-              <p class="text-sm text-gray-400">Scan started in background.</p>
+            <div class="mb-6 p-6 bg-[var(--status-success)]/10 border border-[var(--status-success)]/30 rounded-xl backdrop-blur-sm">
+              <UIcon name="i-heroicons-check-circle" class="w-16 h-16 text-[var(--status-success)] mx-auto mb-3" />
+              <h3 class="text-[var(--status-success)] font-bold text-lg mb-2">Trakt Connected!</h3>
+              <p class="text-sm text-[var(--win-text-muted)]">Scan started in background.</p>
             </div>
             
             <p class="text-white font-semibold flex items-center justify-center gap-2">
@@ -99,7 +99,7 @@
 
         <!-- Help Link -->
         <div class="text-center mt-8 pt-6 border-t border-white/5">
-           <a href="https://trakt.tv/oauth/applications" target="_blank" class="text-xs text-gray-500 hover:text-[var(--brand-1)] transition-colors inline-flex items-center gap-1">
+           <a href="https://trakt.tv/oauth/applications" target="_blank" class="text-xs text-[var(--win-text-muted)] hover:text-[var(--brand-1)] transition-colors inline-flex items-center gap-1">
              <UIcon name="i-heroicons-question-mark-circle" class="w-3.5 h-3.5" />
              <span>Get your Trakt API key</span>
            </a>

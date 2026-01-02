@@ -1,17 +1,17 @@
 <template>
   <div class="glass-panel p-4">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+      <h3 class="text-sm font-semibold text-[var(--win-text-secondary)] flex items-center gap-2">
         <UIcon name="i-heroicons-chart-bar" class="w-4 h-4 text-[var(--win-accent)]" />
         Transfer Speed
       </h3>
-      <div class="bg-black/20 px-2 py-0.5 rounded text-xs font-mono text-[var(--win-accent)] border border-white/5 shadow-[0_0_10px_rgba(96,205,255,0.2)]">
+      <div class="bg-[var(--glass-level-1-bg)] px-2 py-0.5 rounded text-xs font-mono text-[var(--win-accent)] border border-white/5 shadow-[0_0_10px_rgba(96,205,255,0.2)]">
         {{ currentSpeedFormatted }}/s
       </div>
     </div>
     
     <!-- Chart Container -->
-    <div class="relative h-32 w-full overflow-hidden rounded-lg bg-black/10 border border-white/5">
+    <div class="relative h-32 w-full overflow-hidden rounded-lg bg-[var(--glass-level-1-bg)] border border-white/5">
        <!-- Grid Lines -->
        <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
           <div class="border-t border-white w-full h-0"></div>
@@ -23,8 +23,8 @@
           <!-- Gradient Definition -->
           <defs>
             <linearGradient id="speedGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#60cdff" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="#60cdff" stop-opacity="0"/>
+              <stop offset="0%" stop-color="var(--brand-1)" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="var(--brand-1)" stop-opacity="0"/>
             </linearGradient>
           </defs>
 
@@ -39,7 +39,7 @@
           <path 
              :d="linePath" 
              fill="none" 
-             stroke="#60cdff" 
+             stroke="var(--brand-1)" 
              stroke-width="2" 
              class="transition-[d] duration-300 ease-linear"
           />

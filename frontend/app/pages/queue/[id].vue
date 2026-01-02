@@ -94,7 +94,7 @@
           
           <div class="space-y-1">
              <div class="text-xs text-gray-500 font-bold uppercase">Source</div>
-             <div class="p-3 bg-black/20 rounded border border-white/5 text-sm font-mono text-gray-300 break-all select-all">
+             <div class="p-3 bg-[var(--glass-level-2-bg)] rounded border border-white/5 text-sm font-mono text-gray-300 break-all select-all">
                 {{ job.source_path }}
              </div>
           </div>
@@ -105,7 +105,7 @@
 
           <div class="space-y-1">
              <div class="text-xs text-gray-500 font-bold uppercase">Destination</div>
-             <div class="p-3 bg-black/20 rounded border border-white/5 text-sm font-mono text-gray-300 break-all select-all">
+             <div class="p-3 bg-[var(--glass-level-2-bg)] rounded border border-white/5 text-sm font-mono text-gray-300 break-all select-all">
                 {{ job.destination_path }}
              </div>
           </div>
@@ -119,7 +119,7 @@
                 System Output
              </h3>
           </div>
-          <div class="flex-1 p-4 bg-black/40 font-mono text-xs text-gray-400 overflow-y-auto max-h-[300px]">
+          <div class="flex-1 p-4 bg-[var(--glass-level-3-bg)] font-mono text-xs text-gray-400 overflow-y-auto max-h-[300px]">
              <div v-if="job.error_message" class="text-red-400">
                 <span class="text-red-600 font-bold">[ERROR]</span> {{ job.error_message }}
              </div>
@@ -197,9 +197,9 @@ const formatDate = (dateString: string) => {
 
 const getStatusClass = (status: string) => {
   switch (status) {
-    case 'completed': return 'text-[#6cc173] border-[#6cc173]/30 bg-[#6cc173]/10'
-    case 'failed': return 'text-[#ff4d4f] border-[#ff4d4f]/30 bg-[#ff4d4f]/10'
-    case 'processing': return 'text-[#60cdff] border-[#60cdff]/30 bg-[#60cdff]/10 animate-pulse'
+    case 'completed': return 'text-[var(--status-success)] border-[var(--status-success)]/30 bg-[var(--status-success)]/10'
+    case 'failed': return 'text-[var(--status-error)] border-[var(--status-error)]/30 bg-[var(--status-error)]/10'
+    case 'processing': return 'text-[var(--win-accent)] border-[var(--win-accent)]/30 bg-[var(--win-accent)]/10 animate-pulse'
     default: return 'text-gray-400 border-gray-600/30'
   }
 }

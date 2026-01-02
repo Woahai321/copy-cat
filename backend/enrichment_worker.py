@@ -44,7 +44,7 @@ class EnrichmentWorker:
             or_(MediaItem.tmdb_id == None, MediaItem.poster_url == None),
             or_(MediaItem.enrichment_status == None, MediaItem.enrichment_status.in_(['pending', 'pending_retry'])),
             or_(MediaItem.enrichment_retry_count == None, MediaItem.enrichment_retry_count < 3)
-        ).order_by(MediaItem.created_at.desc()).limit(limit).all()
+        ).order_by(MediaItem.priority.desc(), MediaItem.created_at.desc()).limit(limit).all()
         
         if not items:
             return 0

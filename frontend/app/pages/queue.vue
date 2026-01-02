@@ -6,7 +6,7 @@
         <h1 class="page-header-title flex items-center gap-3">
           <UIcon name="i-heroicons-queue-list" class="page-header-icon" />
           Active Queue 
-          <span class="text-base font-normal text-gray-500" v-if="jobs.length">({{ jobs.length }})</span>
+          <span class="text-base font-normal text-[var(--win-text-muted)]" v-if="jobs.length">({{ jobs.length }})</span>
         </h1>
         <p class="page-header-subtitle">Monitor and manage active copy operations • Drag to reorder</p>
       </div>
@@ -33,7 +33,7 @@
     <div v-if="loading" class="flex items-center justify-center py-20">
       <div class="flex flex-col items-center gap-3">
         <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 text-[var(--win-accent)] animate-spin" />
-        <p class="text-sm text-gray-400">Loading queue...</p>
+        <p class="text-sm text-[var(--win-text-muted)]">Loading queue...</p>
       </div>
     </div>
 
@@ -41,7 +41,7 @@
     <div v-else-if="jobs.length === 0">
       <div class="empty-state">
         <div class="empty-state-icon">
-           <UIcon name="i-heroicons-queue-list" class="w-8 h-8 text-gray-600" />
+           <UIcon name="i-heroicons-queue-list" class="w-8 h-8 text-[var(--win-text-muted)]" />
         </div>
         <h3 class="empty-state-title">Queue is Empty</h3>
         <p class="empty-state-description">There are no active copy operations at the moment.</p>
@@ -83,12 +83,12 @@
         <div v-if="job.status === 'queued'" class="absolute -left-8 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-1 z-20">
           <button
             @click="handleMoveToTop(job.id)"
-            class="p-1 text-gray-600 hover:text-[var(--win-accent)] transition-colors"
+            class="p-1 text-[var(--win-text-muted)] hover:text-[var(--win-accent)] transition-colors"
             title="Move to top"
           >
             <UIcon name="i-heroicons-chevron-double-up" class="w-4 h-4" />
           </button>
-          <UIcon name="i-heroicons-bars-3" class="w-4 h-4 text-gray-600 cursor-move" />
+          <UIcon name="i-heroicons-bars-3" class="w-4 h-4 text-[var(--win-text-muted)] cursor-move" />
         </div>
 
         <!-- Priority Badge -->
@@ -185,7 +185,7 @@ const getPriorityIcon = (priority: number) => {
 
 const getPriorityBadgeClass = (priority: number) => {
   if (priority >= 2 || priority > 100) return 'bg-[var(--brand-1)]/20 text-[var(--brand-1)] border-[var(--brand-1)]/30'
-  if (priority === 0) return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+  if (priority === 0) return 'bg-[var(--glass-level-2-bg)] text-[var(--win-text-muted)] border-white/5'
   return 'bg-[var(--brand-10)]/20 text-[var(--brand-10)] border-[var(--brand-10)]/30'
 }
 

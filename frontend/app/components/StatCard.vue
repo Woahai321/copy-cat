@@ -11,15 +11,15 @@
       </div>
       
       <div class="mb-2">
-        <div class="text-3xl sm:text-4xl font-bold text-slate-100 mb-1">
+        <div class="text-3xl sm:text-4xl font-bold text-[var(--win-text-primary)] mb-1">
           {{ value }}
         </div>
-        <div class="text-sm font-medium text-slate-400">
+        <div class="text-sm font-medium text-[var(--win-text-muted)]">
           {{ label }}
         </div>
       </div>
       
-      <div v-if="description" class="text-xs text-slate-500">
+      <div v-if="description" class="text-xs text-[var(--win-text-muted)]">
         {{ description }}
       </div>
     </div>
@@ -50,30 +50,30 @@ const emit = defineEmits<{
 const iconBgClass = computed(() => {
   switch (props.variant) {
     case 'primary':
-      return 'bg-[rgba(71,23,247,0.1)]'
+      return 'bg-[var(--win-accent)]/10'
     case 'success':
-      return 'bg-emerald-500/10'
+      return 'bg-[var(--status-success)]/10'
     case 'danger':
-      return 'bg-rose-500/10'
+      return 'bg-[var(--status-error)]/10'
     case 'warning':
       return 'bg-[var(--brand-1)]/10'
     default:
-      return 'bg-slate-700/50'
+      return 'bg-[var(--glass-level-2-bg)]'
   }
 })
 
 const iconColorClass = computed(() => {
   switch (props.variant) {
     case 'primary':
-      return 'text-[#9d34da]'
+      return 'text-[var(--win-accent)]'
     case 'success':
-      return 'text-emerald-400'
+      return 'text-[var(--status-success)]'
     case 'danger':
-      return 'text-rose-400'
+      return 'text-[var(--status-error)]'
     case 'warning':
       return 'text-[var(--brand-1)]'
     default:
-      return 'text-slate-400'
+      return 'text-[var(--win-text-muted)]'
   }
 })
 

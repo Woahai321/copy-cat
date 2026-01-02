@@ -1,13 +1,13 @@
 <template>
-  <div class="glass-panel p-6 bg-black/20 h-full flex flex-col">
+  <div class="glass-panel p-6 bg-[var(--glass-level-2-bg)] h-full flex flex-col">
     <div class="flex items-center justify-between mb-6">
-      <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+      <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
         <div class="w-2 h-2 rounded-full bg-[var(--brand-10)] shadow-[0_0_8px_rgba(110,72,139,0.6)] animate-pulse"></div>
         Transfer Statistics
       </h3>
       
       <!-- Tab Selector -->
-      <div class="flex gap-1 bg-white/5 rounded-lg p-1 border border-white/10">
+       <div class="flex gap-1 bg-[var(--glass-level-1-bg)] rounded-lg p-1 border border-white/10">
         <button 
           v-for="tab in tabs" 
           :key="tab.value"
@@ -15,7 +15,7 @@
           class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded transition-all"
           :class="activeTab === tab.value 
             ? 'bg-[var(--win-accent)] text-black shadow-[0_0_10px_rgba(96,205,255,0.3)]' 
-            : 'text-gray-500 hover:text-white hover:bg-white/5'"
+            : 'text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] hover:bg-[var(--glass-level-2-bg)]'"
         >
           {{ tab.label }}
         </button>
@@ -26,35 +26,35 @@
       <!-- Stats Grid -->
       <div class="grid grid-cols-2 gap-4">
         <!-- Total Transfers -->
-        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
-          <div class="text-2xl font-bold text-white">{{ currentPeriod.count }}</div>
-          <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Total Transfers</div>
+        <div class="p-4 rounded-xl bg-[var(--glass-level-1-bg)] border border-white/5">
+          <div class="text-2xl font-bold text-[var(--win-text-primary)]">{{ currentPeriod.count }}</div>
+          <div class="text-[10px] text-[var(--win-text-muted)] uppercase tracking-wider mt-1">Total Transfers</div>
         </div>
         
         <!-- Data Moved -->
-        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+        <div class="p-4 rounded-xl bg-[var(--glass-level-1-bg)] border border-white/5">
           <div class="text-2xl font-bold text-[var(--win-accent)]">{{ currentPeriod.bytes_formatted }}</div>
-          <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Data Moved</div>
+          <div class="text-[10px] text-[var(--win-text-muted)] uppercase tracking-wider mt-1">Data Moved</div>
         </div>
         
         <!-- Success Rate -->
-        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+        <div class="p-4 rounded-xl bg-[var(--glass-level-1-bg)] border border-white/5">
           <div class="text-2xl font-bold" :class="getSuccessRateColor(currentPeriod.success_rate)">
             {{ currentPeriod.success_rate }}%
           </div>
-          <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Success Rate</div>
+          <div class="text-[10px] text-[var(--win-text-muted)] uppercase tracking-wider mt-1">Success Rate</div>
         </div>
         
         <!-- Avg Speed -->
-        <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+        <div class="p-4 rounded-xl bg-[var(--glass-level-1-bg)] border border-white/5">
           <div class="text-2xl font-bold text-[var(--brand-10)]">{{ currentPeriod.avg_speed_formatted }}</div>
-          <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Avg Speed</div>
+          <div class="text-[10px] text-[var(--win-text-muted)] uppercase tracking-wider mt-1">Avg Speed</div>
         </div>
       </div>
 
       <!-- Mini Bar Chart (Last 7 Days) -->
       <div v-if="stats.daily_breakdown && stats.daily_breakdown.length > 0" class="pt-4 border-t border-white/5 h-[140px] flex flex-col">
-        <div class="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Last 7 Days</div>
+        <div class="text-[10px] text-[var(--win-text-muted)] uppercase tracking-wider mb-2">Last 7 Days</div>
         <div class="flex-1 relative w-full h-full">
             <Bar :data="chartData" :options="chartOptions" />
         </div>
@@ -155,13 +155,13 @@ const chartData = computed(() => {
     datasets: [
       {
         label: 'Completed',
-        backgroundColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.8)', // semantic success color
         borderRadius: 4,
         data: breakdown.map(d => d.completed)
       },
       {
         label: 'Failed',
-        backgroundColor: '#f43f5e',
+        backgroundColor: 'rgba(244, 63, 94, 0.8)', // semantic error/accent color
         borderRadius: 4,
         data: breakdown.map(d => d.failed)
       }
@@ -179,7 +179,7 @@ const chartOptions = {
     tooltip: {
       mode: 'index',
       intersect: false,
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      backgroundColor: 'rgba(var(--glass-level-4-bg-rgb), 0.8)',
       titleColor: '#fff',
       bodyColor: '#fff',
       borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -193,7 +193,7 @@ const chartOptions = {
         display: false
       },
       ticks: {
-        color: '#9ca3af',
+        color: 'var(--win-text-muted)',
         font: {
           size: 10
         }

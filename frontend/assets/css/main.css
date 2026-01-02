@@ -9,42 +9,43 @@
   /* Level 0: Background (handled by body::before) */
 
   /* Level 1: Sidebar / Heavy Acrylic */
-  --glass-level-1-bg: rgba(20, 20, 20, 0.6);
+  --glass-level-1-bg: color-mix(in srgb, var(--win-bg-base), transparent 40%);
   --glass-level-1-blur: 40px;
   --glass-level-1-border: rgba(255, 255, 255, 0.05);
 
   /* Level 2: Cards / Content Glass */
-  --glass-level-2-bg: rgba(30, 30, 30, 0.65);
+  --glass-level-2-bg: color-mix(in srgb, var(--win-bg-base) 65%, white 5%);
+  /* Slightly lighter than base */
   --glass-level-2-blur: 25px;
   --glass-level-2-border: rgba(255, 255, 255, 0.08);
 
   /* Level 3: Overlays / Modals */
-  --glass-level-3-bg: rgba(40, 40, 40, 0.75);
+  --glass-level-3-bg: color-mix(in srgb, var(--win-bg-base) 80%, white 10%);
   --glass-level-3-blur: 50px;
   --glass-level-3-border: rgba(255, 255, 255, 0.12);
 
   /* Highlight & Accents */
   --win-accent: var(--brand-1);
-  --win-accent-glow: rgba(96, 205, 255, 0.4);
+  --win-accent-glow: color-mix(in srgb, var(--win-accent), transparent 60%);
   --win-highlight-border: rgba(255, 255, 255, 0.2);
-  /* For spotlight */
 
   /* Text */
   --win-text-primary: #ffffff;
-  --win-text-secondary: rgba(255, 255, 255, 0.7);
-  --win-text-muted: rgba(255, 255, 255, 0.45);
+  --win-text-secondary: color-mix(in srgb, var(--win-text-primary), transparent 30%);
+  --win-text-muted: color-mix(in srgb, var(--win-text-primary), transparent 55%);
 
-  /* Brand Gradient (Cyan to Purple) */
+  /* Brand Gradient System (Dynamic) */
   --brand-1: #60cdff;
-  --brand-2: #5dbef7;
-  --brand-3: #5db0ed;
-  --brand-4: #5fa1e3;
-  --brand-5: #6292d7;
-  --brand-6: #6584ca;
-  --brand-7: #6975bc;
-  --brand-8: #6c66ac;
-  --brand-9: #6e579c;
-  --brand-10: #6e488b;
+  /* Primary Brand Color */
+  --brand-2: color-mix(in srgb, var(--brand-1), white 10%);
+  --brand-3: color-mix(in srgb, var(--brand-1), white 20%);
+  --brand-4: color-mix(in srgb, var(--brand-1), white 30%);
+  --brand-5: color-mix(in srgb, var(--brand-1), black 10%);
+  --brand-6: color-mix(in srgb, var(--brand-1), black 20%);
+  --brand-7: color-mix(in srgb, var(--brand-1), black 30%);
+  --brand-8: color-mix(in srgb, var(--brand-1), black 40%);
+  --brand-9: color-mix(in srgb, var(--brand-1), black 50%);
+  --brand-10: color-mix(in srgb, var(--brand-1), black 60%);
 
   /* Semantic Status Colors */
   --status-success: #10b981;
@@ -109,9 +110,9 @@ body {
   top: -50%;
   left: 0;
   background: linear-gradient(to bottom,
-      rgba(96, 205, 255, 0) 0%,
-      rgba(96, 205, 255, 0.8) 75%,
-      #60cdff 100%);
+      color-mix(in srgb, var(--win-accent), transparent 100%) 0%,
+      color-mix(in srgb, var(--win-accent), transparent 20%) 75%,
+      var(--win-accent) 100%);
   animation: setup-drop 7s infinite cubic-bezier(0.4, 0.26, 0, 0.97);
   animation-fill-mode: forwards;
 }
@@ -189,7 +190,8 @@ body {
   border: 1px solid var(--glass-level-2-border);
   border-radius: 16px;
   /* Windows 11 rounded corners */
-  padding: 1rem; /* p-4 mobile default */
+  padding: 1rem;
+  /* p-4 mobile default */
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   transition: all 0.3s var(--ease-spring);
   position: relative;
@@ -198,9 +200,11 @@ body {
 }
 
 @media (min-width: 768px) {
+
   .glass-panel,
   .glass-panel-interactive {
-    padding: 1.5rem; /* p-6 desktop default */
+    padding: 1.5rem;
+    /* p-6 desktop default */
   }
 }
 
@@ -257,7 +261,7 @@ body {
 .btn-primary {
   @apply relative overflow-hidden rounded-xl px-6 py-2.5 font-semibold text-white transition-all duration-300;
   background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-10) 100%);
-  box-shadow: 0 0 20px rgba(96,205,255,0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 20px rgba(96, 205, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
@@ -420,7 +424,8 @@ body {
 }
 
 .filter-pill-active {
-  @apply bg-[var(--win-accent)] text-black border-[var(--win-accent)] shadow-[0_0_15px_rgba(96,205,255,0.3)];
+  @apply bg-[var(--win-accent)] text-black border-[var(--win-accent)];
+  box-shadow: 0 0 15px rgba(96, 205, 255, 0.3);
 }
 
 .filter-pill-inactive {

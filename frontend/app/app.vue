@@ -16,8 +16,8 @@
             <img src="/copycat.webp" alt="CopyCat" class="w-8 h-8 rounded" />
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-bold text-white">Install CopyCat</h3>
-            <p class="text-xs text-gray-400 mt-0.5">Add to your home screen for quick access</p>
+            <h3 class="text-sm font-bold text-[var(--win-text-primary)]">Install CopyCat</h3>
+            <p class="text-xs text-[var(--win-text-muted)] mt-0.5">Add to your home screen for quick access</p>>
           </div>
           <button @click="dismissed = true" class="text-gray-500 hover:text-white p-1">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@
         <div class="flex gap-2 mt-4">
           <button 
             @click="dismissed = true" 
-            class="flex-1 py-2.5 text-xs font-bold text-gray-400 hover:text-white transition-colors rounded-xl border border-white/10 hover:bg-white/5"
+            class="flex-1 py-2.5 text-xs font-bold text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] transition-colors rounded-xl border border-white/10 hover:bg-[var(--glass-level-1-bg)]"
           >
             Not Now
           </button>
@@ -54,6 +54,10 @@ const showInstallPrompt = ref(false)
 const dismissed = ref(false)
 
 onMounted(() => {
+  // Initialize Theme
+  const { initTheme } = useTheme()
+  initTheme()
+
   // Register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').then((registration) => {
