@@ -31,20 +31,31 @@
       
       <!-- Primary Metrics Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Total Time to Watch -->
+        
+          <!-- Zurg Status -->
           <div class="glass-panel p-6 flex flex-col justify-between relative overflow-hidden group hover:border-[var(--win-accent)]/30 transition-colors">
              <div class="absolute -right-4 -top-4 w-24 h-24 bg-[var(--win-accent)]/5 rounded-full blur-2xl group-hover:bg-[var(--win-accent)]/10 transition-colors"></div>
              
              <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2 mb-2">
-                 <UIcon name="i-heroicons-clock" class="w-4 h-4" />
-                 Time to Watch
+                 <UIcon name="i-heroicons-cpu-chip" class="w-4 h-4" />
+                 Zurg Status
              </div>
              <div>
-                 <div class="text-3xl font-black text-[var(--win-text-primary)] font-mono tracking-tight flex items-baseline gap-1">
-                     {{ formatDuration(stats.library_stats.total_runtime_minutes).value }}
-                     <span class="text-sm font-bold text-[var(--win-text-muted)] uppercase">{{ formatDuration(stats.library_stats.total_runtime_minutes).unit }}</span>
+                 <div class="text-3xl font-black text-[var(--win-text-primary)] font-mono tracking-tight flex items-center gap-2">
+                     <template v-if="stats.zurg_stats && stats.zurg_stats.status === 'online'">
+                       <span class="text-emerald-400 text-lg">Online</span>
+                     </template>
+                     <template v-else>
+                        <span class="text-red-400 text-lg">Offline</span>
+                     </template>
                  </div>
-                 <div class="text-xs text-[var(--win-text-muted)] mt-1">Non-stop entertainment</div>
+                 <div class="text-xs text-[var(--win-text-muted)] mt-1 flex items-center gap-2">
+                    <template v-if="stats.zurg_stats && stats.zurg_stats.memory">
+                       <span>Mem: {{ stats.zurg_stats.memory.usage }}</span>
+                       <span class="opacity-50">/</span>
+                       <span>Alloc: {{ stats.zurg_stats.memory.total_allocated }}</span>
+                    </template>
+                 </div>
              </div>
           </div>
 
@@ -64,20 +75,6 @@
              </div>
           </div>
           
-          <!-- Avg File Size -->
-          <div class="glass-panel p-6 flex flex-col justify-between relative overflow-hidden group hover:border-[var(--win-accent)]/30 transition-colors">
-             <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2 mb-2">
-                 <UIcon name="i-heroicons-scale" class="w-4 h-4" />
-                 Avg Quality
-             </div>
-             <div>
-                 <div class="text-3xl font-black text-[var(--win-text-primary)] font-mono tracking-tight">
-                     {{ formatBytes(stats.library_stats.avg_file_size) }}
-                 </div>
-                 <div class="text-xs text-[var(--win-text-muted)] mt-1">Per media item</div>
-             </div>
-          </div>
-
           <!-- Success Rate -->
           <div class="glass-panel p-6 flex flex-col justify-between relative overflow-hidden group hover:border-[var(--win-accent)]/30 transition-colors">
              <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2 mb-2">
@@ -92,6 +89,32 @@
                  </div>
                  <div class="text-xs text-[var(--win-text-muted)] mt-1">
                      {{ stats.job_stats.completed_count }} jobs completed
+                 </div>
+             </div>
+          </div>
+
+          <!-- Zurg Account Info (If available) -->
+          <div class="glass-panel p-6 flex flex-col justify-between relative overflow-hidden group hover:border-[var(--win-accent)]/30 transition-colors">
+             <div class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2 mb-2">
+                 <UIcon name="i-heroicons-user-circle" class="w-4 h-4" />
+                 Debrid Account
+             </div>
+             <div>
+                 <div class="flex items-center gap-2 mb-1">
+                    <div class="text-lg font-bold text-[var(--win-text-primary)] truncate max-w-[150px]">
+                      {{ stats.zurg_stats?.account?.username || 'Unknown' }}
+                    </div>
+                    <span 
+                      v-if="stats.zurg_stats?.account?.type === 'premium'"
+                      class="text-[10px] font-bold bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded uppercase tracking-wider"
+                    >Prem</span>
+                 </div>
+                 
+                 <div class="text-xs text-[var(--win-text-muted)]" v-if="stats.zurg_stats?.account?.premium_days !== undefined">
+                    <span class="text-emerald-400 font-bold">{{ stats.zurg_stats.account.premium_days }} Days</span> Left
+                 </div>
+                 <div class="text-xs text-[var(--win-text-muted)]" v-else>
+                    No info available
                  </div>
              </div>
           </div>
@@ -144,23 +167,37 @@
               </div>
           </div>
 
-          <!-- Decade Distribution -->
+          <!-- Era Breakdown (Focus on Highest) -->
           <div class="glass-panel p-6 flex flex-col">
-              <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-6 flex items-center gap-2">
+              <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-4 flex items-center gap-2">
                   <UIcon name="i-heroicons-calendar" class="w-4 h-4" />
                   Era Breakdown
               </h3>
-              <div class="space-y-3 overflow-y-auto max-h-[250px] pr-2 custom-scrollbar">
-                  <div v-for="(count, decade) in stats.charts.decades" :key="decade" class="group">
-                      <div class="flex justify-between items-center text-xs mb-1.5">
-                          <span class="font-bold text-[var(--win-text-secondary)] group-hover:text-[var(--win-text-primary)]">{{ decade }}</span>
-                          <span class="font-mono text-[var(--win-accent)]">{{ count }}</span>
+              
+              <div v-if="stats.charts.decades" class="flex flex-col h-full">
+                  <!-- Highlight Top Era -->
+                  <div class="bg-[var(--win-text-primary)]/5 rounded-xl p-4 mb-4 flex items-center justify-between border border-white/5">
+                      <div>
+                          <div class="text-xs text-[var(--win-text-muted)] uppercase tracking-wide mb-1">Golden Era</div>
+                          <div class="text-4xl font-black text-[var(--win-text-primary)]">{{ topEra.label }}</div>
                       </div>
-                      <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                          <div 
-                            class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-1000 ease-out" 
-                            :style="{ width: `${(count / maxDecadeCount) * 100}%` }"
-                          ></div>
+                      <div class="text-right">
+                           <div class="text-2xl font-mono font-bold text-[var(--win-accent)]">{{ topEra.count }}</div>
+                           <div class="text-xs text-[var(--win-text-muted)]">Items</div>
+                      </div>
+                  </div>
+
+                  <!-- Mini Chart for Others -->
+                  <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-2">
+                      <div v-for="(count, decade) in stats.charts.decades" :key="decade" class="group flex items-center gap-3">
+                           <div class="w-12 text-xs font-bold text-[var(--win-text-secondary)]">{{ decade }}</div>
+                           <div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+                               <div 
+                                 class="h-full bg-[var(--win-accent)]/50 group-hover:bg-[var(--win-accent)] transition-colors rounded-full" 
+                                 :style="{ width: `${(count / maxDecadeCount) * 100}%` }"
+                               ></div>
+                           </div>
+                           <div class="w-8 text-right text-xs font-mono opacity-50">{{ count }}</div>
                       </div>
                   </div>
               </div>
@@ -168,94 +205,63 @@
       </div>
 
       <!-- Secondary Metrics Row -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           
-          <!-- Quality Distribution (Resolutions) -->
-          <div class="glass-panel p-6">
-              <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-6 flex items-center gap-2">
-                  <UIcon name="i-heroicons-eye" class="w-4 h-4" />
-                  Video Quality
-              </h3>
-              <div class="space-y-4">
-                  <div v-for="res in sortedResolutions" :key="res.label" class="flex items-center gap-4">
-                      <div class="w-12 text-xs font-bold text-[var(--win-text-secondary)]">{{ res.label }}</div>
-                      <div class="flex-1 h-3 bg-white/5 rounded-full overflow-hidden relative">
-                          <div class="absolute inset-y-0 left-0 bg-[var(--win-accent)] rounded-full transition-all duration-1000" :style="{ width: res.percent + '%' }"></div>
-                      </div>
-                      <div class="w-10 text-right text-xs font-mono opacity-60">{{ res.count }}</div>
-                  </div>
-              </div>
-          </div>
-
-          <!-- Audio Codecs -->
-          <div class="glass-panel p-6">
-              <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-6 flex items-center gap-2">
-                  <UIcon name="i-heroicons-speaker-wave" class="w-4 h-4" />
-                  Audio Tech
-              </h3>
-              <div class="flex flex-wrap gap-2">
-                   <div 
-                     v-for="(count, codec) in stats.charts.audio_codecs" 
-                     :key="codec"
-                     class="px-3 py-1.5 rounded-lg bg-[var(--glass-level-2-bg)] border border-white/5 flex items-center gap-2 hover:border-[var(--win-accent)]/50 transition-colors"
-                   >
-                      <span class="text-xs font-bold text-[var(--win-text-primary)] uppercase">{{ codec }}</span>
-                      <span class="text-[10px] font-mono text-[var(--win-accent)] bg-[var(--win-accent)]/10 px-1 rounded">{{ count }}</span>
-                   </div>
-              </div>
-          </div>
-
-          <!-- Top Genres (Condensed) -->
+          <!-- Top Genres (Redesigned as Pills) -->
           <div class="glass-panel p-6">
               <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest mb-6 flex items-center gap-2">
                   <UIcon name="i-heroicons-tag" class="w-4 h-4" />
                   Top Genres
               </h3>
-               <div class="space-y-3">
-                  <div v-for="(count, genre) in stats.charts.genres" :key="genre" class="group">
-                      <div class="flex justify-between text-xs mb-1">
-                          <span class="font-bold text-[var(--win-text-secondary)] opacity-80 group-hover:text-[var(--win-text-primary)] group-hover:opacity-100">{{ genre }}</span>
-                          <span class="font-mono text-[var(--win-text-muted)]">{{ count }}</span>
+               <div class="flex flex-wrap gap-2">
+                  <div 
+                    v-for="(count, genre) in stats.charts.genres" 
+                    :key="genre" 
+                    class="group relative overflow-hidden rounded-lg bg-[var(--glass-level-2-bg)] border border-white/5 px-4 py-3 hover:border-[var(--win-accent)]/50 transition-all cursor-default flex-1 min-w-[120px]"
+                  >
+                      <div class="relative z-10 flex flex-col items-start">
+                          <span class="text-sm font-bold text-[var(--win-text-primary)] mb-1">{{ genre }}</span>
+                          <span class="text-xs font-mono text-[var(--win-accent)] bg-[var(--win-accent)]/10 px-1.5 py-0.5 rounded">{{ count }} items</span>
                       </div>
-                      <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                          <div 
-                            class="h-full bg-[var(--win-text-primary)] opacity-40 group-hover:opacity-100 transition-opacity" 
-                            :style="{ width: `${(count / maxGenreCount) * 100}%` }"
-                          ></div>
+                      
+                      <!-- subtle bg bar -->
+                      <div class="absolute bottom-0 left-0 h-1 bg-[var(--win-accent)] transition-all opacity-20 group-hover:opacity-100" 
+                           :style="{ width: `${(count / maxGenreCount) * 100}%` }">
                       </div>
                   </div>
               </div>
           </div>
-      </div>
+          
+           <!-- Largest Files Table -->
+           <div class="glass-panel p-0 overflow-hidden flex flex-col">
+              <div class="p-6 border-b border-white/5 bg-[var(--glass-level-2-bg)] flex justify-between items-center">
+                  <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
+                      <UIcon name="i-heroicons-document" class="w-4 h-4" />
+                      Largest Files
+                  </h3>
+              </div>
+              <div class="divide-y divide-white/5 flex-1 overflow-y-auto max-h-[300px] custom-scrollbar">
+                  <div 
+                    v-for="file in stats.top_lists.largest_files" 
+                    :key="file.path"
+                    class="p-4 hover:bg-white/5 transition-colors flex items-center justify-between gap-4 group"
+                  >
+                      <div class="flex items-center gap-3 min-w-0">
+                          <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[var(--win-text-muted)]">
+                              <UIcon name="i-heroicons-film" class="w-4 h-4" />
+                          </div>
+                          <div class="min-w-0">
+                              <div class="text-sm font-bold text-[var(--win-text-primary)] truncate group-hover:text-[var(--win-accent)] transition-colors">{{ file.title }}</div>
+                              <div class="text-[10px] text-[var(--win-text-muted)] truncate font-mono opacity-50">{{ file.path }}</div>
+                          </div>
+                      </div>
+                      <div class="text-sm font-bold text-[var(--win-text-primary)] font-mono whitespace-nowrap bg-white/5 px-2 py-1 rounded">
+                          {{ file.size }}
+                      </div>
+                  </div>
+              </div>
+          </div>
 
-       <!-- Largest Files Table -->
-       <div class="glass-panel p-0 overflow-hidden">
-          <div class="p-6 border-b border-white/5 bg-[var(--glass-level-2-bg)] flex justify-between items-center">
-              <h3 class="text-xs font-bold text-[var(--win-text-muted)] uppercase tracking-widest flex items-center gap-2">
-                  <UIcon name="i-heroicons-document" class="w-4 h-4" />
-                  Largest Files
-              </h3>
-          </div>
-          <div class="divide-y divide-white/5">
-              <div 
-                v-for="file in stats.top_lists.largest_files" 
-                :key="file.path"
-                class="p-4 hover:bg-white/5 transition-colors flex items-center justify-between gap-4 group"
-              >
-                  <div class="flex items-center gap-3 min-w-0">
-                      <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[var(--win-text-muted)]">
-                          <UIcon name="i-heroicons-film" class="w-4 h-4" />
-                      </div>
-                      <div class="min-w-0">
-                          <div class="text-sm font-bold text-[var(--win-text-primary)] truncate group-hover:text-[var(--win-accent)] transition-colors">{{ file.title }}</div>
-                          <div class="text-[10px] text-[var(--win-text-muted)] truncate font-mono opacity-50">{{ file.path }}</div>
-                      </div>
-                  </div>
-                  <div class="text-sm font-bold text-[var(--win-text-primary)] font-mono whitespace-nowrap bg-white/5 px-2 py-1 rounded">
-                      {{ file.size }}
-                  </div>
-              </div>
-          </div>
       </div>
 
     </div>
@@ -292,6 +298,19 @@ const maxDecadeCount = computed(() => {
     if (!stats.value?.charts?.decades) return 1
     const values = Object.values(stats.value.charts.decades) as number[]
     return Math.max(...values, 1)
+})
+
+const topEra = computed(() => {
+    if (!stats.value?.charts?.decades || Object.keys(stats.value.charts.decades).length === 0) {
+        return { label: 'Unknown', count: 0 }
+    }
+    const decades = stats.value.charts.decades
+    // Find decade with max count
+    const top = Object.entries(decades).reduce((max, [label, count]) => {
+        return (count as number) > max.count ? { label, count: count as number } : max
+    }, { label: 'Unknown', count: 0 })
+    
+    return top
 })
 
 const sortedResolutions = computed(() => {

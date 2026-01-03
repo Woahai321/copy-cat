@@ -102,9 +102,11 @@
 
 
     <!-- Job Detail Modal -->
-    <JobDetailsModal 
-        :job="selectedJob" 
+    <MediaDetailModal 
+        v-if="selectedJob"
         :show="showDetailModal" 
+        :item="selectedJob.media_item || selectedJob"
+        :job="selectedJob"
         @close="closeModal"
         @retry="handleRetry(selectedJob?.id); closeModal()" 
     />
@@ -113,7 +115,7 @@
 
 <script setup lang="ts">
 
-import JobDetailsModal from '~/components/JobDetailsModal.vue' // Import Modal
+import MediaDetailModal from '~/components/MediaDetailModal.vue' // Import Modal
 
 definePageMeta({
   middleware: 'auth'
@@ -175,9 +177,12 @@ const filteredJobs = computed(() => {
 
 const loadHistory = async (reset = true) => {
   if (reset) {
-    loading.value = true
+    // Only show full loading state if we have no jobs
+    if (jobs.value.length === 0) {
+        loading.value = true
+    }
     currentOffset.value = 0
-    jobs.value = []
+    // Don't clear jobs immediately to avoid flash
   } else {
     loadingMore.value = true
   }

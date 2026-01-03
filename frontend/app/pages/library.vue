@@ -43,8 +43,8 @@
               <option value="created_at:asc">Oldest First</option>
               <option value="title:asc">Title (A-Z)</option>
               <option value="title:desc">Title (Z-A)</option>
-              <option value="year:desc">Newest Year</option>
-              <option value="year:asc">Oldest Year</option>
+              <option value="release_date:desc">Newest Release</option>
+              <option value="release_date:asc">Oldest Release</option>
               <option value="rating:desc">Top Rated</option>
             </select>
             <UIcon name="i-heroicons-chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--win-text-muted)] pointer-events-none" />
@@ -396,162 +396,14 @@
     />
 
     <!-- Details Modal -->
-    <div v-if="selectedItem" class="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4 bg-[var(--glass-level-4-bg)] backdrop-blur-md animate-in fade-in duration-200" @click.self="selectedItem = null">
-        <!-- Modal Container -->
-        <div class="bg-[var(--win-bg-base)] md:bg-[var(--glass-level-3-bg)] md:backdrop-blur-xl w-full max-w-4xl h-[100dvh] md:h-auto md:rounded-2xl md:overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x md:border border-white/10 flex flex-col md:flex-row md:max-h-[85vh] relative">
-            
-            <!-- Close Button (Mobile Floating) -->
-            <button @click="selectedItem = null" class="absolute top-4 right-4 z-30 md:hidden w-10 h-10 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/10 shadow-lg active:scale-95 transition-transform">
-                <UIcon name="i-heroicons-x-mark" class="w-6 h-6" />
-            </button>
-
-            <!-- Poster Side -->
-            <div class="w-full md:w-1/3 h-[35vh] md:h-auto relative group shrink-0">
-                <!-- Mobile Gradient Overlay for Text Readability -->
-                <div class="absolute inset-0 bg-gradient-to-t from-[var(--win-bg-base)] via-transparent to-transparent z-10 md:hidden"></div>
-                
-                <img 
-                   v-if="selectedItem.poster_url" 
-                   :src="selectedItem.poster_url.startsWith('http') ? selectedItem.poster_url : `${apiBase}${selectedItem.poster_url}`" 
-                   class="w-full h-full object-cover bg-black/50 object-top"
-                />
-                <div v-else class="w-full h-full bg-white/5 flex items-center justify-center">
-                    <UIcon name="i-heroicons-photo" class="w-16 h-16 text-gray-700" />
-                </div>
-            </div>
-
-            <!-- Content Side -->
-            <div class="w-full md:w-2/3 flex flex-col overflow-y-auto custom-scrollbar md:relative bg-transparent">
-                
-                <!-- Scrollable Content -->
-                <div class="p-6 md:p-8 pb-32 md:pb-8">
-                    <!-- Header -->
-                    <div class="mb-4 md:mb-6">
-                        <div class="flex items-start justify-between gap-4">
-                            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight flex items-center gap-3">
-                                {{ selectedItem.title }}
-                                <a v-if="selectedItem.homepage" :href="selectedItem.homepage" target="_blank" class="text-gray-500 hover:text-[var(--win-accent)] transition-colors" title="Official Website">
-                                    <UIcon name="i-heroicons-link" class="w-5 h-5" />
-                                </a>
-                            </h2>
-                        </div>
-                        <p v-if="selectedItem.tagline" class="text-gray-400 italic mb-3 text-sm">{{ selectedItem.tagline }}</p>
-                        
-                        <!-- Tech Tags -->
-                        <div v-if="getTechTags(selectedItem).length" class="flex flex-wrap gap-2 mb-3">
-                          <span 
-                            v-for="tag in getTechTags(selectedItem)" 
-                            :key="tag.label"
-                            :class="[
-                                'text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider',
-                                tag.color
-                            ]"
-                          >
-                            {{ tag.label }}
-                          </span>
-                        </div>
-
-                        <div class="flex flex-wrap items-center gap-4 text-sm mt-3">
-                            <span v-if="selectedItem.year" class="text-white font-mono bg-white/10 px-2 py-0.5 rounded">{{ selectedItem.year }}</span>
-                            <!-- Status (e.g. Ended, Released) -->
-                            <span v-if="selectedItem.status" class="text-gray-400 border border-gray-700 px-2 py-0.5 rounded text-xs capitalize">{{ selectedItem.status }}</span>
-                            <!-- Network (e.g. AMC) -->
-                            <span v-if="selectedItem.network" class="text-[var(--win-accent)] font-bold text-xs uppercase tracking-wider">{{ selectedItem.network }}</span>
-                            
-                            <span v-if="selectedItem.certification" class="text-gray-400 border border-gray-700 px-2 py-0.5 rounded text-xs">{{ selectedItem.certification }}</span>
-                            <span v-if="selectedItem.runtime" class="text-gray-400 flex items-center gap-1">
-                                <UIcon name="i-heroicons-clock" class="w-4 h-4" />
-                                {{ selectedItem.runtime }}m
-                            </span>
-                            <span v-if="selectedItem.aired_episodes" class="text-gray-400 flex items-center gap-1">
-                                <UIcon name="i-heroicons-rectangle-stack" class="w-4 h-4" />
-                                {{ selectedItem.aired_episodes }} eps
-                            </span>
-                            <span v-if="selectedItem.rating" class="text-amber-400 flex items-center gap-1 font-bold">
-                                <UIcon name="i-heroicons-star" class="w-4 h-4" />
-                                {{ parseFloat(selectedItem.rating).toFixed(1) }}
-                            </span>
-                            
-                            <!-- Trailer (Moved to Header) -->
-                            <button 
-                                v-if="selectedItem.trailer_url"
-                                @click="openExternal(selectedItem.trailer_url)"
-                                class="flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-[var(--win-accent)]/10 text-[var(--win-accent)] hover:bg-[var(--win-accent)] hover:text-black transition-colors"
-                            >
-                                <UIcon name="i-simple-icons-youtube" class="w-3.5 h-3.5" />
-                                <span>Trailer</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Genres -->
-                    <div v-if="selectedItem.genres && selectedItem.genres.length" class="flex flex-wrap gap-2 mb-6">
-                        <span v-for="g in selectedItem.genres" :key="g" class="px-3 py-1 bg-[var(--win-accent)]/10 text-[var(--win-accent)] border border-[var(--win-accent)]/20 rounded-full text-xs font-bold uppercase tracking-wider">
-                            {{ g }}
-                        </span>
-                    </div>
-
-                    <!-- Overview -->
-                    <div class="mb-8">
-                        <h3 class="text-gray-500 text-xs font-bold uppercase mb-2 tracking-widest">Overview</h3>
-                        <p class="text-gray-300 leading-relaxed text-sm lg:text-base">
-                            {{ selectedItem.overview || 'No overview available.' }}
-                        </p>
-                    </div>
-
-                    <!-- File Info (Technical) -->
-                    <div class="bg-black/30 p-4 rounded-lg border border-white/5 mb-2 grid grid-cols-2 gap-4">
-                        <div class="col-span-2">
-                             <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase">
-                                 <UIcon name="i-heroicons-folder" class="w-4 h-4" />
-                                 Source File
-                             </div>
-                             <code class="text-xs text-[var(--win-accent)] break-all font-mono select-all block">
-                                 {{ selectedItem.full_path }}
-                             </code>
-                        </div>
-                        
-                        <div>
-                             <div class="flex items-center gap-2 mb-2 text-gray-500 text-xs font-bold uppercase">
-                                 <UIcon name="i-heroicons-server" class="w-4 h-4" />
-                                 File Size
-                             </div>
-                             <div class="text-xs text-white font-mono font-bold">
-                                 {{ selectedItem.size_formatted || 'Unknown' }}
-                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sticky Actions Footer -->
-                <div class="fixed md:static bottom-0 left-0 right-0 p-4 md:p-8 bg-[var(--win-bg-base)]/95 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none border-t border-white/10 md:border-none z-20 flex gap-3 mt-auto">
-                    <button 
-                        v-if="selectedItem.tmdb_id"
-                        @click="openInTrakt(selectedItem)"
-                        class="flex-1 py-3 md:py-3 bg-[var(--win-accent)]/10 hover:bg-[var(--win-accent)]/20 border border-[var(--win-accent)]/20 text-[var(--win-accent)] font-bold rounded-xl md:rounded-lg transition-colors flex items-center justify-center gap-2 active:scale-95 md:active:scale-100"
-                    >
-                        <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-5 h-5" />
-                        <span class="md:hidden">Trakt</span>
-                        <span class="hidden md:inline">View on Trakt</span>
-                    </button>
-                    <button 
-                        @click="handleCopy(selectedItem)"
-                        class="flex-1 py-3 md:py-3 bg-[var(--win-accent)] hover:bg-[var(--win-accent)]/80 text-black font-bold rounded-xl md:rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 md:active:scale-100"
-                    >
-                        <UIcon name="i-heroicons-document-duplicate" class="w-5 h-5" />
-                        Copy to Library
-                    </button>
-                    <button 
-                        @click="selectedItem = null"
-                        class="hidden md:flex flex-1 py-3 btn-ghost justify-center rounded-xl md:rounded-lg"
-                    >
-                        Close
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
+    <MediaDetailModal 
+        v-if="selectedItem"
+        :show="!!selectedItem"
+        :item="selectedItem"
+        @close="selectedItem = null"
+        @copy="handleCopy"
+        @view-trakt="openInTrakt"
+    />
 
     <!-- Trakt Setup Modal -->
     <div v-if="showTraktModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
@@ -596,6 +448,7 @@
 
 <script setup lang="ts">
 import SkeletonCard from '~/components/SkeletonCard.vue'
+import MediaDetailModal from '~/components/MediaDetailModal.vue'
 
 const toast = useToast()
 const { getSettings } = useApi()

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Text, Boolean, Float
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Text, Boolean, Float, Date
 from datetime import datetime
 from database import Base
 
@@ -57,6 +57,7 @@ class MediaItem(Base):
     poster_url = Column(String, nullable=True) # This will be the PROXY URL (or raw if proxying fails)
     poster_cached_at = Column(DateTime, nullable=True)
     
+    release_date = Column(Date, nullable=True) # Full release date (YYYY-MM-DD)
     overview = Column(String, nullable=True)
     rating = Column(Float, nullable=True) # Trakt rating 0-10
     genres = Column(String, nullable=True) # JSON list or comma-separated

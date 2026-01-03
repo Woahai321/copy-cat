@@ -191,9 +191,11 @@
     </div>
 
     <!-- Details Modal -->
-    <JobDetailsModal 
-        :job="selectedJob" 
+    <MediaDetailModal 
+        v-if="selectedJob"
         :show="!!selectedJob" 
+        :item="selectedJob.media_item || selectedJob"
+        :job="selectedJob"
         @close="selectedJob = null"
         @cancel="handleCancelJob"
         @retry="handleRetryJob"
@@ -203,7 +205,7 @@
 
 <script setup lang="ts">
 import CopyJobCard from '~/components/CopyJobCard.vue'
-import JobDetailsModal from '~/components/JobDetailsModal.vue'
+import MediaDetailModal from '~/components/MediaDetailModal.vue'
 import SystemMonitorWidget from '~/components/SystemMonitorWidget.vue'
 import StatsWidget from '~/components/StatsWidget.vue'
 
@@ -236,7 +238,7 @@ const loadData = async () => {
     ])
     
     activeJobs.value = queue.length
-    recentJobs.value = history.slice(0, 5) // Expanded to 5 as per plan
+    recentJobs.value = history.slice(0, 3) // Limited to 3 as per request
     systemStatus.value = status
     diskUsage.value = disk
     transferStats.value = stats

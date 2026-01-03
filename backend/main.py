@@ -2,10 +2,10 @@ from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocke
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_, func
+from sqlalchemy import or_, and_, func, text, inspect
 from typing import List, Optional
 from pydantic import BaseModel
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 
 from database import get_db, engine, SessionLocal
 from models import Base, User, CopyJob, SystemSettings, MediaItem, StorageStats, CachedImage
@@ -208,6 +208,7 @@ class CopyJobResponse(BaseModel):
     # Enriched Fields
     media_title: Optional[str] = None
     media_year: Optional[int] = None
+    media_release_date: Optional[date] = None
     media_rating: Optional[float] = None
     media_poster: Optional[str] = None
     media_type: Optional[str] = None
@@ -223,7 +224,7 @@ class CopyJobResponse(BaseModel):
 
 # Auth endpoints
 @app.post("/api/auth/login", response_model=LoginResponse)
-async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
+def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     """Authenticate user and return JWT token."""
     user = authenticate_user(db, login_data.username, login_data.password)
     if not user:
@@ -243,7 +244,7 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
 
 # File browsing endpoints
 @app.get("/api/browse", response_model=BrowseResponse)
-async def browse_directory(
+def browse_directory(
     source: str = Query(..., description="Source location: source (zurg) or destination (16tb)"),
     path: str = Query("", description="Relative path within the source"),
     limit: Optional[int] = Query(None, description="Maximum items to return (pagination)"),
@@ -282,7 +283,7 @@ async def browse_directory(
 
 
 @app.get("/api/folder-info")
-async def folder_info(
+def folder_info(
     source: str = Query(..., description="Source location: source or destination"),
     path: str = Query(..., description="Relative path within the source"),
     calculate_size: bool = Query(False, description="Calculate full recursive size (slow)"),
@@ -316,7 +317,7 @@ async def folder_info(
 
 
 @app.post("/api/create-folder")
-async def create_folder(
+def create_folder(
     source: str = Query(..., description="Source location: source or destination"),
     path: str = Query(..., description="Relative path within the source"),
     folder_name: str = Query(..., description="Name of the folder to create"),
@@ -370,7 +371,7 @@ async def create_folder(
 
 
 @app.delete("/api/files/delete")
-async def delete_item(
+def delete_item(
     source: str = Query(..., description="Source location: source or destination"),
     path: str = Query(..., description="Relative path within the source"),
     current_user: User = Depends(get_current_user)
@@ -398,7 +399,7 @@ async def delete_item(
 
 # Copy job endpoints
 @app.get("/api/jobs/{job_id}", response_model=CopyJobResponse)
-async def get_job_details(
+def get_job_details(
     job_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -410,7 +411,7 @@ async def get_job_details(
     return job
 
 @app.post("/api/copy/start", response_model=CopyJobResponse)
-async def start_copy(
+def start_copy(
     copy_data: CopyJobCreate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -477,7 +478,7 @@ async def start_copy(
 
 
 @app.get("/api/copy/queue", response_model=List[CopyJobResponse])
-async def get_queue(
+def get_queue(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -486,18 +487,19 @@ async def get_queue(
         CopyJob, 
         MediaItem.title.label("media_title"),
         MediaItem.year.label("media_year"),
+        MediaItem.release_date.label("media_release_date"),
         MediaItem.rating.label("media_rating"),
         MediaItem.poster_url.label("media_poster"),
         MediaItem.media_type.label("media_type")
     ).outerjoin(
-        MediaItem, func.replace(CopyJob.source_path, '\\', '/') == func.replace(MediaItem.full_path, '\\', '/')
+        MediaItem, CopyJob.source_path == MediaItem.full_path
     ).filter(
         CopyJob.status.in_(["queued", "processing"])
     ).order_by(CopyJob.created_at).all()
     
     # Convert to list of dicts that match CopyJobResponse
     enriched_jobs = []
-    for job, title, year, rating, poster, mtype in jobs:
+    for job, title, year, release_date, rating, poster, mtype in jobs:
         # Proxy poster URL if needed
         if poster and poster.startswith("http"):
              from urllib.parse import quote
@@ -517,6 +519,7 @@ async def get_queue(
             "completed_at": job.completed_at,
             "media_title": title,
             "media_year": year,
+            "media_release_date": release_date,
             "media_rating": rating,
             "media_poster": poster,
             "media_type": mtype
@@ -527,7 +530,7 @@ async def get_queue(
 
 
 @app.get("/api/copy/history", response_model=List[CopyJobResponse])
-async def get_history(
+def get_history(
     limit: int = Query(50, description="Number of jobs to return"),
     offset: int = Query(0, description="Offset for pagination"),
     current_user: User = Depends(get_current_user),
@@ -538,17 +541,18 @@ async def get_history(
         CopyJob,
         MediaItem.title.label("media_title"),
         MediaItem.year.label("media_year"),
+        MediaItem.release_date.label("media_release_date"),
         MediaItem.rating.label("media_rating"),
         MediaItem.poster_url.label("media_poster"),
         MediaItem.media_type.label("media_type")
     ).outerjoin(
-        MediaItem, func.replace(CopyJob.source_path, '\\', '/') == func.replace(MediaItem.full_path, '\\', '/')
+        MediaItem, CopyJob.source_path == MediaItem.full_path
     ).order_by(
         CopyJob.created_at.desc()
     ).limit(limit).offset(offset).all()
     
     enriched_jobs = []
-    for job, title, year, rating, poster, mtype in jobs:
+    for job, title, year, release_date, rating, poster, mtype in jobs:
         if poster and poster.startswith("http"):
              from urllib.parse import quote
              poster = f"/api/images/proxy?url={quote(poster)}"
@@ -567,6 +571,7 @@ async def get_history(
             "completed_at": job.completed_at,
             "media_title": title,
             "media_year": year,
+            "media_release_date": release_date,
             "media_rating": rating,
             "media_poster": poster,
             "media_type": mtype
@@ -577,7 +582,7 @@ async def get_history(
 
 
 @app.delete("/api/copy/{job_id}")
-async def cancel_job(
+def cancel_job(
     job_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -601,7 +606,7 @@ async def cancel_job(
 
 
 @app.delete("/api/copy/queue")
-async def clear_queue(
+def clear_queue(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -624,7 +629,7 @@ async def clear_queue(
 
 
 @app.post("/api/copy/{job_id}/retry", response_model=CopyJobResponse)
-async def retry_job(
+def retry_job(
     job_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -665,7 +670,7 @@ class ReorderRequest(BaseModel):
 
 
 @app.post("/api/copy/{job_id}/priority", response_model=CopyJobResponse)
-async def set_job_priority(
+def set_job_priority(
     job_id: int,
     priority_data: PriorityUpdate,
     current_user: User = Depends(get_current_user),
@@ -695,7 +700,7 @@ async def set_job_priority(
 
 
 @app.post("/api/copy/reorder")
-async def reorder_queue(
+def reorder_queue(
     reorder_data: ReorderRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -749,7 +754,7 @@ async def root():
 
 
 @app.get("/api/system/status")
-async def system_status(
+def system_status(
     current_user: User = Depends(get_current_user)
 ):
     """Check system status including mount points."""
@@ -789,7 +794,7 @@ async def system_status(
 
 
 @app.get("/api/stats")
-async def get_transfer_stats(
+def get_transfer_stats(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -1064,6 +1069,7 @@ class StatsFullResponse(BaseModel):
     storage_stats: dict
     charts: dict
     top_lists: dict
+    zurg_stats: Optional[dict] = None  # [NEW] Zurg Stats
     discord_notify_success: Optional[bool] = None
     discord_notify_failure: Optional[bool] = None
 
@@ -1259,6 +1265,13 @@ async def get_library_items(
             query = query.order_by(MediaItem.year.asc(), MediaItem.id.asc())
         else:
             query = query.order_by(MediaItem.year.desc().nulls_last(), MediaItem.id.desc())
+    elif sort_by == 'release_date':
+        if order == 'asc':
+            # Oldest first: nulls last usually to keep clean, or first? Usually unknown date -> last.
+            query = query.order_by(MediaItem.release_date.asc().nulls_last(), MediaItem.id.asc())
+        else:
+            # Newest first: nulls last usually.
+            query = query.order_by(MediaItem.release_date.desc().nulls_last(), MediaItem.id.desc())
     elif sort_by == 'rating':
         if order == 'asc':
             query = query.order_by(MediaItem.rating.asc(), MediaItem.id.asc())
@@ -1303,6 +1316,7 @@ async def get_library_items(
             "full_path": item.full_path,
             "title": item.title,
             "year": item.year,
+            "release_date": item.release_date,
             "media_type": get_media_type_from_path(item.full_path),
             "tmdb_id": item.tmdb_id,
             "imdb_id": item.imdb_id,
@@ -1384,6 +1398,97 @@ async def get_library_items(
         "total": total_count,
         "has_more": len(enriched_items) >= limit
     }
+
+
+@app.get("/api/db/tables")
+def get_db_tables(
+    current_user: User = Depends(get_current_user)
+):
+    """Get list of all tables in the database."""
+    inspector = inspect(engine)
+    tables = inspector.get_table_names()
+    return {"tables": tables}
+
+
+@app.get("/api/db/query")
+def query_db_table(
+    table: str = Query(..., description="Table name to query"),
+    limit: int = Query(50, description="Number of rows"),
+    offset: int = Query(0, description="Offset"),
+    sort_by: Optional[str] = Query(None, description="Column to sort by"),
+    order: Optional[str] = Query("asc", description="Sort order (asc/desc)"),
+    search: Optional[str] = Query(None, description="Search term"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Query rows from a specific table with optional search and sort."""
+    # Security: Validate table name against actual DB tables
+    inspector = inspect(engine)
+    valid_tables = inspector.get_table_names()
+    
+    if table not in valid_tables:
+        raise HTTPException(status_code=400, detail=f"Invalid table name. Available tables: {', '.join(valid_tables)}")
+    
+    try:
+        # Get columns to validate sort_by and build search
+        columns_info = inspector.get_columns(table)
+        column_names = [c['name'] for c in columns_info]
+        
+        # Base query parts
+        where_clause = ""
+        params = {"limit": limit, "offset": offset}
+        
+        # 1. Search Logic
+        if search:
+            search_conditions = []
+            for col in column_names:
+                # Cast all columns to text for searching
+                search_conditions.append(f"CAST({col} AS TEXT) LIKE :search")
+            if search_conditions:
+                where_clause = f"WHERE {' OR '.join(search_conditions)}"
+                params["search"] = f"%{search}%"
+                
+        # 2. Sort Logic
+        order_clause = ""
+        if sort_by:
+            if sort_by not in column_names:
+                # Fallback or ignore invalid sort column, but strictly we can error
+                # For UX, let's just ignore if invalid
+                pass
+            else:
+                direction = "DESC" if order and order.lower() == "desc" else "ASC"
+                order_clause = f"ORDER BY {sort_by} {direction}"
+        
+        # Execute Count (respecting filter)
+        count_sql = f"SELECT COUNT(*) FROM {table} {where_clause}"
+        total = db.execute(text(count_sql), params).scalar()
+        
+        # Execute Data Query
+        data_sql = f"SELECT * FROM {table} {where_clause} {order_clause} LIMIT :limit OFFSET :offset"
+        
+        # Prepare SQL for display (naive interpolation for preview)
+        display_sql = data_sql
+        for k, v in params.items():
+            if isinstance(v, str):
+                display_sql = display_sql.replace(f":{k}", f"'{v}'")
+            else:
+                display_sql = display_sql.replace(f":{k}", str(v))
+        
+        result = db.execute(text(data_sql), params)
+        
+        # Format response
+        columns = result.keys()
+        rows = [dict(zip(columns, row)) for row in result.fetchall()]
+        
+        return {
+            "columns": list(columns),
+            "rows": rows,
+            "total": total,
+            "sql_query": display_sql
+        }
+    except Exception as e:
+        logger.error(f"DB Query error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Background Task now only focuses on resolving IDs if missing
 
@@ -1675,9 +1780,9 @@ def get_full_stats(
     # Resolution Breakdown (from source_metadata)
     # Again, parsing JSON text in SQL is hard in SQLite/Generic, so we do Python scan
     # Limit to last 1000 items for performance if needed, but doing all for accuracy
-    resolutions = {}
-    audio_codecs = {}
-    total_duration_mins = 0
+    # resolutions = {}
+    # audio_codecs = {}
+    # total_duration_mins = 0
     
     # We fetch relevant columns for python-side processing
     # Optimization: On very large libraries, this should be done via SQL GroupBy or specialized queries
@@ -1688,9 +1793,9 @@ def get_full_stats(
     for row in all_metadata:
         m_json, r_runtime, r_year = row
         
-        # 1. Runtime
-        if r_runtime:
-            total_duration_mins += r_runtime
+        # 1. Runtime - REMOVED PER REQ
+        # if r_runtime:
+        #     total_duration_mins += r_runtime
             
         # 2. Decades
         if r_year:
@@ -1701,26 +1806,26 @@ def get_full_stats(
             except:
                 pass
 
-        # 3. Tech Metadata (Res/Audio)
-        if m_json:
-            try:
-                meta = json.loads(m_json) if isinstance(m_json, str) else m_json
-                if not isinstance(meta, dict): continue
-                
-                # Resolution
-                if meta.get('resolution'):
-                    res = meta['resolution'][0] if isinstance(meta['resolution'], list) else meta['resolution']
-                    resolutions[res] = resolutions.get(res, 0) + 1
-                
-                # Audio
-                if meta.get('audio_channels'):
-                    # Simplify audio (e.g. "5.1", "7.1", "2.0")
-                    # Sometimes it's a list, sometimes value
-                    aud = meta['audio_channels']
-                    if isinstance(aud, list): aud = aud[0]
-                    audio_codecs[aud] = audio_codecs.get(aud, 0) + 1
-            except:
-                pass
+        # 3. Tech Metadata (Res/Audio) - REMOVED PER REQ
+        # if m_json:
+        #     try:
+        #         meta = json.loads(m_json) if isinstance(m_json, str) else m_json
+        #         if not isinstance(meta, dict): continue
+        #         
+        #         # Resolution
+        #         if meta.get('resolution'):
+        #             res = meta['resolution'][0] if isinstance(meta['resolution'], list) else meta['resolution']
+        #             resolutions[res] = resolutions.get(res, 0) + 1
+        #         
+        #         # Audio
+        #         if meta.get('audio_channels'):
+        #             # Simplify audio (e.g. "5.1", "7.1", "2.0")
+        #             # Sometimes it's a list, sometimes value
+        #             aud = meta['audio_channels']
+        #             if isinstance(aud, list): aud = aud[0]
+        #             audio_codecs[aud] = audio_codecs.get(aud, 0) + 1
+        #     except:
+        #         pass
                 
     # Sort decades
     decade_counts = dict(sorted(decade_counts.items()))
@@ -1764,14 +1869,19 @@ def get_full_stats(
         for s in db.query(StorageStats).all()
     }
 
+    # 5. Fetch Zurg Stats
+    from zurg_client import ZurgClient
+    zurg_client = ZurgClient() # Will use Env ZURG_API_URL or default
+    zurg_stats = zurg_client.get_stats()
+
     return {
         "library_stats": {
             "total_items": total_items,
             "movies_count": movies_count,
             "tv_count": tv_count,
             "total_size_bytes": total_size,
-            "total_runtime_minutes": total_duration_mins,
-            "avg_file_size": (total_size / total_items) if total_items > 0 else 0
+            "total_runtime_minutes": 0, # Removed
+            "avg_file_size": 0 # (total_size / total_items) if total_items > 0 else 0
         },
         "job_stats": {
             "total_transferred_bytes": total_transferred,
@@ -1780,10 +1890,11 @@ def get_full_stats(
             "failed_count": failed_jobs.count()
         },
         "storage_stats": storage,
+        "zurg_stats": zurg_stats,
         "charts": {
             "genres": dict(top_genres),
-            "resolutions": resolutions,
-            "audio_codecs": audio_codecs,
+            "resolutions": {}, # Removed
+            "audio_codecs": {}, # Removed
             "decades": decade_counts,
             "activity": activity_data # Date -> Bytes
         },
@@ -1831,3 +1942,70 @@ async def serve_spa(full_path: str):
 
 
 
+
+# =================================================================================
+# DATABASE VIEWER API
+# =================================================================================
+
+@app.get("/api/db/tables")
+async def get_db_tables(
+    current_user: User = Depends(get_current_user)
+):
+    """List all tables in the database."""
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin required")
+        
+    inspector = inspect(engine)
+    tables = inspector.get_table_names()
+    return {"tables": tables}
+
+@app.get("/api/db/query")
+async def query_db_table(
+    table: str = Query(..., description="Table name to query"),
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Query a database table."""
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin required")
+    
+    # Validate table name (prevent SQL injection via table name)
+    inspector = inspect(engine)
+    available_tables = inspector.get_table_names()
+    if table not in available_tables:
+        raise HTTPException(status_code=400, detail="Invalid table name")
+        
+    try:
+        # Get columns
+        columns = [col['name'] for col in inspector.get_columns(table)]
+        
+        # Get total count
+        count_query = text(f"SELECT COUNT(*) FROM {table}")
+        total = db.execute(count_query).scalar()
+        
+        # Get data
+        data_query = text(f"SELECT * FROM {table} LIMIT :limit OFFSET :offset")
+        result = db.execute(data_query, {"limit": limit, "offset": offset})
+        
+        rows = []
+        for row in result:
+            # Convert row to dict
+            row_dict = {}
+            for i, col in enumerate(columns):
+                val = row[i]
+                # specific handling for bytes/large objects?
+                row_dict[col] = val
+            rows.append(row_dict)
+            
+        return {
+            "columns": columns,
+            "rows": rows,
+            "total": total,
+            "limit": limit,
+            "offset": offset
+        }
+    except Exception as e:
+        logger.error(f"Database query error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

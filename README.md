@@ -8,6 +8,7 @@
 <div align="center">
 
 [![What is it?](https://img.shields.io/badge/🐱_About-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#what-is-copycat)
+[![Why?](https://img.shields.io/badge/🏗️_Why-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#why-copycat)
 [![Interface](https://img.shields.io/badge/😻_Interface-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#interface-overview)
 [![Quick Start](https://img.shields.io/badge/⚡_Quick_Start-8b5cf6?style=for-the-badge&labelColor=6b21a8)](#quick-start-docker-command)
 [![Deployment](https://img.shields.io/badge/🚀_Deployment-8b5cf6?style=for-the-badge&labelColor=6b21a8)](docs/deployment.md)
@@ -25,6 +26,18 @@
 **CopyCat** is a self-hosted media management tool for digital libraries. It bridges the gap between **Cloud Storage** (such as Zurg or Rclone mounts) and **Local Storage** (HDD/NAS).
 
 CopyCat provides a web interface to scan, organize, and copy media files across different storage locations.
+
+<a name="why-copycat"></a>
+## 🏗️ Why I built this?
+
+CopyCat was born out of a desire to simplify a cumbersome workflow. 
+
+My setup involved managing 300TB of media in **Zurg** alongside 16TB of local storage. I often wanted to bring specific content "offline" to my local drives to ensure it was always ready to go. My manual process was painful:
+1. Add a torrent hash to Real-Debrid via DMM or SeerrBridge.
+2. Remote desktop into the host machine (often from a phone).
+3. Manually copy folders from the Zurg directory to the local drive.
+
+Remote desktopping from a phone is a "pain," and I felt there could be a cleaner way. **CopyCat** provides that solution.
 
 <a name="interface-overview"></a>
 ## 😻 Interface Overview

@@ -176,11 +176,11 @@ class TraktClient:
                         await asyncio.sleep(2)
         return None
 
-    async def _search_first_match(self, endpoint: str, query_title: str, params: Dict, strict_match: bool = False) -> Optional[Dict]:
+    async def _search_first_match(self, endpoint: str, query_title: str, params: Dict, strict_match: bool = False, requested_year: Optional[int] = None) -> Optional[Dict]:
         """
         Searches Trakt.
         If strict_match is True, the result title must match query_title exactly (case-insensitive).
-        This is used when we don't have a year to narrow it down.
+        If requested_year is provided, results are filtered to match the year (+/- 1 year tolerance).
         """
         # Check if we're in a rate limit backoff period
         await self._check_rate_limit()
@@ -206,7 +206,25 @@ class TraktClient:
                                     if not item: continue
                                     
                                     result_title = item.get("title")
+                                    result_year = item.get("year")
                                     
+                                    # YEAR CHECK: If we requested a specific year, enforce it (+/- 1 year tolerance)
+                                    if requested_year:
+                                        if not result_year:
+                                            # If result has no year but we requested one, it's risky. But sometimes API lacks data.
+                                            # Let's skip if we want strict year accuracy.
+                                            continue
+                                            
+                                        # Parse years to ints just in case
+                                        try:
+                                            r_year = int(result_year)
+                                            my_year = int(requested_year)
+                                            if abs(r_year - my_year) > 1:
+                                                logger.debug(f"Skipping result '{result_title}' ({r_year}): Year mismatch (Target: {my_year})")
+                                                continue
+                                        except:
+                                            continue
+
                                     if strict_match:
                                         # Normalize both titles by removing all non-alphanumeric characters AND accents
                                         import re
@@ -243,14 +261,14 @@ class TraktClient:
                                     # Found a match
                                     return {
                                         "title": result_title,
-                                        "year": item.get("year"),
+                                        "year": result_year,
                                         "tmdb_id": item.get("ids", {}).get("tmdb"),
                                         "imdb_id": item.get("ids", {}).get("imdb"),
                                         "trakt_id": item.get("ids", {}).get("trakt"),
                                         "media_type": media_key
                                     }
                                 
-                                logger.info(f"No match found for '{query_title}' (Strict: {strict_match})")
+                                logger.info(f"No match found for '{query_title}' (Strict: {strict_match}, Year: {requested_year})")
                                     
                 except Exception as e:
                     logger.error(f"Trakt Search Error: {e}")
@@ -265,7 +283,7 @@ class TraktClient:
         
         # Enforce strict match if year is missing
         strict = (year is None)
-        return await self._search_first_match("search/movie", clean_title, params, strict_match=strict)
+        return await self._search_first_match("search/movie", clean_title, params, strict_match=strict, requested_year=year)
 
     async def search_show(self, title: str) -> Optional[Dict]:
         """Keep this for initial identification."""

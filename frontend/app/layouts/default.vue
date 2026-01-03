@@ -17,167 +17,157 @@
     <!-- Sidebar -->
     <aside 
       class="sidebar" 
-      :class="{ 'sidebar-open': sidebarOpen, 'sidebar-closed': !sidebarOpen }"
+      :class="{ 
+        'sidebar-open': sidebarOpen, 
+        'sidebar-closed': !sidebarOpen,
+        'sidebar-rail': isRail && !isHoveringSidebar && sidebarOpen,
+        'sidebar-expanded-floating': isRail && isHoveringSidebar && sidebarOpen
+      }"
+      @mouseenter="handleSidebarHover(true)"
+      @mouseleave="handleSidebarHover(false)"
     >
-      <div class="flex flex-col h-full">
+      <div class="flex flex-col h-full overflow-hidden">
         
         <!-- Logo/Brand & Sidebar Toggle -->
-        <div class="p-6 pb-2 flex items-center justify-between">
-            <div class="flex items-center gap-3">
+        <div class="p-6 pb-2 flex items-center justify-between shrink-0 h-[88px] relative">
+            <div class="flex items-center gap-3 overflow-hidden transition-all duration-300" :class="{ 'opacity-0 w-0': isRail && !isHoveringSidebar }">
                 <div class="w-10 h-10 flex items-center justify-center bg-transparent rounded-xl flex-shrink-0">
                     <img src="/copycat.webp" alt="CopyCat Logo" class="w-full h-full object-contain" style="filter: drop-shadow(0 0 8px color-mix(in srgb, var(--win-accent), transparent 40%))" />
                 </div>
-                <div>
+                <div class="whitespace-nowrap">
                    <h1 class="text-base font-bold text-[var(--win-text-primary)] leading-tight tracking-wide">Copy<span class="text-[var(--brand-1)]">Cat</span></h1>
                    <p class="text-[10px] uppercase tracking-wider text-[var(--win-text-muted)] font-semibold">System v0.0.1</p>
                 </div>
             </div>
-            <!-- Close Toggle (Desktop/Mobile) -->
+            
+            <!-- Logo Icon Only for Rail Mode -->
+             <div v-if="isRail && !isHoveringSidebar" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-transparent rounded-xl">
+                 <img src="/copycat.webp" alt="CopyCat Logo" class="w-full h-full object-contain" />
+             </div>
+
+            <!-- Rail Toggle (Desktop) -->
              <button
-              @click="sidebarOpen = !sidebarOpen"
-              class="text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] transition-colors p-1"
-              :aria-label="sidebarOpen ? 'Close menu' : 'Open menu'"
+              @click="toggleRail"
+              class="text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] transition-colors p-1 hidden md:block"
+              :title="isRail ? 'Expand Sidebar' : 'Collapse to Rail'"
             >
-              <UIcon name="i-heroicons-chevron-double-left" class="w-5 h-5" />
+              <UIcon :name="isRail ? 'i-heroicons-chevron-double-right' : 'i-heroicons-chevron-double-left'" class="w-5 h-5" />
+            </button>
+            
+            <!-- Mobile Close -->
+             <button
+              @click="sidebarOpen = false"
+              class="text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] transition-colors p-1 md:hidden"
+            >
+              <UIcon name="i-heroicons-x-mark" class="w-6 h-6" />
             </button>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 py-4 overflow-y-auto space-y-1 px-3 custom-scrollbar">
-          <NuxtLink
-            to="/"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
+        <nav class="flex-1 py-4 overflow-y-auto overflow-x-hidden space-y-1 px-3 custom-scrollbar">
+          
+          <!-- Dashboard -->
+          <NuxtLink to="/" class="sidebar-nav-item" active-class="active" @click="closeSidebarOnMobile" title="Dashboard">
             <UIcon name="i-heroicons-squares-2x2" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">Dashboard</span>
+            <span class="truncate transition-opacity duration-200" :class="{ 'opacity-0 hidden': isRail && !isHoveringSidebar }">Dashboard</span>
           </NuxtLink>
 
-          <!-- Queue -->
-          <NuxtLink
-            to="/queue"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
-            <UIcon name="i-heroicons-queue-list" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">Queue</span>
-            <span v-if="activeJobsCount > 0" class="ml-auto bg-[var(--win-accent)] text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-[0_0_10px_rgba(96,205,255,0.4)]">
-              {{ activeJobsCount }}
-            </span>
+          <!-- Library (Single Link) -->
+          <NuxtLink to="/library" class="sidebar-nav-item" active-class="active" @click="closeSidebarOnMobile" title="Media Library">
+             <UIcon name="i-heroicons-film" class="w-5 h-5 flex-shrink-0" />
+            <span class="truncate transition-opacity duration-200" :class="{ 'opacity-0 hidden': isRail && !isHoveringSidebar }">Library</span>
           </NuxtLink>
 
-          <!-- Library Group -->
+          <!-- Tools Group (Accordion) -->
           <div class="space-y-1">
              <button 
-               @click="libraryMenuOpen = !libraryMenuOpen"
+               @click="toggleToolsMenu"
                class="sidebar-nav-item w-full justify-between group"
-               :class="{ 'text-[var(--win-text-primary)]': libraryMenuOpen }"
+               :class="{ 'text-[var(--win-text-primary)]': toolsMenuOpen }"
+               title="Tools"
              >
                <div class="flex items-center gap-3">
-                 <UIcon name="i-heroicons-building-library" class="w-5 h-5 flex-shrink-0" />
-                 <span class="truncate">Library</span>
+                 <UIcon name="i-heroicons-wrench-screwdriver" class="w-5 h-5 flex-shrink-0" />
+                 <span class="truncate transition-opacity duration-200" :class="{ 'opacity-0 hidden': isRail && !isHoveringSidebar }">Tools</span>
                </div>
                <UIcon 
                  name="i-heroicons-chevron-right" 
-                 class="w-4 h-4 transition-transform duration-200"
-                 :class="{ 'rotate-90': libraryMenuOpen }"
+                 class="w-4 h-4 transition-transform duration-200 flex-shrink-0"
+                 :class="{ 'rotate-90': toolsMenuOpen, 'opacity-0 hidden': isRail && !isHoveringSidebar }"
                />
              </button>
              
              <!-- Dropdown Items -->
-             <div v-show="libraryMenuOpen" class="space-y-0.5 animate-in slide-in-from-top-2 duration-200">
-               <NuxtLink
-                 to="/library"
-                 class="sidebar-nav-item !pl-11 !py-2 !text-xs"
-                 active-class="active"
-                 @click="closeSidebarOnMobile"
-               >
-                 <UIcon name="i-heroicons-film" class="w-4 h-4 flex-shrink-0 opacity-70" />
-                 <span class="truncate">Media Library</span>
-               </NuxtLink>
-               <NuxtLink
-                 to="/copy-wizard"
-                 class="sidebar-nav-item !pl-11 !py-2 !text-xs"
-                 active-class="active"
-                 @click="closeSidebarOnMobile"
-               >
+             <div v-show="toolsMenuOpen && (!isRail || isHoveringSidebar)" class="space-y-0.5 animate-in slide-in-from-top-2 duration-200">
+               <NuxtLink to="/copy-wizard" class="sidebar-nav-item !pl-11 !py-2 !text-xs" active-class="active" @click="closeSidebarOnMobile">
                  <UIcon name="i-heroicons-sparkles" class="w-4 h-4 flex-shrink-0 opacity-70" />
                  <span class="truncate">Copy Wizard</span>
                </NuxtLink>
-               <NuxtLink
-                 to="/browse"
-                 class="sidebar-nav-item !pl-11 !py-2 !text-xs"
-                 active-class="active"
-                 @click="closeSidebarOnMobile"
-               >
+               <NuxtLink to="/browse" class="sidebar-nav-item !pl-11 !py-2 !text-xs" active-class="active" @click="closeSidebarOnMobile">
                  <UIcon name="i-heroicons-folder-open" class="w-4 h-4 flex-shrink-0 opacity-70" />
                  <span class="truncate">File Explorer</span>
+               </NuxtLink>
+               <NuxtLink to="/db" class="sidebar-nav-item !pl-11 !py-2 !text-xs" active-class="active" @click="closeSidebarOnMobile">
+                 <UIcon name="i-heroicons-table-cells" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                 <span class="truncate">Database</span>
                </NuxtLink>
              </div>
           </div>
 
-          <!-- Analytics Group -->
+          <!-- Analytics Group (Accordion) -->
           <div class="space-y-1">
             <button 
-               @click="analyticsMenuOpen = !analyticsMenuOpen"
+               @click="toggleAnalyticsMenu"
                class="sidebar-nav-item w-full justify-between group"
                :class="{ 'text-[var(--win-text-primary)]': analyticsMenuOpen }"
+               title="Analytics"
              >
                <div class="flex items-center gap-3">
                  <UIcon name="i-heroicons-chart-bar" class="w-5 h-5 flex-shrink-0" />
-                 <span class="truncate">Analytics</span>
+                 <span class="truncate transition-opacity duration-200" :class="{ 'opacity-0 hidden': isRail && !isHoveringSidebar }">Analytics</span>
                </div>
                <UIcon 
                  name="i-heroicons-chevron-right" 
-                 class="w-4 h-4 transition-transform duration-200"
-                 :class="{ 'rotate-90': analyticsMenuOpen }"
+                 class="w-4 h-4 transition-transform duration-200 flex-shrink-0"
+                 :class="{ 'rotate-90': analyticsMenuOpen, 'opacity-0 hidden': isRail && !isHoveringSidebar }"
                />
              </button>
              
              <!-- Dropdown Items -->
-             <div v-show="analyticsMenuOpen" class="space-y-0.5 animate-in slide-in-from-top-2 duration-200">
-               <NuxtLink
-                to="/stats"
-                class="sidebar-nav-item !pl-11 !py-2 !text-xs"
-                active-class="active"
-                @click="closeSidebarOnMobile"
-              >
-                <UIcon name="i-heroicons-chart-pie" class="w-4 h-4 flex-shrink-0 opacity-70" />
-                <span class="truncate">Statistics</span>
-              </NuxtLink>
-              <NuxtLink
-                to="/history"
-                class="sidebar-nav-item !pl-11 !py-2 !text-xs"
-                active-class="active"
-                @click="closeSidebarOnMobile"
-              >
+             <div v-show="analyticsMenuOpen && (!isRail || isHoveringSidebar)" class="space-y-0.5 animate-in slide-in-from-top-2 duration-200">
+               <NuxtLink to="/queue" class="sidebar-nav-item !pl-11 !py-2 !text-xs" active-class="active" @click="closeSidebarOnMobile">
+                 <UIcon name="i-heroicons-queue-list" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                 <span class="truncate">Queue</span>
+                 <span v-if="activeJobsCount > 0" class="ml-auto bg-[var(--win-accent)] text-black text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                   {{ activeJobsCount }}
+                 </span>
+               </NuxtLink>
+               <NuxtLink to="/stats" class="sidebar-nav-item !pl-11 !py-2 !text-xs" active-class="active" @click="closeSidebarOnMobile">
+                 <UIcon name="i-heroicons-chart-pie" class="w-4 h-4 flex-shrink-0 opacity-70" />
+                 <span class="truncate">Statistics</span>
+               </NuxtLink>
+              <NuxtLink to="/history" class="sidebar-nav-item !pl-11 !py-2 !text-xs" active-class="active" @click="closeSidebarOnMobile">
                 <UIcon name="i-heroicons-clock" class="w-4 h-4 flex-shrink-0 opacity-70" />
                 <span class="truncate">History</span>
               </NuxtLink>
              </div>
           </div>
           
-
-          <NuxtLink
-            to="/settings"
-            class="sidebar-nav-item"
-            active-class="active"
-            @click="closeSidebarOnMobile"
-          >
+           <!-- Settings -->
+          <NuxtLink to="/settings" class="sidebar-nav-item" active-class="active" @click="closeSidebarOnMobile" title="Settings">
             <UIcon name="i-heroicons-cog-6-tooth" class="w-5 h-5 flex-shrink-0" />
-            <span class="truncate">Settings</span>
+            <span class="truncate transition-opacity duration-200" :class="{ 'opacity-0 hidden': isRail && !isHoveringSidebar }">Settings</span>
           </NuxtLink>
+
         </nav>
 
         <!-- User section -->
-        <div class="px-4 py-4 border-t border-white/5 bg-[var(--glass-level-2-bg)] backdrop-blur-sm">
-          <div class="flex items-center gap-3 mb-3 px-1">
-            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center flex-shrink-0 border border-white/10 shadow-lg">
+        <div class="px-4 py-4 border-t border-white/5 bg-[var(--glass-level-2-bg)] backdrop-blur-sm shrink-0 transition-all duration-200" :class="{ 'px-2': isRail && !isHoveringSidebar }">
+          <div class="flex items-center gap-3 mb-3 px-1 transition-all duration-200" :class="{ 'justify-center': isRail && !isHoveringSidebar }">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center flex-shrink-0 border border-white/10 shadow-lg" title="User Profile">
               <UIcon name="i-heroicons-user" class="w-4 h-4 text-gray-300" />
             </div>
-            <div class="flex-1 min-w-0">
+            <div class="flex-1 min-w-0 transition-opacity duration-200" :class="{ 'opacity-0 hidden': isRail && !isHoveringSidebar }">
               <p class="text-sm font-semibold text-[var(--win-text-primary)] truncate">{{ currentUser?.username || 'User' }}</p>
               <div class="flex items-center gap-1.5">
                   <div class="w-1.5 h-1.5 rounded-full bg-[var(--status-success)] shadow-[0_0_5px_rgba(16,185,129,0.5)]"></div>
@@ -188,9 +178,10 @@
           <button
             @click="handleLogout"
             class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-[var(--win-text-muted)] hover:text-[var(--win-text-primary)] hover:bg-white/5 border border-transparent hover:border-white/5 rounded-lg transition-all"
+            :title="isRail && !isHoveringSidebar ? 'Sign Out' : ''"
           >
             <UIcon name="i-heroicons-arrow-right-on-rectangle" class="w-4 h-4" />
-            <span>Sign out</span>
+            <span class="transition-opacity duration-200" :class="{ 'opacity-0 hidden': isRail && !isHoveringSidebar }">Sign out</span>
           </button>
         </div>
       </div>
@@ -198,7 +189,7 @@
 
     <!-- Overlay (click to close sidebar) -->
     <div
-      v-if="sidebarOpen"
+      v-if="sidebarOpen && !isRail" 
       @click="sidebarOpen = false"
       class="sidebar-overlay"
     ></div>
@@ -206,7 +197,11 @@
     <!-- Main content -->
     <main 
       class="main-content" 
-      :class="{ 'main-with-sidebar': sidebarOpen, 'main-full': !sidebarOpen }"
+      :class="{ 
+        'main-with-sidebar': sidebarOpen && !isRail, 
+        'main-with-rail': sidebarOpen && isRail,
+        'main-full': !sidebarOpen 
+      }"
     >
       <!-- Closed Sidebar Toggle (Only visible when sidebar is closed) -->
       <button
@@ -252,8 +247,13 @@ if (process.client) {
 
 // Persist sidebar state
 const sidebarOpen = useState('sidebarOpen', () => true) 
-const libraryMenuOpen = useState('libraryMenuOpen', () => true)
-const analyticsMenuOpen = useState('analyticsMenuOpen', () => true)
+const isRail = useState('isRail', () => false)
+const isHoveringSidebar = ref(false)
+
+// Menus
+const toolsMenuOpen = useState('toolsMenuOpen', () => false)
+const analyticsMenuOpen = useState('analyticsMenuOpen', () => false)
+
 const activeJobsCount = ref(0)
 const systemWarning = ref<string | null>(null)
 const currentUser = ref<any>(null)
@@ -263,6 +263,32 @@ const handleLogout = () => {
   navigateTo('/login')
 }
 
+const toggleRail = () => {
+    isRail.value = !isRail.value
+    // Auto-close accordions if collapsing logic desired, but keeping them open state is fine too
+}
+
+const toggleToolsMenu = () => {
+    // If in rail mode and NOT hovering, first expand?
+    // The click itself might imply interaction.
+    toolsMenuOpen.value = !toolsMenuOpen.value
+}
+
+const toggleAnalyticsMenu = () => {
+    analyticsMenuOpen.value = !analyticsMenuOpen.value
+}
+
+const handleSidebarHover = (state: boolean) => {
+    if (isRail.value) {
+        isHoveringSidebar.value = state
+    }
+}
+
+const closeSidebarOnMobile = () => {
+    if (window.innerWidth < 768) {
+        sidebarOpen.value = false
+    }
+}
 
 const checkSystemStatus = async () => {
     try {
@@ -306,6 +332,7 @@ const loadActiveJobsCount = async () => {
 const checkMobile = () => {
   if (typeof window !== 'undefined' && window.innerWidth < 768) {
     sidebarOpen.value = false
+    isRail.value = false // No rail on mobile
   } else {
     sidebarOpen.value = true
   }
@@ -365,7 +392,7 @@ watch(() => route.path, () => {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Sidebar styling using new Global Variables */
+/* Sidebar styling */
 .sidebar {
   position: fixed;
   left: 0;
@@ -373,12 +400,22 @@ watch(() => route.path, () => {
   bottom: 0;
   width: 260px;
   z-index: 60;
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  transition: width 0.3s cubic-bezier(0.2, 0, 0, 1), transform 0.3s cubic-bezier(0.2, 0, 0, 1);
   background: var(--glass-level-1-bg);
   backdrop-filter: blur(var(--glass-level-1-blur));
   -webkit-backdrop-filter: blur(var(--glass-level-1-blur));
   border-right: 1px solid var(--glass-level-1-border);
   box-shadow: 4px 0 30px rgba(0,0,0,0.3);
+}
+
+.sidebar-rail {
+    width: 88px;
+}
+
+.sidebar-expanded-floating {
+    width: 260px;
+    box-shadow: 10px 0 50px rgba(0,0,0,0.5);
+    background: var(--glass-level-2-bg); /* Slightly more opaque when floating */
 }
 
 .sidebar-nav-item {
@@ -394,6 +431,7 @@ watch(() => route.path, () => {
     transition: all 0.2s ease;
     border: 1px solid transparent;
     position: relative;
+    white-space: nowrap;
 }
 
 .sidebar-nav-item:hover {
@@ -402,30 +440,12 @@ watch(() => route.path, () => {
 }
 
 .sidebar-nav-item.active {
-    background: var(--win-accent);
-    color: var(--win-bg-base); /* Text becomes background color (usually dark text on light accent, or light on dark) -> actually accent text contrast is tricky. Better to use primaryBtn? */
-    /* Wait, user said white on white. 
-       If theme is light, BG is white. Accent is e.g. blue. 
-       If active item is just text? No it has background. 
-       Previous CSS:
-       background: linear-gradient(90deg, color-mix(in srgb, var(--win-accent), transparent 90%) 0%, transparent 100%);
-       color: white; 
-       
-       The background was heavily transparent accent (10% opacity). 
-       On light theme, 10% blue on white bg = very light blue.
-       And color was forced white. White on Light Blue/White = invisible.
-       
-       Fix: Use var(--win-accent) for text color, and keep the subtle background.
-       OR use high contrast.
-    */
     background: linear-gradient(90deg, color-mix(in srgb, var(--win-accent), transparent 85%) 0%, transparent 100%);
-    color: var(--win-accent); /* Use accent color for text */
+    color: var(--win-accent);
     font-weight: 700;
-    border-left: 3px solid var(--win-accent); /* Move border to left for better visibility? The pseudo element did this. */
-    border: none; /* Remove the full border */
+    border: none;
 }
 
-/* Update pseudo element */
 .sidebar-nav-item.active::before {
     content: "";
     position: absolute;
@@ -442,10 +462,10 @@ watch(() => route.path, () => {
 @media (max-width: 767px) {
   .sidebar {
     width: 280px;
-    background: var(--win-bg-base); /* Solid on mobile for perf */
+    background: var(--win-bg-base);
   }
    .hamburger-toggle {
-    display: flex; /* Show on mobile */
+    display: flex;
   }
 }
 
@@ -462,22 +482,22 @@ watch(() => route.path, () => {
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 30;
-  display: none; /* Hidden by default */
+  display: none;
 }
 
 @media (max-width: 767px) {
   .sidebar-overlay {
-    display: block; /* Show only on mobile when needed */
+    display: block; 
   }
 }
 
 .main-content {
   flex: 1;
   min-height: 100vh;
-  transition: margin-left 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: margin-left 0.3s cubic-bezier(0.2, 0, 0, 1);
   width: 100%;
   position: relative;
-  z-index: 2; /* Content above background */
+  z-index: 2;
 }
 
 .main-full {
@@ -488,8 +508,12 @@ watch(() => route.path, () => {
   margin-left: 260px;
 }
 
+.main-with-rail {
+  margin-left: 88px;
+}
+
 @media (max-width: 768px) {
-  .main-with-sidebar {
+  .main-with-sidebar, .main-with-rail {
     margin-left: 0;
   }
   .main-content {

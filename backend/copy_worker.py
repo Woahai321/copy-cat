@@ -127,6 +127,7 @@ class CopyWorker:
             # Perform the copy with progress tracking
             copied_bytes = [0]  # Use list to allow modification in nested function
             last_update = [0]  # Track last update to avoid too frequent updates
+            last_db_update_time = [0] # Track last DB update time to prevent blocking (max 1/sec)
             file_bytes_tracked = {}  # Track bytes per file to avoid double-counting
             
             def copy_progress(src, dst, bytes_copied_in_file=None, file_size=None):
@@ -153,15 +154,24 @@ class CopyWorker:
                         copied_bytes[0] += size
                         file_bytes_tracked[src] = size
                 
-                # Update progress more frequently - every 1MB or 1%
+                # Update progress more frequently - but THROTTLE DB writes to max once per second
+                # This prevents holding the SQLite lock too often which blocks the API
+                current_time = time.time()
                 update_threshold = max(total_size * 0.01, 1 * 1024 * 1024)
-                if copied_bytes[0] - last_update[0] >= update_threshold:
+                
+                # Check safeguards: 
+                # 1. Enough bytes copied since last update (1% or 1MB)
+                # 2. Enough TIME passed since last DB commit (1 second) - preventing "spinning" locks
+                time_since_update = current_time - last_db_update_time[0]
+                
+                if (copied_bytes[0] - last_update[0] >= update_threshold) and (time_since_update >= 1.0):
                     progress = int((copied_bytes[0] / total_size) * 100) if total_size > 0 else 0
                     job.copied_size_bytes = copied_bytes[0]
                     job.progress_percent = min(progress, 99)  # Never show 100% until complete
                     db.commit()
                     self._broadcast_progress(job)
                     last_update[0] = copied_bytes[0]
+                    last_db_update_time[0] = current_time
                     print(f"Progress update: Job {job.id} - {progress}% ({self._format_size(copied_bytes[0])} / {self._format_size(total_size)})")
             
             # Copy the directory or file

@@ -60,6 +60,7 @@ async def enrich_single_item(db: Session, item: MediaItem, client: TraktClient) 
             item.network = existing_match.network
             item.aired_episodes = existing_match.aired_episodes
             item.year = existing_match.year # Trust the enriched year
+            item.release_date = existing_match.release_date
             
             # Reuse Poster URL directly (it's already a proxied path or URL)
             item.poster_url = existing_match.poster_url
@@ -111,6 +112,15 @@ async def enrich_single_item(db: Session, item: MediaItem, client: TraktClient) 
                     # Persist Year if missing or updated
                     if summary.get('year'):
                         item.year = summary.get('year')
+                    
+                    # Persist Release Date
+                    if summary.get('released'):
+                        try:
+                            # Parse YYYY-MM-DD
+                            item.release_date = datetime.strptime(summary.get('released'), '%Y-%m-%d').date()
+                        except Exception:
+                            logger.warning(f"Could not parse release date: {summary.get('released')}")
+                            item.release_date = None
                     
                     # Genres
                     genres_list = summary.get('genres', [])

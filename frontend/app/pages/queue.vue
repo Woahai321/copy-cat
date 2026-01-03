@@ -121,9 +121,11 @@
 
 
     <!-- Job Detail Modal -->
-    <JobDetailsModal 
-        :job="selectedJob" 
+    <MediaDetailModal 
+        v-if="selectedJob"
         :show="!!selectedJob" 
+        :item="selectedJob.media_item || selectedJob"
+        :job="selectedJob"
         @close="selectedJob = null"
         @cancel="handleCancel"
     />
@@ -132,7 +134,7 @@
 
 <script setup lang="ts">
 import SpeedGraph from '~/components/SpeedGraph.vue'
-import JobDetailsModal from '~/components/JobDetailsModal.vue'
+import MediaDetailModal from '~/components/MediaDetailModal.vue'
 
 definePageMeta({
   middleware: 'auth'
@@ -152,8 +154,8 @@ const selectedJob = ref<any>(null)
 const draggedIndex = ref<number | null>(null)
 const dropTargetIndex = ref<number | null>(null)
 
-const loadQueue = async () => {
-  loading.value = true
+const loadQueue = async (background = false) => {
+  if (!background) loading.value = true
   try {
     const data = await getQueue()
     // Sort by priority (desc), then created_at (asc)
@@ -166,7 +168,7 @@ const loadQueue = async () => {
   } catch (error) {
     console.error('Failed to load queue:', error)
   } finally {
-    loading.value = false
+    if (!background) loading.value = false
   }
 }
 
@@ -415,7 +417,7 @@ onMounted(() => {
 
 // Refresh queue every 5 seconds
 useIntervalFn(() => {
-  loadQueue()
+  loadQueue(true)
 }, 5000)
 </script>
 

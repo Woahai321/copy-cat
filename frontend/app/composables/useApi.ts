@@ -490,6 +490,51 @@ export const useApi = () => {
     }
   }
 
+  const getDbTables = async (): Promise<{ tables: string[] }> => {
+    try {
+      return await $fetch(
+        `${config.public.apiBase}/api/db/tables`,
+        {
+          headers: authHeaders,
+        }
+      )
+    } catch (error) {
+      console.error('Failed to get db tables:', error)
+      throw error
+    }
+  }
+
+  const queryDbTable = async (
+    table: string,
+    limit: number = 50,
+    offset: number = 0,
+    sortBy?: string,
+    order: 'asc' | 'desc' = 'asc',
+    search?: string
+  ): Promise<{ columns: string[], rows: any[], total: number }> => {
+    try {
+      const params: any = { table, limit, offset }
+      if (sortBy) {
+        params.sort_by = sortBy
+        params.order = order
+      }
+      if (search) {
+        params.search = search
+      }
+
+      return await $fetch(
+        `${config.public.apiBase}/api/db/query`,
+        {
+          params,
+          headers: authHeaders,
+        }
+      )
+    } catch (error) {
+      console.error('Failed to query db table:', error)
+      throw error
+    }
+  }
+
   return {
     browseDirectory,
     getFolderInfo,
@@ -516,6 +561,8 @@ export const useApi = () => {
     getSettings,
     updateSettings,
     validateSettings,
-    getSettingsStatus
+    getSettingsStatus,
+    getDbTables,
+    queryDbTable
   }
 }
