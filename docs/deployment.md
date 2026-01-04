@@ -38,7 +38,7 @@ The easiest way to run CopyCat is using Docker Compose.
     ```
 
 4.  **Access the Application**
-    - URL: `http://localhost:4223`
+    - URL: `http://localhost:4222`
     - Default Credentials: `admin` / `changeme`
 
 ### Data Persistence
