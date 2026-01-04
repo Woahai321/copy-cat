@@ -39,7 +39,7 @@ The easiest way to run CopyCat is using Docker Compose.
 
 4.  **Access the Application**
     - URL: `http://localhost:4223`
-    - Default Credentials: `admin` / `admin`
+    - Default Credentials: `admin` / `changeme`
 
 ### Data Persistence
 - **Database**: The SQLite database and user data are stored in the `./data` directory on the host machine.
